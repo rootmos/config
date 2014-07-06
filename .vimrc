@@ -21,12 +21,8 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'bling/vim-airline'
-"Bundle 'bling/vim-bufferline'
 Bundle 'tpope/vim-fugitive'
-Bundle 'scrooloose/nerdtree'
 Bundle 'Valloric/YouCompleteMe'
-"Bundle 'kien/ctrlp.vim'
-"Bundle 'mileszs/ack.vim'
 Bundle 'derekwyatt/vim-fswitch'
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'L9'
@@ -92,10 +88,6 @@ inoremap uu <Esc>
 nnoremap q <NOP>
 
 let mapleader = ","
-"nmap <leader>b :CtrlPBuffer<CR>
-"vmap <leader>b :CtrlPBuffer<CR>
-"nmap <leader>f :CtrlP<CR>
-"vmap <leader>f :CtrlP<CR>
 
 nmap <leader>b :FufBuffer<CR>
 nmap <leader>f :FufFileWithCurrentBufferDir<CR>
