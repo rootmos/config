@@ -1,3 +1,5 @@
+set tags=/local/scratch/egusbeh/tags
+set tagstack
 set nocompatible
 set ruler
 "set number
@@ -5,8 +7,7 @@ set ruler
 "autocmd BufEnter * set relativenumber
 set showcmd
 set laststatus=2
-
-let loaded_matchparen = 1
+set autochdir
 
 set wildmode=longest,list,full
 set wildmenu
@@ -16,8 +17,9 @@ map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
 filetype off
-set runtimepath+=$HOME/.vim/bundle/Vundle.vim
-call vundle#begin()
+let runtimepath='/local/scratch/egusbeh/vim/'
+set runtimepath+=/local/scratch/egusbeh/vim/bundle/Vundle.vim
+call vundle#begin('/local/scratch/egusbeh/vim/bundle')
 Plugin 'gmarik/Vundle.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'bling/vim-airline'
@@ -51,6 +53,10 @@ set hlsearch
 
 colorscheme solarized
 call togglebg#map("<F12>")
+"set t_Co=256
+"let g:solarized_termcolors=256
+
+
 
 if has("gui_running")
 	set guioptions-=m
