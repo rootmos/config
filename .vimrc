@@ -1,4 +1,4 @@
-set tags=/local/scratch/egusbeh/tags
+set tags=$EP_WORKSPACE/tags,$EP_WORKSPACE/tsp_tags
 set tagstack
 set nocompatible
 set ruler
@@ -33,13 +33,9 @@ call vundle#end()
 
 filetype plugin indent on
 
-set textwidth=79      " Break lines at this width
-set colorcolumn=+1    " Show vertical line after the textwidth
-
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
-set list
-set listchars=tab:»\ 
+set list listchars=tab:>-
 
 "highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 "match OverLength /\%81v.\+/
