@@ -8,6 +8,7 @@ set ruler
 set showcmd
 set laststatus=2
 set autochdir
+set backspace=eol,start
 
 set wildmode=longest,list,full
 set wildmenu
