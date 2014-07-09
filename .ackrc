@@ -1,0 +1,5 @@
+--type-set=delos=.delos
+--type-set=MI:match:MI_attributes
+--type-set=cfg=.cfg
+--type-set=ttcn=.ttcn
+--type-set=expect=.expect
