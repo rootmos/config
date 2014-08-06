@@ -76,6 +76,8 @@ nnoremap <silent> <C-l> :nohl<CR><C-l>
 
 "noremap <F5> :w<CR>:make<CR>
 
+noremap <F3> g]
+noremap <F4> :!lvims 
 noremap <F5> :bp<CR>
 noremap <F6> :bn<CR>
 noremap <F7> :bdelete<CR>
@@ -86,8 +88,7 @@ noremap <F10> :FSHere<CR>
 
 autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
-inoremap hh <Esc>
-inoremap uu <Esc>
+inoremap jj <Esc>
 nnoremap q <NOP>
 
 let mapleader = ","
@@ -98,10 +99,13 @@ nmap <leader>l :FufLine<CR>
 nmap <leader>c :FufChange<CR>
 nmap <leader>j :FufJump<CR>
 
+nmap <leader>n  ]c
+nmap <leader>p  [c
+
 command FixTrailing execute ':%s/\s\+$//c'
 
 let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:ycm_collect_identifiers_from_tags_files = 1
 
-let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_global_conf.py'
+let g:ycm_global_ycm_extra_conf = '/local/scratch/egusbeh/vim/ycm_global_conf.py'
 "let g:ycm_filetype_whitelist = { 'cpp': 1 }
