@@ -34,7 +34,7 @@ call vundle#end()
 
 filetype plugin indent on
 
-set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+set tabstop=3 softtabstop=3 shiftwidth=3 expandtab
 
 set list listchars=tab:>-
 
