@@ -3,7 +3,7 @@ set tagstack
 set nocompatible
 set ruler
 "set number
-"set relativenumber
+set relativenumber
 "autocmd BufEnter * set relativenumber
 set showcmd
 set laststatus=2
@@ -30,6 +30,8 @@ Bundle 'derekwyatt/vim-fswitch'
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
+Bundle 'godlygeek/tabular'
+Bundle 'rootmos/vim-journal'
 call vundle#end()
 
 filetype plugin indent on
@@ -49,9 +51,15 @@ set incsearch
 set hlsearch
 
 colorscheme solarized
-call togglebg#map("<F12>")
+"call togglebg#map("<F12>")
 "set t_Co=256
-"let g:solarized_termcolors=256
+"let g:solarized_termcolors= 256
+let g:solarized_termtrans = 1
+let g:solarized_degrade = 1
+let g:solarized_bold = 1
+let g:solarized_underline = 1
+let g:solarized_italic = 1
+let g:solarized_contrast = "normal"
 
 
 
@@ -67,7 +75,7 @@ if has("gui_running")
 		set guifont=Consolas:h11:cANSI
 	endif
 else
-    set background=dark
+    set background=light
 endif
 
 " <Ctrl-l> redraws the screen and removes any search highlighting.
@@ -88,7 +96,7 @@ noremap <F10> :FSHere<CR>
 
 autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
-inoremap jj <Esc>
+inoremap hh <Esc>
 nnoremap q <NOP>
 
 let mapleader = ","
