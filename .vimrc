@@ -2,7 +2,7 @@ set tags=$EP_WORKSPACE/tags,$EP_WORKSPACE/tsp_tags
 set tagstack
 set nocompatible
 set ruler
-"set number
+set number
 set relativenumber
 "autocmd BufEnter * set relativenumber
 set showcmd
@@ -50,33 +50,17 @@ set smartcase
 set incsearch
 set hlsearch
 
+set background=dark
 colorscheme solarized
-"call togglebg#map("<F12>")
+call togglebg#map("<F12>")
 "set t_Co=256
 "let g:solarized_termcolors= 256
-let g:solarized_termtrans = 1
-let g:solarized_degrade = 1
-let g:solarized_bold = 1
-let g:solarized_underline = 1
-let g:solarized_italic = 1
-let g:solarized_contrast = "normal"
-
-
-
-if has("gui_running")
-	set guioptions-=m
-	set guioptions-=T
-
-	set background=light
-
-    if has("gui_gtk2")
-		set guifont=Inconsolata\ 12
-	elseif has("gui_win32")
-		set guifont=Consolas:h11:cANSI
-	endif
-else
-    set background=light
-endif
+"let g:solarized_termtrans = 1
+"let g:solarized_degrade = 1
+"let g:solarized_bold = 1
+"let g:solarized_underline = 1
+"let g:solarized_italic = 1
+"let g:solarized_contrast = "normal"
 
 " <Ctrl-l> redraws the screen and removes any search highlighting.
 nnoremap <silent> <C-l> :nohl<CR><C-l>
