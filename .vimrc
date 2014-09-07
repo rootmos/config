@@ -1,4 +1,3 @@
-set tags=$EP_WORKSPACE/tags,$EP_WORKSPACE/tsp_tags
 set tagstack
 set nocompatible
 set ruler
@@ -18,9 +17,9 @@ map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
 filetype off
-let runtimepath='/local/scratch/egusbeh/vim/'
-set runtimepath+=/local/scratch/egusbeh/vim/bundle/Vundle.vim
-call vundle#begin('/local/scratch/egusbeh/vim/bundle')
+let runtimepath='/home/egusbeh/.vim'
+set runtimepath+=/home/egusbeh/.vim/bundle/Vundle.vim
+call vundle#begin('/home/egusbeh/.vim/bundle')
 Plugin 'gmarik/Vundle.vim'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'bling/vim-airline'

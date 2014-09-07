@@ -43,6 +43,11 @@ strippedKeys x = foldr M.delete (keys defaultConfig x) (keysToRemove x)
 myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
 
 myLogHook = logHook defaultConfig <+> ewmhDesktopsLogHook
+
+myStartupHook config = do
+   startupHook config   
+   spawn "xreaddb"
+   spawn "start-xsettingsd"
  
 main = do
     xmonad $ defaultConfig
@@ -52,5 +57,7 @@ main = do
             manageHook = myManageHook,
             keys = myKeys,
             focusFollowsMouse = False,
-            logHook = myLogHook
+            logHook = myLogHook,
+            startupHook = myStartupHook defaultConfig 
+
         }
