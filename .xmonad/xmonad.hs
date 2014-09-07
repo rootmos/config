@@ -33,13 +33,15 @@ myManageHook = composeAll . concat $
     [
         [className =? b --> viewShift "web" | b <- myClassWebShifts],
         [className =? b --> viewShift "mail" | b <- myClassMailShifts],
-        [className =? b --> viewShift "chat" | b <- myClassChatShifts]
+        [className =? b --> viewShift "chat" | b <- myClassChatShifts],
+        [className =? b --> doFloat | b <- myFloaters]
     ]
     where
         viewShift = doF . liftM2 (.) W.greedyView W.shift
         myClassWebShifts = ["Chrome"]
         myClassMailShifts = ["Thunderbird"]
         myClassChatShifts = ["Pidgin"]
+        myFloaters = ["Pidgin"]
 
 keysToAdd x =
     makeWorkspaceKeys mod4Mask myWorkspaces
@@ -84,6 +86,7 @@ myDzenLogHook h = dynamicLogWithPP $ myPrettyPrinter h
 myStartupHook config = do
    startupHook config   
    spawn "xreaddb"
+   spawn "activate"
    spawn "start-xsettingsd"
 
 myLayoutHook config = avoidStruts $ layoutHook config
