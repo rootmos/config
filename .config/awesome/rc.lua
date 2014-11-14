@@ -2,10 +2,12 @@
 require("awful")
 require("awful.autofocus")
 require("awful.rules")
+require("wibox")
 -- Theme handling library
 require("beautiful")
 -- Notification library
 require("naughty")
+vicious = require("vicious")
 
 -- Load Debian menu entries
 -- require("debian.menu")
@@ -14,7 +16,7 @@ require("naughty")
 -- Themes define colours, icons, and wallpapers
 beautiful.init("/usr/share/awesome/themes/default/theme.lua")
 
-theme.wallpaper_cmd = { "feh ~/img/background" }
+theme.wallpaper_cmd = { "awsetbg /home/egusbeh/img/bg" }  
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -49,8 +51,8 @@ layouts =
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-     names = { "www", "one", "two", "three", "math", "pdf", "music" },
-     layout = { layouts[11], layouts[2], layouts[2], layouts[1], layouts[2], layouts[10], layouts[10] }
+     names = { "chat", "mail", "www", "one", "two", "three", "docu"},
+     layout = { layouts[1], layouts[2], layouts[11], layouts[2], layouts[2], layouts[2], layouts[10] }
 }
 
 for s = 1, screen.count() do
@@ -69,17 +71,14 @@ myawesomemenu = {
    { "quit", awesome.quit }
 }
 
-gamesmenu = { { "Nethack", "xterm -fs 18 -e nethack" }, { "Gargoyle", "gargoyle" } }
-
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                  --   { "Debian", debian.menu.Debian_menu.Debian },
-				 { "Games", gamesmenu },
                                     { "Terminal", terminal },
-				    { "Chrome", "chromium-browser" },
-				    { "Emacs", "emacs" },
-				    { "Evince", "evince" },
-				    { "Spotify", "spotify" },
-				    { "Mathematica", "mathematica" }
+                { "Chrome", "chrome" },
+                { "Thunderbird", "thunderbird" },
+                { "Pidgin", "pidgin" },
+                { "Evince", "evince" },
+                { "Spotify", "spotify" },
                                   }
                         })
 
@@ -88,7 +87,7 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 -- }}}
 
 
-shortcutsitems = { { "Swedish layout", "se" }, { "Dvorak layout", "dv" }, { "Mount Koo", "try-mount-koo" }, { "DragonFly", "dragonfly"} }
+shortcutsitems = { { "Swedish layout", "deactivate" }, { "Dvorak layout", "activate" } }
 shortcutsmenu = awful.menu({ items = shortcutsitems })
 shortcutswidget = awful.widget.launcher({ image = image(beautiful.awesome_icon), menu = shortcutsmenu })
 
@@ -101,17 +100,13 @@ mytextclock = awful.widget.textclock({ align = "right" })
 -- Create a systray
 mysystray = widget({ type = "systray" })
 
+batterywidget = widget({ type = "textbox" })
+vicious.register(batterywidget, vicious.widgets.bat, "$2% : $3 |",30,"BAT0")
 
-
--- Create my power widget
-
-mypowerbar = widget({ type = "textbox" })
-awful.util.spawn_with_shell("powerbar")
-
-mypowerbartimer = timer({ timeout = 30 })
-mypowerbartimer:add_signal("timeout", function() awful.util.spawn_with_shell("powerbar") end)
-mypowerbartimer:start()
-
+-- Initialize widget
+cpuwidget = widget({ type = "textbox" })
+-- Register widget
+vicious.register(cpuwidget, vicious.widgets.cpu, "$1% | ")
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -190,7 +185,8 @@ for s = 1, screen.count() do
         shortcutswidget,
         mylayoutbox[s],
         mytextclock,
-	mypowerbar,
+        batterywidget,
+        cpuwidget,
         s == 1 and mysystray or nil,
         mytasklist[s],
         layout = awful.widget.layout.horizontal.rightleft
@@ -359,11 +355,12 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-    { rule = { class = "Chromium" },
-      properties = { tag = tags[1][1], maximized_vertical = true,
+    { rule = { class = "Chrome" },
+      properties = { tag = tags[1][3], maximized_vertical = true,
       maximized_horizontal = true} },
-    { rule = { class = "Evince" },
-      properties = { tag = tags[1][6] } },
+    { rule = { class = "Pidgin" }, properties = { tag = tags[1][1] } },
+    { rule = { class = "Mail" }, properties = { tag = tags[1][2] } },
+    { rule = { class = "Evince" }, properties = { tag = tags[1][7] } },
     { rule = { class = "Spotify" },
       properties = { tag = tags[1][7] } },
     { rule = { class = "xpad", instance = "xpad" },
@@ -411,6 +408,8 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
+awful.util.spawn ("pidgin")
+awful.util.spawn ("xreaddb")
+awful.util.spawn ("singleton gnome-settings-daemon")
+awful.util.spawn ("singleton nm-applet")
 
-awful.util.spawn_with_shell("setxkbmap -option ctrl:nocaps")
-awful.util.spawn_with_shell("feh --bg-center ~/img/background")
