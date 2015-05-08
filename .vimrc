@@ -1,10 +1,13 @@
 set nocompatible
 set ruler
-"set number
-"set relativenumber
+set number
+set relativenumber
 "autocmd BufEnter * set relativenumber
 set showcmd
 set laststatus=2
+set clipboard+=unnamed
+set clipboard+=unnamedplus
+set backspace=indent,eol,start
 
 let loaded_matchparen = 1
 
@@ -23,11 +26,12 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'bling/vim-airline'
 Bundle 'tpope/vim-fugitive'
 Bundle 'Valloric/YouCompleteMe'
-Bundle 'airblade/vim-gitgutter'
+"Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-fswitch'
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
+Bundle 'raichoo/haskell-vim'
 call vundle#end()
 
 filetype plugin indent on
@@ -51,6 +55,7 @@ set incsearch
 set hlsearch
 
 colorscheme solarized
+set t_Co=256
 call togglebg#map("<F12>")
 
 if has("gui_running")
