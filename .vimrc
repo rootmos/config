@@ -8,6 +8,7 @@ set laststatus=2
 set clipboard+=unnamed
 set clipboard+=unnamedplus
 set backspace=indent,eol,start
+set autochdir
 
 let loaded_matchparen = 1
 
