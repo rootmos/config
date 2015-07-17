@@ -1,0 +1,25 @@
+# Write your default config options here!
+
+stop-xscreensaver=yes
+
+cache=20000
+
+volume=75
+ass=yes
+embeddedfonts=yes
+sid=0
+alang=jpn,eng
+slang=eng
+
+vo=gl
+
+fs=yes
+
+#ass-bottom-margin=140
+#ass-use-margins=yes
+
+ass-styles=/home/gbehm/.mplayer/ass.styles
+
+#ass-force-style="FontName=DejaVu Sans,OutlineColour=0x40000000,Outline=3,Shadow=1,Italic=0,BackColour=0x40000000,SecondaryColour=0x40FFFFFF,BorderStyle=1,Underline=0,Strikeout=0"
+
+#really-quiet=yes
