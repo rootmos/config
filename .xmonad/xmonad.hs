@@ -9,6 +9,7 @@ import XMonad.Util.Run
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
+import XMonad.Layout.NoBorders
 
 myTerminal = "urxvt"
 
@@ -39,7 +40,10 @@ myMusicShifts = [className =? b --> viewShift "music" | b <- ["Spotify"]]
 myFloats = [className =? "mplayer2" --> doFloat]
 myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts])
 
-myLayoutHook = avoidStruts $ Tall 1 (2/100) (1/2) ||| Full
+myLayoutHook = avoidStruts $ myTall ||| myFull
+    where
+        myTall = smartBorders $ Tall 1 (2/100) (1/2)
+        myFull = noBorders $ Full
 
 keysToAdd x =
     makeWorkspaceKeys mod4Mask myWorkspaces
