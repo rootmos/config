@@ -1,0 +1,8 @@
+background yes
+out_to_console yes
+out_to_x no
+# Update interval in seconds
+update_interval 1
+ 
+TEXT
+^fg(\#aaaaaa)C:${cpu}% M:${memperc}%^fg(\#FFFFFF)  |  ${battery_short} (${battery_time})  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
