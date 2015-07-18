@@ -32,14 +32,12 @@ makeWorkspaceKeys mask workspaces = gotoKeys workspaces ++ moveKeys workspaces
         moveKeys = map (\(name, key) -> ((mask .|. shiftMask, key), windows $ W.shift name))
     
 
-myShifts = composeAll . concat $
-    [
-        [className =? b --> viewShift "web" | b <- myClassWebShifts  ]
-    ]
-    where
-        viewShift = doF . liftM2 (.) W.greedyView W.shift
-        myClassWebShifts = ["Chromium-browser"]
-myManageHook = manageDocks <+> myShifts
+viewShift = doF . liftM2 (.) W.greedyView W.shift
+
+myWebShifts = [className =? b --> viewShift "web" | b <- ["Chromium-browser"]]
+myMusicShifts = [className =? b --> viewShift "music" | b <- ["Spotify"]]
+myFloats = [className =? "mplayer2" --> doFloat]
+myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts])
 
 myLayoutHook = avoidStruts $ Tall 1 (2/100) (1/2) ||| Full
 
