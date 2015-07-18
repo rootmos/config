@@ -16,9 +16,11 @@ myWorkspaces =
     [
         ("1", xK_1),
         ("2", xK_2),
+        ("3", xK_parenleft),
+        ("4", xK_dollar),
         ("web", xK_w),
         ("music", xK_m),
-        ("pdf", xK_p),
+        ("video", xK_v),
         ("chat", xK_c),
         ("graveyard", xK_g)
     ]
@@ -80,5 +82,6 @@ main = do
             layoutHook = myLayoutHook,
             keys = myKeys,
             focusFollowsMouse = False,
-            logHook = myLogHook dzenLeftBar >> fadeInactiveLogHook 0xdddddddd
+            logHook = myLogHook dzenLeftBar >> fadeInactiveLogHook 0xdddddddd,
+            focusedBorderColor = "grey"
         }
