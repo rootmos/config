@@ -15,10 +15,6 @@ let loaded_matchparen = 1
 set wildmode=longest,list,full
 set wildmenu
 
-set mouse=a
-map <ScrollWheelUp> <C-Y>
-map <ScrollWheelDown> <C-E>
-
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
 call vundle#begin()
