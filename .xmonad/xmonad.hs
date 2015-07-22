@@ -3,6 +3,7 @@ import Control.Monad
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import XMonad.Hooks.ICCCMFocus
+import Graphics.X11.ExtraTypes.XF86 
 
 import System.IO
 import XMonad.Util.Run
@@ -47,7 +48,12 @@ myLayoutHook = avoidStruts $ myTall ||| myFull
 
 keysToAdd x =
     makeWorkspaceKeys mod4Mask myWorkspaces
-    ++ []
+    ++ [ ((0, xF86XK_MonBrightnessUp), spawn "xbacklight +10")
+       , ((0, xF86XK_MonBrightnessDown), spawn "xbacklight -10")
+       , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -D pulse sset Master 5%+")
+       , ((0, xF86XK_AudioLowerVolume), spawn "amixer -D pulse sset Master 5%-")
+       , ((0, xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
+       ]
 
 keysToRemove x =
     [
