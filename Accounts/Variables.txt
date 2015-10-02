@@ -1,0 +1,16 @@
+controlgroupmode=2
+displayflyerhelper=All
+displayunitstatus=All
+expansionlevel=
+gluetheme=0
+hotkeyprofile=TC - Swedish - My
+MeleeHelpIntroCount=1
+mouseoverridesensitivityenabled=0
+music=0
+OptionRevisionAccount=5
+selectuncontrolable=1
+showalerts=1
+simplecommandcard=0
+soundglobal=1
+soundvoices=0
+winkeydisabled=0
