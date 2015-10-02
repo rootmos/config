@@ -1,0 +1,16 @@
+# Write your default config options here!
+
+stop-xscreensaver=yes
+fstype=none
+fs=yes
+
+cache=20000
+
+volume=100
+ass=yes
+embeddedfonts=yes
+sid=0
+alang=jpn,eng
+slang=eng
+
+ass-styles=$HOME/.mplayer/ass.styles

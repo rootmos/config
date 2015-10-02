@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ "$1" = "disable" ]; then
+    SET=0
+elif [ "$1" = "enable" ]; then
+    SET=1
+else
+    echo "Usage: $0 enable/disable"
+    exit 2
+fi
+
+NAME="TouchPad"
+ID=$(xinput list | grep $NAME | sed "s/.*id=\(\w\+\).*/\1/")
+xinput set-prop $ID "Device Enabled" $SET
