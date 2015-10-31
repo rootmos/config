@@ -53,6 +53,7 @@ keysToAdd x =
        , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -D pulse sset Master 5%+")
        , ((0, xF86XK_AudioLowerVolume), spawn "amixer -D pulse sset Master 5%-")
        , ((0, xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
+       , ((0, xF86XK_Display), spawn "switch-display")
        ]
 
 keysToRemove x =
