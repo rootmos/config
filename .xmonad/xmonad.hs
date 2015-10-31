@@ -11,6 +11,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
 import XMonad.Layout.NoBorders
+import XMonad.Layout.SimpleFloat
 
 myTerminal = "urxvt"
 
@@ -38,10 +39,11 @@ viewShift = doF . liftM2 (.) W.greedyView W.shift
 
 myWebShifts = [className =? b --> viewShift "web" | b <- ["Chromium-browser"]]
 myMusicShifts = [className =? b --> viewShift "music" | b <- ["Spotify"]]
-myFloats = [className =? "mplayer2" --> doFloat]
+myFloats = [className =? "mplayer2" --> doFloat,
+            className =? "VirtualBox" --> doFloat]
 myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts])
 
-myLayoutHook = avoidStruts $ myTall ||| myFull
+myLayoutHook = avoidStruts $ myTall ||| myFull ||| simpleFloat
     where
         myTall = smartBorders $ Tall 1 (2/100) (1/2)
         myFull = noBorders $ Full
