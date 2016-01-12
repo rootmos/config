@@ -3,6 +3,7 @@ import Control.Monad
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import XMonad.Hooks.ICCCMFocus
+import XMonad.Hooks.SetWMName
 import Graphics.X11.ExtraTypes.XF86 
 
 import System.IO
@@ -94,5 +95,6 @@ main = do
             keys = myKeys,
             focusFollowsMouse = False,
             logHook = myLogHook dzenLeftBar >> fadeInactiveLogHook 0xdddddddd,
-            focusedBorderColor = "grey"
+            focusedBorderColor = "grey",
+            startupHook = setWMName "LG3D"
         }
