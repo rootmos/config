@@ -33,12 +33,10 @@ Bundle 'jlanzarotta/bufexplorer'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
 Bundle 'raichoo/haskell-vim'
+Bundle 'derekwyatt/vim-scala'
 call vundle#end()
 
 filetype plugin indent on
-
-set textwidth=79      " Break lines at this width
-set colorcolumn=+1    " Show vertical line after the textwidth
 
 set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
