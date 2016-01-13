@@ -1,0 +1,4 @@
+--type-set=scala=.scala
+--type-set=jvm=.scala,.java
+
+--smart-case
