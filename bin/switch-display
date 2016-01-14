@@ -1,31 +1,35 @@
 #!/bin/bash
 
 INTERNAL=eDP1
-EXTERNAL=HDMI2
+DP=DP2
+HDMI=HDMI1
 
 internal ()
 {
-    xrandr --output $EXTERNAL --off --output $INTERNAL --auto
+    xrandr --output $DP --off --output $HDMI --off --output $INTERNAL --auto
 }
 
-external ()
+dp ()
 {
-    xrandr --output $EXTERNAL --auto --output $INTERNAL --off
+    xrandr --output $DP --auto --output $HDMI --off --output $INTERNAL --off
 }
 
-both ()
+hdmi ()
 {
-    xrandr --output $EXTERNAL --auto --output $INTERNAL --same-as $EXTERNAL
+    xrandr --output $DP --off --output $HDMI --auto --output $INTERNAL --off
 }
 
 choice ()
 {
     cat <<EOF | dmenu
 internal
-external
-both
+dp
+hdmi
 EOF
 
 }
 
 eval $(choice)
+
+killall dzen2
+xmonad --restart

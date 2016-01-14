@@ -1,7 +1,7 @@
 #!/bin/sh -x
 
 resolution() {
-    xrandr | grep -Po "(?<=\ connected primary )[\d]+x[\d]+"
+    xrandr | grep -Po "[\d]+x[\d]+\+[\d]+\+[\d]+" | cut -d+ -f1
 }
 
 width() {
@@ -23,14 +23,12 @@ h=12
 while getopts ":l:r:" opt; do
     case $opt in
         l)
-            x=0
-            w=$(percentage $OPTARG $(width))
-            ta=l
+            alignment=l
+            width_in_percent=$OPTARG
             ;;
         r)
-            w=$(percentage $OPTARG $(width))
-            x=$(($(width)-${w}))
-            ta=r
+            alignment=r
+            width_in_percent=$OPTARG
             ;;
         *)
             echo "Unknown option!"
@@ -39,10 +37,23 @@ while getopts ":l:r:" opt; do
     esac
 done
 
-pos_opts="-x ${x} -y ${y} -w ${w} -h ${h} -ta ${ta}"
->&1 echo "Creating bar with position: ${pos_opts}"
+pos_opts()
+{
+    w=$(percentage ${width_in_percent} $(width))
+    if [ "$alignment" = "l" ]; then
+        x=0
+        ta=l
+    else 
+        x=$(($(width)-${w}))
+        ta=r
+    fi
+
+    echo "-x ${x} -y ${y} -w ${w} -h ${h} -ta ${ta}"
+}
+>&1 echo "Creating bar with position: $(pos_opts)"
 
 color_opts="-fg #FFFFFF -bg #1B1D1E"
 >&1 echo "Creating bar with colors: ${color_opts}"
 
-cat | dzen2 ${pos_opts} ${color_opts}
+dzen2 $(pos_opts) ${color_opts}
+
