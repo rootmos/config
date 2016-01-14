@@ -1,0 +1,48 @@
+#!/bin/sh -x
+
+resolution() {
+    xrandr | grep -Po "(?<=\ connected primary )[\d]+x[\d]+"
+}
+
+width() {
+    resolution | cut -dx -f1
+}
+
+height() {
+    resolution | cut -dx -f2
+}
+
+percentage()
+{
+    echo $((2*$1*$2/100 % 2 + $1*$2/100))
+}
+
+y=0
+h=12
+
+while getopts ":l:r:" opt; do
+    case $opt in
+        l)
+            x=0
+            w=$(percentage $OPTARG $(width))
+            ta=l
+            ;;
+        r)
+            w=$(percentage $OPTARG $(width))
+            x=$(($(width)-${w}))
+            ta=r
+            ;;
+        *)
+            echo "Unknown option!"
+            exit 2
+            ;;
+    esac
+done
+
+pos_opts="-x ${x} -y ${y} -w ${w} -h ${h} -ta ${ta}"
+>&1 echo "Creating bar with position: ${pos_opts}"
+
+color_opts="-fg #FFFFFF -bg #1B1D1E"
+>&1 echo "Creating bar with colors: ${color_opts}"
+
+cat | dzen2 ${pos_opts} ${color_opts}
