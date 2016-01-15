@@ -1,0 +1,6 @@
+{
+    "default": {
+        "pre_connect": ["killall dzen2"],
+        "post_connect": ["~/bin/dv", "xmonad --restart"]
+    }
+}
