@@ -5,6 +5,8 @@ import logging
 import logging.handlers
 import argparse
 import time
+import os
+import json
 
 logger = logging.getLogger()
 
@@ -55,15 +57,73 @@ def primaryDisplay():
 
 def connectDisplay(display):
     assert display
+    executeCommands(preConnectCommands([display]))
     logger.debug("Connecting display: %s" % display)
     subprocess.check_call(["xrandr", "--output", display, "--auto"])
+    while not display in activeDisplays():
+        logger.debug("Display %s not active yet..." % display)
+        time.sleep(1)
     logger.info("Connected display: %s" % display)
+    executeCommands(postConnectCommands([display]))
 
 def disconnectDisplay(display):
     assert display
+    executeCommands(preDisconnectCommands([display]))
     logger.debug("Disconnecting display: %s" % display)
     subprocess.check_call(["xrandr", "--output", display, "--off"])
+    while display in activeDisplays():
+        logger.debug("Display %s not deactivated yet..." % display)
+        time.sleep(1)
     logger.info("Disconnected display: %s" % display)
+    executeCommands(postDisconnectCommands([display]))
+
+def configuration():
+    filename = os.path.expanduser('~/.config/displays.json')
+    if not os.path.isfile(filename):
+        return {}
+
+    with open(filename) as f:
+        data = f.read()
+        return json.loads(data)
+
+def configurationForDisplay(configuration, display):
+    if display in configuration:
+        return configuration[display]
+    else:
+        return {}
+
+def getCommandsForDisplay(configuration, commandType, display):
+    displayConfig = configurationForDisplay(configuration, display)
+    if commandType in displayConfig:
+        return displayConfig[commandType]
+    else:
+        return []
+
+def getCommandsForAllDisplays(commandType, displays = None):
+    conf = configuration()
+    commands = getCommandsForDisplay(conf, commandType, "default")
+
+    if displays:
+        for display in displays:
+            commands += getCommandsForDisplay(conf, commandType, display)
+
+    logger.debug("Fetched commands for type %s: %s" % (commandType, commands))
+    return commands
+
+def preConnectCommands(displays = None):
+    return getCommandsForAllDisplays("pre_connect", displays)
+def postConnectCommands(displays = None):
+    return getCommandsForAllDisplays("post_connect", displays)
+def preDisconnectCommands(displays = None):
+    return getCommandsForAllDisplays("pre_disconnect", displays)
+def postDisconnectCommands(displays = None):
+    return getCommandsForAllDisplays("post_disconnect", displays)
+
+def executeCommands(commands):
+    for command in commands:
+        logger.debug("Executing command: %s" % command)
+        returncode = subprocess.call(command, shell=True)
+        logger.info("Command exited with code %d: %s" % (returncode, command))
 
 def choose(choices, caseInsensitive=True):
     cmd = ["dmenu"]
