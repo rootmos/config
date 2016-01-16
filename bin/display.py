@@ -55,27 +55,44 @@ def primaryDisplay():
 
     logger.error("No primary display!")
 
-def connectDisplay(display):
-    assert display
-    executeCommands(preConnectCommands([display]))
-    logger.debug("Connecting display: %s" % display)
-    subprocess.check_call(["xrandr", "--output", display, "--auto"])
-    while not display in activeDisplays():
-        logger.debug("Display %s not active yet..." % display)
+
+def connectAndDisconnectDisplays(connect = None, disconnect = None):
+    if connect is None:
+        connect = []
+    if disconnect is None:
+        disconnect = []
+
+    if not connect and not disconnect:
+        return
+
+    executeCommands(preConnectCommands(connect))
+    executeCommands(preDisconnectCommands(disconnect))
+
+    logger.debug("Connecting: %s. Disconnecting: %s." % (connect, disconnect))
+    subprocess.check_call(buildXRandrCommand(connect, disconnect))
+    logger.info("Connected: %s. Disconnected: %s." % (connect, disconnect))
+
+    while not set(connect).issubset(activeDisplays()):
+        logger.debug("Wating for %s to become active..." % connect)
         time.sleep(1)
-    logger.info("Connected display: %s" % display)
-    executeCommands(postConnectCommands([display]))
+
+    executeCommands(postConnectCommands(connect))
+    executeCommands(postDisconnectCommands(disconnect))
+
+
+def buildXRandrCommand(connect, disconnect):
+    cmd = ["xrandr"]
+    for display in connect:
+        cmd += ["--output", display, "--auto"]
+    for display in disconnect:
+        cmd += ["--output", display, "--off"]
+    return cmd
+
+def connectDisplay(display):
+    connectAndDisconnectDisplays(connect=[display])
 
 def disconnectDisplay(display):
-    assert display
-    executeCommands(preDisconnectCommands([display]))
-    logger.debug("Disconnecting display: %s" % display)
-    subprocess.check_call(["xrandr", "--output", display, "--off"])
-    while display in activeDisplays():
-        logger.debug("Display %s not deactivated yet..." % display)
-        time.sleep(1)
-    logger.info("Disconnected display: %s" % display)
-    executeCommands(postDisconnectCommands([display]))
+    connectAndDisconnectDisplays(disconnect=[display])
 
 def configuration():
     filename = os.path.expanduser('~/.config/displays.json')
@@ -141,10 +158,11 @@ def choose(choices, caseInsensitive=True):
 
 def switchToDisplay(display):
     logger.info("Switching to display: %s" % display)
-    connectDisplay(display)
-    for other in connectedDisplays():
-        if other != display:
-            disconnectDisplay(other)
+
+    disconnect = set(activeDisplays())
+    if display in disconnect:
+        disconnect.remove(display)
+    connectAndDisconnectDisplays(connect=[display], disconnect=disconnect)
 
 class Context(object):
     def __init__(self):
