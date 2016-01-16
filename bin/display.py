@@ -136,6 +136,24 @@ def preDisconnectCommands(displays = None):
 def postDisconnectCommands(displays = None):
     return getCommandsForAllDisplays("post_disconnect", displays)
 
+def preferredDisplays(conf = None):
+    if conf is None:
+        conf = configuration()
+
+    if "preferred" in conf:
+        preferred = frozenset(conf["preferred"])
+    else:
+        preferred = frozenset([])
+    
+    logger.debug("Preferred displays: %s" % preferred)
+    return preferred
+
+def selectPreferredDisplayAmong(choices, configuration = None):
+    for display in preferredDisplays(configuration):
+        if display in choices:
+            return display
+    return None
+
 def executeCommands(commands):
     for command in commands:
         logger.debug("Executing command: %s" % command)
@@ -184,10 +202,23 @@ class IfNoActiveAndConnectedDisplaysSwitchToPrimary(Rule):
         return result
 
     def action(self, context):
-        logger.debug("Switch to primary display: %s" % context.primaryDisplay)
+        logger.info("Switching to primary display: %s" % context.primaryDisplay)
         switchToDisplay(context.primaryDisplay)
 
-rules = [IfNoActiveAndConnectedDisplaysSwitchToPrimary()]
+class IfPreferredMonitorIsConnectedButNotActiveSwitchToIt(Rule):
+    def isSatisfied(self, context):
+        connectedButNotActiveDisplays = set(context.connectedDisplays).difference(context.activeDisplays)
+        self.preferred = selectPreferredDisplayAmong(connectedButNotActiveDisplays)
+        logger.debug("Checking if a preferrred display is connected but not active: %s" % self.preferred)
+        return bool(self.preferred)
+
+    def action(self, context):
+        logger.info("Switching to preferred display: %s" % self.preferred)
+        switchToDisplay(self.preferred)
+
+rules = [ IfPreferredMonitorIsConnectedButNotActiveSwitchToIt()
+        , IfNoActiveAndConnectedDisplaysSwitchToPrimary()
+        ]
 
 def parseArguments():
     parser = argparse.ArgumentParser()
