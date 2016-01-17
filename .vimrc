@@ -80,10 +80,9 @@ nnoremap <silent> <C-l> :nohl<CR><C-l>
 
 "noremap <F5> :w<CR>:make<CR>
 
-noremap <F5> :bp<CR>
-noremap <F6> :bn<CR>
+noremap <F2> :!echo; echo "Spawning shell from inside vim..."; bash<CR>
+
 noremap <F7> :bdelete<CR>
-noremap <F8> :BufExplorer<CR>
 
 noremap <F9> :Explore<CR>
 noremap <F10> :FSHere<CR>
