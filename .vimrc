@@ -78,14 +78,15 @@ endif
 nnoremap <silent> <C-l> :nohl<CR><C-l>
 
 
-"noremap <F5> :w<CR>:make<CR>
+set makeprg=in_root\ mvn\ -q
+set errorformat=\[ERROR]\ %f:[%l\\,%v]\ %m
+noremap <F5> :make compile<CR>
+
+noremap <F9> :make test<CR>
+noremap <F10> :make verify<CR>
 
 noremap <F2> :!echo; echo "Spawning shell from inside vim..."; bash<CR>
-
 noremap <F7> :bdelete<CR>
-
-noremap <F9> :Explore<CR>
-noremap <F10> :FSHere<CR>
 
 autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
