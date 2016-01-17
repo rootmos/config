@@ -35,6 +35,7 @@ Bundle 'FuzzyFinder'
 Bundle 'raichoo/haskell-vim'
 Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
+Plugin 'wincent/command-t'
 call vundle#end()
 
 filetype plugin indent on
@@ -100,6 +101,7 @@ nmap <leader>f :FufFileWithCurrentBufferDir<CR>
 nmap <leader>l :FufLine<CR>
 nmap <leader>c :FufChange<CR>
 nmap <leader>j :FufJump<CR>
+nmap <leader>t :CommandT<CR>
 
 command FixTrailing execute ':%s/\s\+$//c'
 
@@ -110,7 +112,10 @@ let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_global_conf.py'
 "let g:ycm_filetype_whitelist = { 'cpp': 1 }
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
-noremap <F4> :Ack
+noremap <F4> :Ack 
+noremap <F3> :AckWord<CR>
+command! -bang AckWord call ack#Ack('grep<bang>', '\b' . expand("<cword>") . '\b')
+
 nmap <leader>n :cn<CR>
 nmap <leader>p :cp<CR>
 nmap <leader>o :copen<CR>
