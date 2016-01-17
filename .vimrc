@@ -111,7 +111,7 @@ let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_global_conf.py'
 "let g:ycm_filetype_whitelist = { 'cpp': 1 }
 
-let g:ackprg = 'ag --nogroup --nocolor --column'
+let g:ackprg = 'ag --nogroup --nocolor --column --ignore=META-INF'
 noremap <F4> :Ack 
 noremap <F3> :AckWord<CR>
 command! -bang AckWord call ack#Ack('grep<bang>', '\b' . expand("<cword>") . '\b')
