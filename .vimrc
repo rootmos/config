@@ -103,6 +103,8 @@ nmap <leader>c :FufChange<CR>
 nmap <leader>j :FufJump<CR>
 nmap <leader>t :CommandT<CR>
 
+set wildignore=**/target/**,**/META-INF/**
+
 command FixTrailing execute ':%s/\s\+$//c'
 
 let g:bufExplorerDisableDefaultKeyMapping = 1
