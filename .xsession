@@ -2,7 +2,7 @@
 
 xrdb ~/.Xdefaults
 
-xautolock -time 10 -locker slock &
+xautolock -time 10 -locker "sudo pm-suspend" &
 
 ~/bin/dv
 
