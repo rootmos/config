@@ -2,7 +2,7 @@
 
 xrdb ~/.Xdefaults
 
-xautolock -time 10 -locker "sudo pm-suspend" &
+xautolock -time 10 -locker "systemctl suspend" &
 
 ~/bin/dv
 
