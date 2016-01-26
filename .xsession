@@ -6,6 +6,4 @@ xautolock -time 10 -locker "systemctl suspend" &
 
 ~/bin/dv
 
-display.py --verbose --syslog &
-
 exec xmonad

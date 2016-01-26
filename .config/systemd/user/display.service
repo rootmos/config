@@ -1,0 +1,10 @@
+[Unit]
+Description=Manages displays using display.py
+
+[Service]
+Restart=always
+RestartSec=5
+ExecStart=/home/gustav/bin/display.py --verbose
+
+[Install]
+WantedBy=graphical.target
