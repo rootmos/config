@@ -1,0 +1,2 @@
+# The nomodeset fixes the black screen on thaw
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash nomodeset"
