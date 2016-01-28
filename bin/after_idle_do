@@ -1,0 +1,12 @@
+#!/bin/sh
+
+idle_time_ms=$(echo $1*1000 | bc)
+shift 1
+cmd=$*
+granularity=10
+
+while [ $(xprintidle) -lt $idle_time_ms ]; do
+    sleep $granularity
+done
+
+$cmd

@@ -1,0 +1,10 @@
+[Unit]
+Description=Suspend after idling
+
+[Service]
+Restart=always
+RestartSec=5
+ExecStart=/home/gustav/bin/after_idle_do 6000 systemctl suspend
+
+[Install]
+WantedBy=graphical.target

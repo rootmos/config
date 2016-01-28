@@ -44,7 +44,6 @@ def primaryDisplay():
     xrandr.stdout.close()
 
     output, _ = grep.communicate()
-    assert grep.returncode == 0
 
     activeDisplayLines = output.splitlines()
     activeDisplays = []
