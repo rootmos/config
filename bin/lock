@@ -1,0 +1,3 @@
+#!/bin/sh
+
+i3lock --nofork --color 0074c8

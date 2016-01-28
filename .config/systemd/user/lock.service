@@ -4,7 +4,7 @@ Description=Lock screen after idling
 [Service]
 Restart=always
 RestartSec=5
-ExecStart=/home/gustav/bin/after_idle_do 120 i3lock -n
+ExecStart=/home/gustav/bin/after_idle_do 120 /home/gustav/bin/lock
 
 [Install]
 WantedBy=graphical.target
