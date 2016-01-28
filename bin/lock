@@ -1,3 +1,12 @@
 #!/bin/sh
 
+previous_backlight_percent=$(xbacklight)
+xbacklight -set 15
+
+restore_previous_backlight()
+{
+    xbacklight -set $previous_backlight_percent
+}
+trap restore_previous_backlight EXIT
+
 i3lock --nofork --color 0074c8
