@@ -4,7 +4,17 @@ idle_time_ms=$(echo $1*1000 | bc)
 shift 1
 granularity=10
 
-while [ $(xprintidle) -lt $idle_time_ms ]; do
+current_idle_time()
+{
+    time=$(xprintidle)
+    if [ $? -eq 0 ]; then
+        echo $time
+    else
+        echo 0
+    fi
+}
+
+while [ $(current_idle_time) -lt $idle_time_ms ]; do
     sleep $granularity
 done
 
