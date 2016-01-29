@@ -4,7 +4,7 @@ Description=Suspend after idling
 [Service]
 Restart=always
 RestartSec=5
-ExecStart=/home/gustav/bin/after_idle_do 600 systemctl suspend
+ExecStart=/home/gustav/bin/after_idle_do 600 sudo systemctl suspend
 
 [Install]
-WantedBy=graphical.target
+WantedBy=default.target
