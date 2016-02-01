@@ -1,21 +1,22 @@
-#!/bin/sh
+#!/bin/sh -e
 
-idle_time_ms=$(echo $1*1000 | bc)
+idle_time_s=$1
+idle_time_ms=$(echo ${idle_time_s}*1000 | bc)
 shift 1
 granularity=10
 
-current_idle_time()
+current_idle_time=0
+
+figure_out_current_idle_time()
 {
-    time=$(xprintidle)
-    if [ $? -eq 0 ]; then
-        echo $time
-    else
-        echo 0
-    fi
+    current_idle_time=$(xprintidle)
 }
 
-while [ $(current_idle_time) -lt $idle_time_ms ]; do
+figure_out_current_idle_time
+while [ $current_idle_time -lt $idle_time_ms ]; do
     sleep $granularity
+    figure_out_current_idle_time
 done
 
+echo "Idled for more than ${idle_time_s}s, therefore:" "$@"
 "$@"

@@ -4,7 +4,8 @@ Description=Manages displays using display.py
 [Service]
 Restart=always
 RestartSec=5
+ExecStartPre=/bin/systemctl --user import-environment DISPLAY XAUTHORITY
 ExecStart=/home/gustav/bin/display.py --verbose
 
 [Install]
-WantedBy=graphical.target
+WantedBy=default.target
