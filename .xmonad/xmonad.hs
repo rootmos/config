@@ -57,6 +57,9 @@ keysToAdd x =
        , ((0, xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
        , ((mod4Mask, xK_v), spawn "display.py --verbose --syslog --choose")
        , ((mod4Mask, xK_l), spawn "lock")
+       , ((0, xK_Print), spawn "dv")
+       , ((0, xK_Scroll_Lock), spawn "se")
+       , ((0, xK_Pause), spawn "us")
        ]
 
 keysToRemove x =
