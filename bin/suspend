@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ! on_ac_power; then
+    echo "Will suspend: I'm running on battery..."
+    sudo systemctl suspend
+else
+    echo "Will not suspend: I'm on AC power!"
+fi

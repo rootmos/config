@@ -5,7 +5,7 @@ Description=Suspend after idling
 Restart=always
 RestartSec=5
 ExecStartPre=/bin/systemctl --user import-environment DISPLAY XAUTHORITY
-ExecStart=/home/gustav/bin/after_idle_do 600 sudo systemctl suspend
+ExecStart=/home/gustav/bin/after_idle_do 600 /home/gustav/bin/suspend
 
 [Install]
 WantedBy=default.target
