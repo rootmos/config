@@ -1,9 +1,11 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 idle_time_s=$1
-idle_time_ms=$(echo ${idle_time_s}*1000 | bc)
+idle_time_ms=$(( $idle_time_s * 1000 ))
 shift 1
-granularity=10
+cmd="$@"
+granularity_s=10
+notify_within_ms=$(( 2 * $granularity_s * 1000 ))
 
 current_idle_time=0
 
@@ -12,11 +14,21 @@ figure_out_current_idle_time()
     current_idle_time=$(xprintidle)
 }
 
+maybe_notify_of_looming_action()
+{
+    time_left_ms=$(($idle_time_ms - $current_idle_time))
+    time_left_s=$(( $time_left_ms / 1000 ))
+    if [ $time_left_ms -lt $notify_within_ms ]; then
+        notify-send "Idling!" "In about ${time_left_s}s: $cmd"
+    fi
+}
+
 figure_out_current_idle_time
 while [ $current_idle_time -lt $idle_time_ms ]; do
-    sleep $granularity
+    maybe_notify_of_looming_action
+    sleep $granularity_s
     figure_out_current_idle_time
 done
 
-echo "Idled for more than ${idle_time_s}s, therefore:" "$@"
+echo "Idled for more than ${idle_time_s}s, therefore:" $cmd
 "$@"
