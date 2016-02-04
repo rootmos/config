@@ -37,11 +37,12 @@ makeWorkspaceKeys mask workspaces = gotoKeys workspaces ++ moveKeys workspaces
 
 viewShift = doF . liftM2 (.) W.greedyView W.shift
 
-myWebShifts = [className =? b --> viewShift "web" | b <- ["Chromium-browser"]]
+myWebShifts = [className =? b --> viewShift "web" | b <- ["chromium-browser"]]
+myChatShifts = [className =? b --> viewShift "chat" | b <- ["Slack"]]
 myMusicShifts = [className =? b --> viewShift "music" | b <- ["Spotify"]]
 myFloats = [className =? "mplayer2" --> doFloat,
             className =? "VirtualBox" --> doFloat]
-myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts])
+myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts, myChatShifts])
 
 myLayoutHook = avoidStruts $ myTall ||| myFull ||| simpleFloat
     where
