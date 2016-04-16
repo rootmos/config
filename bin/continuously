@@ -1,0 +1,14 @@
+#!/bin/sh
+
+files() {
+    git ls-tree HEAD -r --name-only
+}
+
+waiter() {
+    xargs inotifywait -e close_write,moved_to --format="%f"
+}
+
+while true; do
+    files | waiter
+    $*
+done
