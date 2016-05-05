@@ -5,8 +5,6 @@ set nocompatible
 set nomodeline
 set ruler
 set number
-set relativenumber
-"autocmd BufEnter * set relativenumber
 set showcmd
 set laststatus=2
 set clipboard+=unnamed
@@ -14,10 +12,12 @@ set clipboard+=unnamedplus
 set backspace=indent,eol,start
 set autochdir
 
-let loaded_matchparen = 1
+set showmatch
+set matchtime=3
 
 set wildmode=longest,list,full
 set wildmenu
+set wildignore=**/target/**classes**,**/target/streams/**,**/target/api/**,**/target/lib/**,**/target/*cache*/**,**/target/*reports*/**,**/META-INF/**,**/build/**
 
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
@@ -35,6 +35,7 @@ Bundle 'FuzzyFinder'
 Bundle 'raichoo/haskell-vim'
 Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
+Bundle 'wincent/command-t'
 call vundle#end()
 
 filetype plugin indent on
@@ -97,16 +98,20 @@ let mapleader = ","
 
 nmap <leader>b :FufBuffer<CR>
 nmap <leader>f :FufFileWithCurrentBufferDir<CR>
-nmap <leader>l :FufLine<CR>
 nmap <leader>c :FufChange<CR>
 nmap <leader>j :FufJump<CR>
+nmap <leader>t :CommandT<CR>
+
+imap <C-l> λ
 
 command FixTrailing execute ':%s/\s\+$//c'
 
 let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
 
-let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_global_conf.py'
+"let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_global_conf.py'
 "let g:ycm_filetype_whitelist = { 'cpp': 1 }
 
 let g:ackprg = 'ag --nogroup --nocolor --column'
