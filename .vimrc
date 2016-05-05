@@ -5,16 +5,13 @@ set nocompatible
 set nomodeline
 set ruler
 set number
-set relativenumber
-"autocmd BufEnter * set relativenumber
 set showcmd
 set laststatus=2
 set clipboard+=unnamed
 set clipboard+=unnamedplus
 set backspace=indent,eol,start
 set autochdir
-
-let loaded_matchparen = 1
+set showmatch
 
 set wildmode=longest,list,full
 set wildmenu
@@ -103,7 +100,7 @@ nmap <leader>c :FufChange<CR>
 nmap <leader>j :FufJump<CR>
 nmap <leader>t :CommandT<CR>
 
-set wildignore=**/target/**,**/META-INF/**
+set wildignore=**/target/**classes**,**/target/streams/**,**/target/api/**,**/target/lib/**,**/target/*cache*/**,**/target/*reports*/**,**/META-INF/**,**/build/**
 
 command FixTrailing execute ':%s/\s\+$//c'
 
