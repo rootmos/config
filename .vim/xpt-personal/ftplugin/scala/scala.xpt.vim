@@ -130,18 +130,21 @@ object `classname()^ extends App {
 }
 
 XPT afun hint=Creates\ an\ anonymous\ function
-() => {
-    `cursor^
-}
+(`^) => { `cursor^ }
 
 XPT cc hint=Creates\ a\ case\ class
-final case class `className^(`...^`attrName^: `type^`...^)
+case class `className^(`...^`attrName^: `type^`...^)
 
-XPT cobj hint=Creates\ a\ case\ object
+XPT co hint=Creates\ a\ case\ object
 case object `objectName^
 
 XPT case hint=Creates\ a\ case\ statement
-case `matchAgainst^ =>
+case `matchAgainst^ => 
+
+XPT trait hint=Creates\ a\ trait
+trait `traitName^ {
+    `cursor^
+}
 
 XPT akkamain hint=Creates\ a\ simple\ Akka\ App\ for\ PoC
 import akka.actor._
@@ -179,7 +182,7 @@ XPT wrapin wrap=code hint=Wraps\ in\ a\ block
 }
 
 XPT match hint=Creates\ a\ pattern\ matching\ sequence
-`target^ match {
+match {
     `...^case `matchTo^ => `statement^
     `...^
 }
@@ -309,9 +312,10 @@ XPT akkatest hint=Test\ file\ for\ Akka\ code
 
 import akka.actor.{ActorSystem, Props, Actor, ActorRef}
 import akka.testkit.{TestKit, TestProbe}
-import org.scalatest.{FlatSpecLike, Matchers}
+import org.scalatest.{WordSpecLike, Matchers, BeforeAndAfterAll}
 
-class `classname()^ extends TestKit("`classname()^") with WordSpecLike with Matchers {
+class `classname()^ extends TestKit(ActorSystem("`classname()^")) with WordSpecLike with Matchers with BeforeAndAfterAll {
+  override def afterAll(): Unit = TestKit.shutdownActorSystem(system)
 
   "`classNameFromSpec()^" should {
       `cursor^
