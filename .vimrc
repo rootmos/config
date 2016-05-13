@@ -17,7 +17,7 @@ set matchtime=3
 
 set wildmode=longest,list,full
 set wildmenu
-set wildignore=**/target/**classes**,**/target/streams/**,**/target/api/**,**/target/lib/**,**/target/*cache*/**,**/target/*reports*/**,**/META-INF/**,**/build/**
+set wildignore=target,**/META-INF/**,**/build/**,**/bin/**,*class
 
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
@@ -36,7 +36,12 @@ Bundle 'raichoo/haskell-vim'
 Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
 Bundle 'wincent/command-t'
+Bundle 'drmingdrmer/xptemplate'
 call vundle#end()
+
+" Import my xpt templates
+set runtimepath+=~/.vim/xpt-personal
+let g:xptemplate_key = '<C-t>'
 
 filetype plugin indent on
 
@@ -120,3 +125,4 @@ nmap <leader>n :cn<CR>
 nmap <leader>p :cp<CR>
 nmap <leader>o :copen<CR>
 nmap <leader>q :cclose<CR>
+
