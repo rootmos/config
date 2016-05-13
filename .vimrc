@@ -34,7 +34,12 @@ Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
 Plugin 'wincent/command-t'
 Plugin 'godlygeek/tabular'
+Bundle 'drmingdrmer/xptemplate'
 call vundle#end()
+
+" Import my xpt templates
+set runtimepath+=~/.vim/xpt-personal
+let g:xptemplate_key = '<C-t>'
 
 filetype plugin indent on
 
@@ -120,3 +125,4 @@ nmap <leader>n :cn<CR>
 nmap <leader>p :cp<CR>
 nmap <leader>o :copen<CR>
 nmap <leader>q :cclose<CR>
+
