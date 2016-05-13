@@ -278,6 +278,8 @@ class `FSMName^ extends FSM[`FSMName^.State, `FSMName^.Data] {
   when(Idle) {
       `cursor^
   }
+
+  initialize
 }
 
 XPT akkaimp hint=Common\ Akka\ Imports
