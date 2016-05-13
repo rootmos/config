@@ -241,8 +241,12 @@ def `receive^: Receive = {
   `cursor^
 }
 
-XPT actor hint=Akka\ Actor\ class
-class `ActorName^ extends Actor with ActorLogging {
+XPT actor hint=Akka\ Actor\ class\ with\ props
+object `ActorName^ {
+  def props = Props(classOf[`ActorName^])
+}
+
+class `ActorName^ extends Actor {
   def receive = {
       `cursor^
   }
@@ -254,6 +258,27 @@ actorOf(new Actor {
     `cursor^
   }
 })
+
+XPT fsm hint=Akka\ FSM\ class
+object `FSMName^ {
+  sealed trait State
+  case object Idle extends State
+
+  sealed trait Data
+  case object Uninitialized extends Data
+
+  def props = Props(classOf[`FSMName^])
+}
+
+class `FSMName^ extends FSM[`FSMName^.State, `FSMName^.Data] {
+  import `FSMName^._
+
+  startWith(Idle, Uninitialized)
+
+  when(Idle) {
+      `cursor^
+  }
+}
 
 XPT akkaimp hint=Common\ Akka\ Imports
 import akka.actor._
