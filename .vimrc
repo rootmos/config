@@ -33,6 +33,7 @@ Bundle 'raichoo/haskell-vim'
 Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
 Plugin 'wincent/command-t'
+Plugin 'godlygeek/tabular'
 call vundle#end()
 
 filetype plugin indent on
