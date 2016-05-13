@@ -40,6 +40,7 @@ call vundle#end()
 " Import my xpt templates
 set runtimepath+=~/.vim/xpt-personal
 let g:xptemplate_key = '<C-t>'
+let g:xptemplate_nav_next = '<C-t>'
 
 filetype plugin indent on
 
@@ -94,7 +95,6 @@ noremap <F7> :bdelete<CR>
 autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
 inoremap hh <Esc>
-inoremap uu <Esc>
 nnoremap q <NOP>
 
 let mapleader = ","
