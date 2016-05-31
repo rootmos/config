@@ -1,0 +1,22 @@
+#!/bin/sh
+
+config=~/.backuprc
+
+get="crudini --get $config"
+
+target_dir=$($get DEFAULT target)
+
+drives=$($get | grep -v DEFAULT | xargs)
+
+for drive in $drives; do
+    uuid=$($get $drive uuid)
+    device=$(blkid -U $uuid)
+    if [ $? -eq 0 ]; then
+        echo "Backing up $drive from $device (UUID=$uuid)"
+        target="$target_dir/$drive-$uuid-$(date --iso-8601=seconds)"
+        sudo pv -tpreb $device > $target
+    else
+        echo "Drive $device not present, ignoring..."
+    fi
+done
+
