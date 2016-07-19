@@ -1,14 +1,17 @@
 #!/bin/sh
 
 files() {
-    git ls-files -z
+    git ls-files -z $1
 }
 
 waiter() {
     xargs -0 inotifywait -e close_write,moved_to --format="%f"
 }
 
+target=$1
+shift
+
 while true; do
-    files | waiter
+    files $target | waiter
     $*
 done
