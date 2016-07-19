@@ -25,6 +25,8 @@ myWorkspaces =
         ("web", xK_w),
         ("music", xK_m),
         ("video", xK_v),
+        ("netflixy+vods", xK_n),
+        ("twitch", xK_t),
         ("chat", xK_c),
         ("graveyard", xK_g)
     ]
@@ -40,9 +42,10 @@ viewShift = doF . liftM2 (.) W.greedyView W.shift
 
 myWebShifts = [className =? b --> viewShift "web" | b <- ["Chromium-browser"]]
 myMusicShifts = [className =? b --> viewShift "music" | b <- ["Spotify"]]
+myTwitchShifts = [title =? b --> viewShift "twitch" | b <- ["Livestreamer Twitch GUI"]]
 myFloats = [className =? "mplayer2" --> doFloat,
             className =? "VirtualBox" --> doFloat]
-myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts])
+myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts, myTwitchShifts])
 
 myLayoutHook = avoidStruts $ myTall ||| myFull ||| simpleFloat
     where
