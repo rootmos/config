@@ -1,0 +1,7 @@
+Cmnd_Alias APT = /usr/bin/apt
+Cmnd_Alias PM_CMNDS = /usr/sbin/pm-suspend, /sbin/halt, /sbin/reboot
+Cmnd_Alias MOUNTS = /bin/mount, /bin/umount
+Cmnd_Alias DOCKER = /usr/bin/docker, /usr/bin/docker-compose
+Cmnd_Alias CRYPTSETUP = /sbin/cryptsetup
+
+gustav ALL=(ALL) NOPASSWD: APT PM_CMNDS MOUNTS DOCKER CRYPTSETUP
