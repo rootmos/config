@@ -69,7 +69,7 @@ vim-install:
 ##############################################################################
 
 xmonad-install:
-	$(INSTALL) xmonad conky dzen2
+	$(INSTALL) xmonad conky dzen2 suckless-tools
 
 xmonad: xmonad-install
 	ln -s $(CONFIG_ROOT)/.xmonad $(HOME)/.xmonad
