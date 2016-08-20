@@ -4,4 +4,9 @@ Cmnd_Alias MOUNTS = /bin/mount, /bin/umount
 Cmnd_Alias DOCKER = /usr/bin/docker, /usr/bin/docker-compose
 Cmnd_Alias CRYPTSETUP = /sbin/cryptsetup
 
-gustav ALL=(ALL) NOPASSWD: APT PM_CMNDS MOUNTS DOCKER CRYPTSETUP
+gustav ALL=(ALL) NOPASSWD: APT
+gustav ALL=(ALL) NOPASSWD: PM_CMNDS
+gustav ALL=(ALL) NOPASSWD: MOUNTS
+gustav ALL=(ALL) NOPASSWD: DOCKER
+gustav ALL=(ALL) NOPASSWD: CRYPTSETUP
+
