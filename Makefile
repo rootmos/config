@@ -85,3 +85,17 @@ urxvt: Xdefaults
 
 Xdefaults:
 	ln -s $(CONFIG_ROOT)/.Xdefaults $(HOME)/.Xdefaults
+
+
+## tmux
+##############################################################################
+
+tmux:
+	$(INSTALL) tmux
+	ln -s $(CONFIG_ROOT)/.tmux.conf $(HOME)/.tmux.conf
+
+## aliases 
+##############################################################################
+
+aliases:
+	ln -s $(CONFIG_ROOT)/.bash_aliases $(HOME)/.bash_aliases
