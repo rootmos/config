@@ -82,8 +82,8 @@ myLogHook h = dynamicLogWithPP $ defaultPP
     , ppOutput            =   hPutStrLn h
     }
 
-myXmonadBar = "dzen2 -x '0' -y '0' -h '24' -w '1960' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'"
-myStatusBar = "conky -c ~/.xmonad/conky_dzen | dzen2 -x '1960' -y '0' -w '600' -h '24' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF'"
+myXmonadBar = "dzen2 -x '0' -y '0' -w '1620' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E' -fn '-*-*-*-*-*-*-10-*-*-*-*-*-*-*'"
+myStatusBar = "conky -c ~/.xmonad/conky_dzen_desktop | dzen2 -x '1620' -y '0' -w '300' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF' -fn '-*-*-*-*-*-*-10-*-*-*-*-*-*-*'"
  
 main = do
     dzenLeftBar <- spawnPipe myXmonadBar
