@@ -15,6 +15,12 @@ $(PACKAGES):
 build-essentials:
 	$(APT) install autoconf automake autotools-dev binutils build-essential cpp g++ gcc make
 
+## Git
+##############################################################################
+git:
+	$(APT) install git
+	git config --global core.editor vim
+
 ## Config
 ##############################################################################
 $(CONFIG_ROOT):
@@ -53,5 +59,28 @@ $(YOUCOMPLETEME)/ycm_global_conf.py: vundle config
 YouCompleteMe: vundle cmake python-dev $(YOUCOMPLETEME)/ycm_global_conf.py
 	(cd $(YOUCOMPLETEME) && ./install.py)
 
-vim: $(VIMRC) vundle YouCompleteMe
+vim: vim-install $(VIMRC) vundle YouCompleteMe
 
+vim-install:
+	$(APT) install vim
+
+## XMonad
+##############################################################################
+
+xmonad-install:
+	$(APT) install xmonad conky dzen2
+
+xmonad: xmonad-install
+	ln -s $(CONFIG_ROOT)/.xmonad $(HOME)/.xmonad
+
+## urxvt
+##############################################################################
+
+urxvt: Xdefaults
+	$(APT) install rxvt-unicode-256color
+
+## Xdefaults
+##############################################################################
+
+Xdefaults:
+	ln -s $(CONFIG_ROOT)/.Xdefaults $(HOME)/.Xdefaults
