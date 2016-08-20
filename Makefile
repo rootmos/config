@@ -1,4 +1,5 @@
 APT=sudo apt-get
+INSTALL=$(APT) install
 GIT_ROOT=$(HOME)/git
 CONFIG_ROOT=$(GIT_ROOT)/config
 CONFIG_REPO=https://github.com/rootmos/config
@@ -7,18 +8,18 @@ PACKAGES=cmake python-dev
 all: build-essentials config vim
 
 $(PACKAGES):
-	$(APT) install $@
+	$(INSTALL) $@
 
 ## Build essentials
 ##############################################################################
 .PHONY: build-essentials
 build-essentials:
-	$(APT) install autoconf automake autotools-dev binutils build-essential cpp g++ gcc make
+	$(INSTALL) autoconf automake autotools-dev binutils build-essential cpp g++ gcc make
 
 ## Git
 ##############################################################################
 git:
-	$(APT) install git
+	$(INSTALL) git
 	git config --global core.editor vim
 
 ## Config
@@ -62,13 +63,13 @@ YouCompleteMe: vundle cmake python-dev $(YOUCOMPLETEME)/ycm_global_conf.py
 vim: vim-install $(VIMRC) vundle YouCompleteMe
 
 vim-install:
-	$(APT) install vim
+	$(INSTALL) vim
 
 ## XMonad
 ##############################################################################
 
 xmonad-install:
-	$(APT) install xmonad conky dzen2
+	$(INSTALL) xmonad conky dzen2
 
 xmonad: xmonad-install
 	ln -s $(CONFIG_ROOT)/.xmonad $(HOME)/.xmonad
@@ -77,7 +78,7 @@ xmonad: xmonad-install
 ##############################################################################
 
 urxvt: Xdefaults
-	$(APT) install rxvt-unicode-256color
+	$(INSTALL) rxvt-unicode-256color
 
 ## Xdefaults
 ##############################################################################
