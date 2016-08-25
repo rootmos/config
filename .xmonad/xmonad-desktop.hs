@@ -22,6 +22,8 @@ myWorkspaces =
         ("2", xK_2),
         ("3", xK_parenleft),
         ("4", xK_dollar),
+        ("5", xK_braceleft),
+        ("6", xK_equal),
         ("web", xK_w),
         ("music", xK_m),
         ("video", xK_v),
