@@ -65,6 +65,7 @@ vim: vim-install $(VIMRC) vundle YouCompleteMe
 
 vim-install:
 	$(INSTALL) vim
+	sudo update-alternatives --config editor
 
 ## XMonad
 ##############################################################################
