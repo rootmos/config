@@ -37,6 +37,8 @@ Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
 Bundle 'wincent/command-t'
 Bundle 'drmingdrmer/xptemplate'
+Plugin 'scrooloose/nerdcommenter'
+Bundle 'tpope/vim-abolish'
 call vundle#end()
 
 " Import my xpt templates
