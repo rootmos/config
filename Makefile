@@ -20,8 +20,7 @@ build-essentials:
 ##############################################################################
 git:
 	$(INSTALL) git
-	git config --global core.editor vim
-	git config merge.tool vimdiff
+	ln -s $(CONFIG_ROOT)/.gitconfig $(HOME)/.gitconfig
 
 ## Config
 ##############################################################################

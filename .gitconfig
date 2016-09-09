@@ -1,0 +1,14 @@
+[user]
+    email = gustav.behm@gmail.com
+    name = Gustav Behm
+[core]
+    editor = vim
+[merge]
+    tool = vimdiff
+[push]
+    default = simple
+[alias]
+    f = fetch
+    a = add --interactive
+    ap = add --patch
+    c = commit --verbose
