@@ -4,17 +4,57 @@ config=~/.backuprc
 
 get="crudini --get $config"
 
-target_dir=$($get DEFAULT target)
+copy() {
+    echo "Copying $1 to $2 ..."
+
+    sudo nice rsync --progress $1 $2
+
+    if [ $? -eq 0 ]; then
+        echo "... copied $1 to $2"
+    else
+        echo "... failed to copy $1 to $2 !!!"
+    fi
+}
+
+dump() {
+    echo "Dumping $1 to $2 ..."
+
+    sudo nice pv -tpreb $1 > $2
+
+    if [ $? -eq 0 ]; then
+        echo "... dumped $1 to $2"
+        return 0
+    else
+        echo "... failed to dump $1 to $2 !!!"
+        return 2
+    fi
+}
+
+findDevice() {
+    sudo blkid -U $uuid
+}
+
+target_dirs=$($get DEFAULT target | tr ':' '\n')
+tmp_dir=/tmp
 
 drives=$($get | grep -v DEFAULT | xargs)
 
 for drive in $drives; do
     uuid=$($get $drive uuid)
-    device=$(blkid -U $uuid)
+    device=$(findDevice $uuid)
     if [ $? -eq 0 ]; then
         echo "Backing up $drive from $device (UUID=$uuid)"
-        target="$target_dir/$drive-$uuid-$(date --iso-8601=seconds)"
-        sudo pv -tpreb $device > $target
+        name="$drive-$uuid-$(date --iso-8601=seconds)"
+        temporary="$tmp_dir/$name"
+        dump $device $temporary
+
+        if [ $? -eq 0 ]; then
+            for target_dir in $target_dirs; do
+                copy $temporary "$target_dir/$name"
+            done
+
+            rm $temporary
+        fi
     else
         echo "Drive $device not present, ignoring..."
     fi
