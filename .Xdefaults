@@ -5,7 +5,7 @@ xterm*faceSize: 10
 xterm*faceName: Bitstream Vera Sans Mono
  
 urxvt.scrollBar: false
-urxvt.font: xft:Inconsolata:size=10
+urxvt.font: xft:Inconsolata:size=11
  
 #define S_yellow        #b58900
 #define S_orange        #cb4b16

@@ -7,7 +7,6 @@ xrdb ~/.Xdefaults
 touchpad disable
 
 xsettingsd &
-auto-suspend &
 
 systemctl --user import-environment DISPLAY XAUTHORITY
 

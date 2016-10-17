@@ -64,7 +64,7 @@ vim: vim-install $(VIMRC) vundle YouCompleteMe
 
 vim-install:
 	$(INSTALL) vim
-	ln -s $(CONFIG_ROOT)/.vim/xpt-personal $(VIM_DIR)/xpt-personal
+	-ln -s $(CONFIG_ROOT)/.vim/xpt-personal $(VIM_DIR)/xpt-personal
 	sudo update-alternatives --config editor
 
 ## XMonad
