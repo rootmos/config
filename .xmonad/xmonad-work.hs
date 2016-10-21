@@ -43,7 +43,7 @@ myWorkspaces =
 makeWorkspaceKeys :: ButtonMask -> [(String,KeySym)] -> [((ButtonMask,KeySym), X())]
 makeWorkspaceKeys mask workspaces = gotoKeys workspaces ++ moveKeys workspaces
     where
-        gotoKeys = map (\(name, key) -> ((mask, key), windows $ W.greedyView name))
+        gotoKeys = map (\(name, key) -> ((mask, key), windows $ W.view name))
         moveKeys = map (\(name, key) -> ((mask .|. shiftMask, key), windows $ W.shift name))
     
 
