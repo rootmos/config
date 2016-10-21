@@ -1,0 +1,10 @@
+[Unit]
+Description=Run hacktivity daemon
+
+[Service]
+Restart=always
+RestartSec=5
+ExecStart=/home/gustav/.local/bin/hacktivity daemon
+
+[Install]
+WantedBy=default.target

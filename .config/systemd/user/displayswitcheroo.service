@@ -5,7 +5,7 @@ Description=Manages displays using displayswitcheroo
 Restart=always
 RestartSec=5
 ExecStartPre=/bin/systemctl --user import-environment DISPLAY XAUTHORITY
-ExecStart=/home/gustav/.local/bin/displayswitcheroo
+ExecStart=/home/gustav/.local/bin/displayswitcheroo --daemon
 
 [Install]
 WantedBy=default.target
