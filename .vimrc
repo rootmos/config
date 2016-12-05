@@ -99,6 +99,8 @@ noremap <F10> :FSHere<CR>
 autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
 inoremap hh <Esc>
+inoremap uu <Esc>:w<CR>
+noremap uu :w<CR>
 nnoremap q <NOP>
 
 let mapleader = ","
