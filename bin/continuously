@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/sh -x
 
 files() {
-    git ls-files -z $1
+    git ls-files -z $1 2>/dev/null || echo -n $1
 }
 
 waiter() {
@@ -13,5 +13,5 @@ shift
 
 while true; do
     files $target | waiter
-    $*
+    /bin/sh -c "$*"
 done
