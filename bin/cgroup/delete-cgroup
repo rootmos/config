@@ -1,0 +1,4 @@
+#!/bin/sh
+set -ex
+CGROUP=memory:/$1
+sudo cgdelete -g $CGROUP

@@ -1,0 +1,5 @@
+#!/bin/bash
+set -ex
+CGROUP=memory:/$1
+shift 1
+cgexec -g $CGROUP "$@"

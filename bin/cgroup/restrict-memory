@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -ex
+
+CGROUP=$1
+MEMORY=$(($2 * 1048576))
+
+echo $MEMORY | sudo tee /sys/fs/cgroup/memory/$CGROUP/memory.limit_in_bytes
+#cgset -r memory.limit_in_bytes=$MEMORY $CGROUP
