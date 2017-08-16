@@ -213,6 +213,28 @@ class `classname()^ extends WordSpec with Matchers {
   }
 }
 
+XPT finaglehttpspec hint=Creates\ a\ new\ WordSpec\ test\ file\ for\ Finagle\ HTTP
+`getPackageLine()^
+
+import com.magine.util3m.finagle.FinagleMatchers
+import com.twitter.finagle.Service
+import com.twitter.finagle.http.{Request, Response, Status}
+import com.twitter.util.{Await, Future}
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.scalatest._
+import org.scalatest.mock.MockitoSugar
+
+class `classname()^ extends WordSpec with Matchers with FinagleMatchers with MockitoSugar {
+  "`classNameFromSpec()^" should {
+      `cursor^
+  }
+
+}
+
+XPT salt
+Random.alphanumeric.take(5).mkString
 
 XPT flatspec hint=Creates\ a\ new\ FlatSpec\ test\ file
 `getPackageLine()^

@@ -6,4 +6,5 @@ CGROUP=$1
 MEMORY=$(($2 * 1048576))
 
 echo $MEMORY | sudo tee /sys/fs/cgroup/memory/$CGROUP/memory.limit_in_bytes
+echo 1 | sudo tee /sys/fs/cgroup/memory/$CGROUP/memory.swappiness
 #cgset -r memory.limit_in_bytes=$MEMORY $CGROUP

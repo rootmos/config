@@ -5,7 +5,21 @@ xterm*faceSize: 10
 xterm*faceName: Bitstream Vera Sans Mono
  
 urxvt.scrollBar: false
-urxvt.font: xft:Inconsolata:size=11
+urxvt.font: xft:Inconsolata:pixelsize=15
+
+urxvt.perl-ext-common: default,matcher,font-size
+
+urxvt.url-launcher: /usr/bin/xdg-open
+urxvt.matcher.button: 1
+urxvt.colorUL: #4682B4
+
+urxvt.keysym.C-Up:     font-size:increase
+urxvt.keysym.C-Down:   font-size:decrease
+urxvt.keysym.C-S-Up:   font-size:incglobal
+urxvt.keysym.C-S-Down: font-size:decglobal
+urxvt.keysym.C-equal:  font-size:reset
+urxvt.keysym.C-slash:  font-size:show
+
  
 #define S_yellow        #b58900
 #define S_orange        #cb4b16

@@ -2,7 +2,7 @@ scriptencoding utf-8
 set encoding=utf-8
 
 set nocompatible
-set nomodeline
+set modeline
 set ruler
 set number
 set showcmd
@@ -12,12 +12,15 @@ set clipboard+=unnamedplus
 set backspace=indent,eol,start
 set autochdir
 
+set nowrap
+
+
 set showmatch
 set matchtime=3
 
 set wildmode=longest,list,full
 set wildmenu
-set wildignore=target,**/META-INF/**,**/build/**,**/bin/**,*class
+set wildignore=target,**/META-INF/**,**/build/**,**/bin/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**
 
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
@@ -39,6 +42,18 @@ Bundle 'wincent/command-t'
 Bundle 'drmingdrmer/xptemplate'
 Plugin 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-abolish'
+"Bundle 'mpollmeier/vim-scalaConceal'
+Bundle 'godlygeek/tabular'
+Bundle 'IN3D/vim-raml'
+Plugin 'rust-lang/rust.vim'
+Plugin 'ngn/vim-apl'
+Plugin 'rootmos/vim-slime'
+Plugin 'tounaishouta/coq.vim'
+Plugin 'idris-hackers/idris-vim.git'
+Plugin 'guersam/vim-j'
+"Plugin 'kovisoft/paredit'
+Plugin 'luochen1990/rainbow'
+"Plugin 'kien/rainbow_parentheses.vim'
 call vundle#end()
 
 " Import my xpt templates
@@ -53,6 +68,7 @@ set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set list
 set listchars=tab:»\ 
 
+set colorcolumn=80
 "highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 "match OverLength /\%81v.\+/
 
@@ -100,10 +116,10 @@ autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
 inoremap hh <Esc>
 inoremap uu <Esc>:w<CR>
-noremap uu :w<CR>
 nnoremap q <NOP>
 
 let mapleader = ","
+let maplocalleader = '-'
 
 nmap <leader>b :FufBuffer<CR>
 nmap <leader>f :FufFileWithCurrentBufferDir<CR>
@@ -113,7 +129,7 @@ nmap <leader>t :CommandT<CR>
 
 imap <C-l> λ
 
-command FixTrailing execute ':%s/\s\+$//c'
+command! FixTrailing execute ':%s/\s\+$//c'
 
 let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:ycm_collect_identifiers_from_tags_files = 1
@@ -123,10 +139,72 @@ let g:ycm_autoclose_preview_window_after_completion = 1
 "let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_global_conf.py'
 "let g:ycm_filetype_whitelist = { 'cpp': 1 }
 
-let g:ackprg = 'ag --nogroup --nocolor --column'
-noremap <F4> :Ack
+let g:ackprg = 'ag --nogroup --nocolor --column --ignore=META-INF'
+nnoremap <F4> :Ack
+nnoremap <F3> :AckWord<CR>
+command! -bang AckWord call ack#Ack('grep<bang>', "'\\b" . expand("<cword>") . "\\b'")
+
+nmap <C-F8> :wqall<CR>
+imap <C-F8> <Esc>:wqall<CR>
+nmap <F8> :w<CR>
+imap <F8> <Esc>:w<CR>
+
 nmap <leader>n :cn<CR>
 nmap <leader>p :cp<CR>
 nmap <leader>o :copen<CR>
 nmap <leader>q :cclose<CR>
 
+let g:slime_target = "tmux"
+nmap <c-c><c-l> :SlimeSendCurrentLine<cr>
+nmap <c-c><c-d> :SlimeSendCurrentLine<cr>
+
+nmap <leader>C :source ~/.vimrc<cr>
+
+
+if executable('opam')
+  let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
+  if executable('ocamlmerlin')
+    execute 'set rtp+=' . g:opamshare . '/merlin/vim'
+    let g:merlin_split_method = 'vertical'
+    let g:syntastic_ocaml_checkers = ['merlin']
+    nmap <buffer> <C-]> :MerlinLocate<CR>
+  endif
+  if executable('ocp-indent')
+    execute 'set rtp+=' . g:opamshare . '/ocp-indent/vim'
+  endif
+  if executable('ocp-index')
+    execute 'set rtp+=' . g:opamshare . '/ocp-index/vim'
+  endif
+endif
+" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
+let s:opam_share_dir = system("opam config var share")
+let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+
+let s:opam_configuration = {}
+
+function! OpamConfOcpIndent()
+  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+endfunction
+let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+
+function! OpamConfOcpIndex()
+  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+endfunction
+let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+
+function! OpamConfMerlin()
+  let l:dir = s:opam_share_dir . "/merlin/vim"
+  execute "set rtp+=" . l:dir
+endfunction
+let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+
+let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+for tool in s:opam_packages
+  " Respect package order (merlin should be after ocp-index)
+  if count(s:opam_available_tools, tool) > 0
+    call s:opam_configuration[tool]()
+  endif
+endfor
+" ## end of OPAM user-setup addition for vim / base ## keep this line

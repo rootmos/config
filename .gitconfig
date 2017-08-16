@@ -3,6 +3,7 @@
     name = Gustav Behm
 [core]
     editor = vim
+	excludesfile = /home/gustav/.gitignore_global
 [merge]
     tool = vimdiff
 [push]
@@ -12,3 +13,20 @@
     a = add --interactive
     ap = add --patch
     c = commit --verbose
+    ca = commit --verbose --amend
+    ryck = pull
+    knuffa = push
+    #hämta = fetch
+    gren = branch
+    #förgrena = branch
+    #förbinda = commit
+    ympa = rebase
+    sammanfoga = merge
+    #göm = stash
+    klandra = blame
+    #märke = tag
+    #märk = tag
+    ba = branch --sort=committerdate --all -vv
+    ls = ls-files
+[color]
+	ui = auto
