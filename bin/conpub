@@ -1,0 +1,2 @@
+#!/bin/sh
+continuously $1 publish.sh $1
