@@ -1,0 +1,18 @@
+#!/bin/bash -x
+
+OPTIND=1         # Reset in case getopts has been used previously in the shell.
+
+ao_null=""
+
+while getopts "n" opt; do
+    case "$opt" in
+        n)  ao_null="-ao null"
+            ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+[ "$1" = "--" ] && shift
+
+mplayer $ao_null "$(find "$@" -iname '*.avi' -or -iname '*.mkv' -or -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' | shufflin | head -n 1)"
