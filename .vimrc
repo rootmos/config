@@ -14,13 +14,12 @@ set autochdir
 
 set nowrap
 
-
 set showmatch
 set matchtime=3
 
 set wildmode=longest,list,full
 set wildmenu
-set wildignore=target,**/META-INF/**,**/build/**,**/bin/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**
+set wildignore=target,**/META-INF/**,**/build/**,**/bin/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**,*.vo,*.glob,*.v.d,*.aux
 
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
@@ -48,7 +47,9 @@ Bundle 'IN3D/vim-raml'
 Plugin 'rust-lang/rust.vim'
 Plugin 'ngn/vim-apl'
 Plugin 'rootmos/vim-slime'
-Plugin 'tounaishouta/coq.vim'
+"Plugin 'tounaishouta/coq.vim'
+Plugin 'bluelightning32/coquille'
+Plugin 'let-def/vimbufsync'
 Plugin 'idris-hackers/idris-vim.git'
 Plugin 'guersam/vim-j'
 "Plugin 'kovisoft/paredit'
@@ -160,6 +161,7 @@ nmap <c-c><c-d> :SlimeSendCurrentLine<cr>
 
 nmap <leader>C :source ~/.vimrc<cr>
 
+:call has('python')
 
 if executable('opam')
   let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
