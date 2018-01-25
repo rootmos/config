@@ -19,6 +19,7 @@ urxvt.keysym.C-S-Up:   font-size:incglobal
 urxvt.keysym.C-S-Down: font-size:decglobal
 urxvt.keysym.C-equal:  font-size:reset
 urxvt.keysym.C-slash:  font-size:show
+urxvt.keysym.C-F8: ^[[19^
 
  
 #define S_yellow        #b58900
@@ -41,7 +42,7 @@ urxvt.keysym.C-slash:  font-size:show
  
 urxvt*background:              S_base03
 urxvt*foreground:              S_base0
-urxvt*fading:                  40
+urxvt*fading:                  0
 urxvt*fadeColor:               S_base03
 urxvt*cursorColor:             S_base1
 urxvt*pointerColorBackground:  S_base01

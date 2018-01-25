@@ -34,7 +34,8 @@ Bundle 'derekwyatt/vim-fswitch'
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
-Bundle 'raichoo/haskell-vim'
+"Bundle 'raichoo/haskell-vim'
+Plugin 'neovimhaskell/haskell-vim.git'
 Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
 Bundle 'wincent/command-t'
@@ -69,7 +70,7 @@ set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 set list
 set listchars=tab:»\ 
 
-set colorcolumn=80
+set colorcolumn=+1
 "highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 "match OverLength /\%81v.\+/
 
@@ -118,6 +119,9 @@ autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 inoremap hh <Esc>
 inoremap uu <Esc>:w<CR>
 nnoremap q <NOP>
+nnoremap Q <NOP>
+
+nnoremap <C-W><C-W> <NOP>
 
 let mapleader = ","
 let maplocalleader = '-'
@@ -129,6 +133,9 @@ nmap <leader>j :FufJump<CR>
 nmap <leader>t :CommandT<CR>
 
 imap <C-l> λ
+imap <C-S-l> Λ
+imap <C-b> ⊥
+imap <C-j> ∘
 
 command! FixTrailing execute ':%s/\s\+$//c'
 
@@ -141,12 +148,12 @@ let g:ycm_autoclose_preview_window_after_completion = 1
 "let g:ycm_filetype_whitelist = { 'cpp': 1 }
 
 let g:ackprg = 'ag --nogroup --nocolor --column --ignore=META-INF'
-nnoremap <F4> :Ack
+nnoremap <F4> :Ack 
 nnoremap <F3> :AckWord<CR>
 command! -bang AckWord call ack#Ack('grep<bang>', "'\\b" . expand("<cword>") . "\\b'")
 
-nmap <C-F8> :wqall<CR>
-imap <C-F8> <Esc>:wqall<CR>
+nmap ^[[19^ :wqall<CR>
+imap ^[[19^ <Esc>:wqall<CR>
 nmap <F8> :w<CR>
 imap <F8> <Esc>:w<CR>
 
