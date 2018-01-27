@@ -2,7 +2,7 @@ background yes
 out_to_console yes
 out_to_x no
 # Update interval in seconds
-update_interval 3
- 
+update_interval 2
+
 TEXT
-^fg(\#aaaaaa)${execp hacktivity status}^fg(\#FFFFFF) ${execp hacktivity score --conky}  |  Down: ${downspeed wlp4s0}  |  ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF)  |  0: ${battery_short BAT0} (${battery_time BAT0})  1: ${battery_short BAT1} (${battery_time BAT1})  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
+^fg(\#aaaaaa)D: ${downspeedf enp3s0}kib/s^fg(\#FFFFFF) ^fg(\#aaaaaa)U: ${upspeedf enp3s0}kib/s^fg(\#FFFFFF) | ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF)  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
