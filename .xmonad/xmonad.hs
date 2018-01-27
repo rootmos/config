@@ -8,6 +8,7 @@ import Graphics.X11.ExtraTypes.XF86
 
 import System.IO
 import XMonad.Util.Run
+import XMonad.Actions.SpawnOn
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
@@ -30,8 +31,6 @@ myWorkspaces =
         ("4", xK_dollar),
         ("5", xK_braceleft),
         ("6", xK_equal),
-        ("p1", xK_p),
-        ("p2", xK_y),
         ("web", xK_w),
         ("music", xK_m),
         ("chat", xK_c),
@@ -44,14 +43,11 @@ makeWorkspaceKeys mask workspaces = gotoKeys workspaces ++ moveKeys workspaces
         gotoKeys = map (\(name, key) -> ((mask, key), windows $ W.view name))
         moveKeys = map (\(name, key) -> ((mask .|. shiftMask, key), windows $ W.shift name))
 
-viewShift = doF . liftM2 (.) W.greedyView W.shift
-
-myWebShifts = [className =? b --> viewShift "web" | b <- ["Chromium-browser"]]
-myMusicShifts = [className =? b --> viewShift "music" | b <- ["Spotify"]]
-myTwitchShifts = [title =? b --> viewShift "twitch" | b <- ["Livestreamer Twitch GUI"]]
-myFloats = [className =? "MPlayer" --> doFloat,
-            className =? "VirtualBox" --> doFloat]
-myShiftHooks = composeAll . concat $ [myFloats, myWebShifts, myMusicShifts, myTwitchShifts]
+myWebShifts = [className =? b --> doShift "web" | b <- ["Chromium"]]
+myMusicShifts = [className =? b --> doShift "music" | b <- ["spotify", "Spotify"]] ++
+  [title =? "Spotify" --> doShift "music"]
+myFloats = [className =? "MPlayer" --> doFloat, className =? "VirtualBox" --> doFloat]
+myManageHooks = composeAll . concat $ [myFloats, myWebShifts, myMusicShifts]
 
 myLayoutHook = myTall ||| myFull ||| simpleFloat
     where
@@ -90,8 +86,8 @@ toggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
 toggleStrutsKey XConfig{modMask = modm} = (modm, xK_b)
 
 bars conf =
-  (statusBar myStatusBar myDzenPP toggleStrutsKey conf)
-    >>= (statusBar myXmonadBar myDzenPP toggleStrutsKey)
+  (statusBar myStatusBar (myDzenPP { ppOutput = \_ -> return ()}) toggleStrutsKey conf)
+    >>= (statusBar myXmonadBar (myDzenPP { ppOutput = \_ -> return ()}) toggleStrutsKey)
     where (x, y, width) = (0, 0, 1920) :: (Int, Int, Int)
           left = 600
           right = width - left
@@ -99,16 +95,21 @@ bars conf =
           font = printf "-h '%d' -fn '-*-*-*-*-*-*-%d-*-*-*-*-*-*-*'" (fontSize + 2) fontSize :: String
           dzen = "dzen2 -e 'onstart=lower' -dock" :: String
           myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E' %s" dzen left font
-          myStatusBar = printf "conky -c ~/.xmonad/conky_dzen | %s -x '%d' -y '0' -w '%d' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF' %s" dzen left right font
+          myStatusBar = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF' %s" dzen left right font
+
+myStartupHook = composeAll [ setWMName "LG3D"
+                           , spawnOn "music" "spotify"
+                           , spawnOn "chat" "urxvt -e drop"
+                           ]
 
 main :: IO ()
 main = xmonad =<< bars c
   where c = def { terminal = "urxvt"
                 , workspaces = map fst myWorkspaces
-                , manageHook = myShiftHooks <+> manageHook def
+                , manageHook = myManageHooks <+> manageSpawn <+> manageHook def
                 , layoutHook = myLayoutHook
                 , logHook = fadeInactiveLogHook 0xdddddddd <+> logHook def
-                , startupHook = setWMName "LG3D" <+> startupHook def
+                , startupHook = myStartupHook <+> startupHook def
                 , keys = myKeys
                 , focusFollowsMouse = False
                 , focusedBorderColor = "grey"
