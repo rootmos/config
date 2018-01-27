@@ -89,9 +89,23 @@ myDzenPP = def
 toggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
 toggleStrutsKey XConfig{modMask = modm} = (modm, xK_b)
 
+
+-- modified version of https://hackage.haskell.org/package/xmonad-contrib-0.13/docs/src/XMonad-Hooks-DynamicLog.html#statusBar
+-- that does not do any ppOutput
+statusBar' cmd pp k conf = do
+    _ <- spawnPipe cmd
+    return $ docks $ conf
+        { layoutHook = avoidStruts (layoutHook conf)
+        , logHook = do
+            logHook conf
+            dynamicLogWithPP pp { ppOutput = \_ -> return ()}
+        , keys = liftM2 M.union keys' (keys conf)
+        }
+          where keys' = (`M.singleton` sendMessage ToggleStruts) . k
+
 bars conf =
-  (statusBar myStatusBar (myDzenPP { ppOutput = \_ -> return ()}) toggleStrutsKey conf)
-    >>= (statusBar myXmonadBar (myDzenPP { ppOutput = \_ -> return ()}) toggleStrutsKey)
+  (statusBar' myStatusBar myDzenPP toggleStrutsKey conf)
+    >>= (statusBar myXmonadBar myDzenPP toggleStrutsKey)
     where (x, y, width) = (0, 0, 1920) :: (Int, Int, Int)
           left = 600
           right = width - left
