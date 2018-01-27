@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+cp -v $(readlink -f $0 | xargs dirname)/windows-grubenv /mnt/win-esp/EFI/ubuntu/grubenv
+reboot

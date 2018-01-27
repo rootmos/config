@@ -5,6 +5,7 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import XMonad.Hooks.SetWMName
 import Graphics.X11.ExtraTypes.XF86
+import XMonad.Hooks.EwmhDesktops
 
 import System.IO
 import XMonad.Util.Run
@@ -14,6 +15,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
 import XMonad.Layout.NoBorders
 import XMonad.Layout.SimpleFloat
+import XMonad.Actions.CycleWS
 import Text.Printf
 import Data.Aeson.Lens
 import System.Process
@@ -62,6 +64,8 @@ keysToAdd x =
        , ((0, xF86XK_AudioLowerVolume), spawn "amixer -D pulse sset Master 5%-")
        , ((0, xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
        , ((0, xF86XK_Display), spawn "/home/gustav/.local/bin/displayswitcheroo")
+       , ((mod4Mask, xK_n), swapNextScreen)
+       , ((mod4Mask, xK_t), nextScreen)
        ]
 
 keysToRemove x =
@@ -100,10 +104,12 @@ bars conf =
 myStartupHook = composeAll [ setWMName "LG3D"
                            , spawnOn "music" "spotify"
                            , spawnOn "chat" "urxvt -e drop"
+                           , spawnOn "1" "evince"
+                           , spawnOn "2" "urxvt -e tmx hack"
                            ]
 
 main :: IO ()
-main = xmonad =<< bars c
+main = xmonad =<< bars (ewmh c)
   where c = def { terminal = "urxvt"
                 , workspaces = map fst myWorkspaces
                 , manageHook = myManageHooks <+> manageSpawn <+> manageHook def

@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+graceful_shutdown
+systemctl poweroff

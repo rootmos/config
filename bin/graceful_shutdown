@@ -1,0 +1,12 @@
+#!/bin/sh -x
+
+for win in $(wmctrl -l | awk '{print $1}'); do
+    wmctrl -i -c $win
+done
+
+while [ $(wmctrl -l | wc -l) -ne 0 ]; do
+    echo "waiting for windows to close..."
+    sleep 1
+done
+
+sleep 1
