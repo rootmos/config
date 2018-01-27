@@ -1,3 +1,4 @@
+alias ls='ls --color=auto'
 alias u="ls"
 alias ua="ls -a"
 alias uu="ls -lh"
