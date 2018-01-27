@@ -1,9 +1,9 @@
 [user]
-    email = gustav.behm@magine.com
+    email = gustav.behm@gmail.com
     name = Gustav Behm
 [core]
     editor = vim
-	excludesfile = /home/gustav/.gitignore_global
+    excludesfile = /home/gustav/.gitignore_global
 [merge]
     tool = vimdiff
 [push]
@@ -29,4 +29,4 @@
     ba = branch --sort=committerdate --all -vv
     ls = ls-files
 [color]
-	ui = auto
+    ui = auto

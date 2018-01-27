@@ -14,6 +14,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
 import XMonad.Layout.NoBorders
 import XMonad.Layout.SimpleFloat
+{-import XMonad.Layout.IndependentScreens-}
 import Text.Printf
 import Data.Aeson.Lens
 import System.Process
@@ -38,8 +39,7 @@ myWorkspaces =
         ("web", xK_w),
         ("music", xK_m),
         ("chat", xK_c),
-        ("graveyard", xK_g),
-        ("zero", xK_z)
+        ("graveyard", xK_g)
     ]
 
 makeWorkspaceKeys :: ButtonMask -> [(String,KeySym)] -> [((ButtonMask,KeySym), X())]
