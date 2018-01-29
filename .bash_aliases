@@ -20,3 +20,7 @@ alias gp="gist -p -c"
 # stack aliases
 alias ghc="stack ghc --"
 alias xmonad="stack exec xmonad --"
+
+alias halt="sudo halt"
+alias reboot="sudo reboot"
+alias windows="sudo windows"
