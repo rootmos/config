@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -o errexit
+
+if [ ! -t 1 ]; then
+    exec urxvt -e $0 "$@"
+fi
+
+SELECTION_FILE=$(mktemp -t pick.XXXX)
+trap "rm $SELECTION_FILE" EXIT
+
+ranger --choosefile=$SELECTION_FILE $1
+
+if [ -s $SELECTION_FILE ]; then
+    SELECTION=$(cat $SELECTION_FILE | xargs echo)
+    nohup xdg-open $SELECTION 0<&- &>/dev/null &
+fi

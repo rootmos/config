@@ -33,28 +33,34 @@ myWorkspaces =
         ("4", xK_dollar),
         ("5", xK_braceleft),
         ("6", xK_equal),
+        ("pdf", xK_p),
         ("web", xK_w),
         ("music", xK_m),
         ("chat", xK_c),
         ("graveyard", xK_g)
     ]
 
-makeWorkspaceKeys :: ButtonMask -> [(String,KeySym)] -> [((ButtonMask,KeySym), X())]
-makeWorkspaceKeys mask workspaces = gotoKeys workspaces ++ moveKeys workspaces
-    where
-        gotoKeys = map (\(name, key) -> ((mask, key), windows $ W.view name))
-        moveKeys = map (\(name, key) -> ((mask .|. shiftMask, key), windows $ W.shift name))
+viewShift = doF . liftM2 (.) W.greedyView W.shift
 
-myWebShifts = [className =? b --> doShift "web" | b <- ["Chromium"]]
-myMusicShifts = [className =? b --> doShift "music" | b <- ["spotify", "Spotify"]] ++
-  [title =? "Spotify" --> doShift "music"]
-myFloats = [className =? "MPlayer" --> doFloat, className =? "VirtualBox" --> doFloat]
-myManageHooks = composeAll . concat $ [myFloats, myWebShifts, myMusicShifts]
+myShifts = [ className =? "Chromium" --> doShift "web"
+           , className =? "Spotify" --> doShift "music"
+           , className =? "Zathura" --> viewShift "pdf"
+           ]
+myFloats = [ className =? "MPlayer" --> doFloat
+           , className =? "VirtualBox" --> doFloat
+           ]
+myManageHooks = composeAll $ myShifts ++ myFloats
 
 myLayoutHook = myTall ||| myFull ||| simpleFloat
     where
         myTall = smartBorders $ Tall 1 (2/100) (1/2)
         myFull = noBorders $ Full
+
+makeWorkspaceKeys :: ButtonMask -> [(String,KeySym)] -> [((ButtonMask,KeySym), X())]
+makeWorkspaceKeys mask workspaces = gotoKeys workspaces ++ moveKeys workspaces
+    where
+        gotoKeys = map (\(name, key) -> ((mask, key), windows $ W.view name))
+        moveKeys = map (\(name, key) -> ((mask .|. shiftMask, key), windows $ W.shift name))
 
 keysToAdd x =
     makeWorkspaceKeys mod4Mask myWorkspaces
@@ -66,6 +72,7 @@ keysToAdd x =
        , ((0, xF86XK_Display), spawn "/home/gustav/.local/bin/displayswitcheroo")
        , ((mod4Mask, xK_n), swapNextScreen)
        , ((mod4Mask, xK_t), nextScreen)
+       , ((modMask x, xK_d), spawn "docs")
        ]
 
 keysToRemove x =
@@ -118,8 +125,8 @@ bars conf =
 myStartupHook = composeAll [ setWMName "LG3D"
                            , spawnOn "music" "spotify"
                            , spawnOn "chat" "urxvt -e drop"
-                           , spawnOn "1" "evince"
                            , spawnOn "2" "urxvt -e tmx hack"
+                           , spawnOn "pdf" "urxvt -e docs"
                            ]
 
 main :: IO ()
