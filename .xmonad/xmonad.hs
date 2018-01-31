@@ -35,6 +35,7 @@ myWorkspaces =
         ("6", xK_equal),
         ("pdf", xK_p),
         ("web", xK_w),
+        ("video", xK_v),
         ("music", xK_m),
         ("chat", xK_c),
         ("graveyard", xK_g)
@@ -139,5 +140,5 @@ main = xmonad =<< bars (ewmh c)
                 , startupHook = myStartupHook <+> startupHook def
                 , keys = myKeys
                 , focusFollowsMouse = False
-                , focusedBorderColor = "grey"
+                , focusedBorderColor = "red"
                 }

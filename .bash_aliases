@@ -5,7 +5,7 @@ alias uu="ls -lh"
 
 alias tm="tmux attach || tmux new"
 
-alias feh="feh -FZ"
+alias feh="feh --scale-down --image-bg=black --auto-zoom"
 
 alias g="git"
 alias jävel="git"

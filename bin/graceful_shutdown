@@ -1,12 +1,31 @@
-#!/bin/sh -x
+#!/bin/sh
 
-for win in $(wmctrl -l | awk '{print $1}'); do
-    wmctrl -i -c $win
-done
+function log {
+    echo "$(date) $@" >> /tmp/graceful_shutdown.log
+}
 
-while [ $(wmctrl -l | wc -l) -ne 0 ]; do
-    echo "waiting for windows to close..."
-    sleep 1
-done
+if [ -z ${GRACEFUL_SHUTDOWN_DAEMON+x} ]; then
+    GRACEFUL_SHUTDOWN_DAEMON=1 nohup $0 0<&- &>/dev/null &
+else
+    log "start closing windows..."
+    for win in $(wmctrl -l | awk '{print $1}'); do
+        wmctrl -i -c $win
+    done
 
-sleep 1
+    function grace_period {
+        while [ $(wmctrl -l | wc -l) -ne 0 ]; do
+            log "waiting for windows to close..."
+            sleep 1
+        done
+        log "all windows closed, waiting a bit more for their processes to stop..."
+        sleep 1
+    }
+
+    export -f grace_period log
+    timeout 15s bash -c grace_period
+    if [ $? -eq 0 ]; then
+        log "done"
+    else
+        log "timeout"
+    fi
+fi

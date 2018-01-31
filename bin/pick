@@ -12,6 +12,6 @@ trap "rm $SELECTION_FILE" EXIT
 ranger --choosefile=$SELECTION_FILE $1
 
 if [ -s $SELECTION_FILE ]; then
-    SELECTION=$(cat $SELECTION_FILE | xargs echo)
-    nohup xdg-open $SELECTION 0<&- &>/dev/null &
+    SELECTION=$(cat $SELECTION_FILE)
+    nohup xdg-open "$SELECTION" 0<&- &>/dev/null &
 fi
