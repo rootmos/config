@@ -1,4 +1,7 @@
 #!/bin/sh
 set -e
-graceful_shutdown
-systemctl poweroff
+if [ -z ${GRACEFUL_SHUTDOWN_DAEMON+x} ]; then
+    graceful_shutdown $0
+else
+    systemctl poweroff
+fi

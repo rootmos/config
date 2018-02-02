@@ -1,11 +1,13 @@
 #!/bin/sh
 
+export LOG=/tmp/graceful_shutdown.log
+
 function log {
-    echo "$(date) $@" >> /tmp/graceful_shutdown.log
+    echo "$(date) $@" >> $LOG
 }
 
 if [ -z ${GRACEFUL_SHUTDOWN_DAEMON+x} ]; then
-    GRACEFUL_SHUTDOWN_DAEMON=1 nohup $0 0<&- &>/dev/null &
+    GRACEFUL_SHUTDOWN_DAEMON=1 nohup $0 $1 0<&- &>/dev/null &
 else
     log "start closing windows..."
     for win in $(wmctrl -l | awk '{print $1}'); do
@@ -28,4 +30,7 @@ else
     else
         log "timeout"
     fi
+
+    log "running [$1]"
+    $1 >> $LOG
 fi
