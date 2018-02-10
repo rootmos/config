@@ -1,6 +1,9 @@
 [user]
     email = gustav.behm@gmail.com
     name = Gustav Behm
+    signingkey = FFA57206A6E8D3CC
+[commit]
+    gpgsign = true
 [core]
     editor = vim
     excludesfile = /home/gustav/.gitignore_global
