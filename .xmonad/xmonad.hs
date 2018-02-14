@@ -15,6 +15,7 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
 import XMonad.Layout.NoBorders
 import XMonad.Layout.SimpleFloat
+import XMonad.Layout.PerWorkspace
 import XMonad.Actions.CycleWS
 import Text.Printf
 import Data.Aeson.Lens
@@ -46,13 +47,14 @@ viewShift = doF . liftM2 (.) W.greedyView W.shift
 myShifts = [ className =? "Chromium" --> doShift "web"
            , className =? "Spotify" --> doShift "music"
            , className =? "Zathura" --> viewShift "pdf"
+           , className =? "Kodi" --> viewShift "video"
            ]
 myFloats = [ className =? "MPlayer" --> doFloat
            , className =? "VirtualBox" --> doFloat
            ]
 myManageHooks = composeAll $ myShifts ++ myFloats
 
-myLayoutHook = myTall ||| myFull ||| simpleFloat
+myLayoutHook = onWorkspace "video" myFull $ myTall ||| myFull ||| simpleFloat
     where
         myTall = smartBorders $ Tall 1 (2/100) (1/2)
         myFull = noBorders $ Full
