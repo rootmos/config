@@ -128,6 +128,7 @@ bars conf =
 myStartupHook = composeAll [ setWMName "LG3D"
                            , spawnOn "music" "spotify"
                            , spawnOn "chat" "urxvt -e drop"
+                           , spawnOn "chat" "urxvt -e mail"
                            , spawnOn "2" "urxvt -e tmx hack"
                            , spawnOn "pdf" "urxvt -e docs"
                            ]

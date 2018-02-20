@@ -1,0 +1,42 @@
+source "gpg -d ~/.mutt/passwords.gpg |"
+
+color normal default default
+
+set imap_user           = "gustav.behm@gmail.com"
+set imap_keepalive      = 30
+unset imap_passive  # allow mutt to open new imap connection automatically
+set folder              = "imaps://imap.gmail.com"
+set spoolfile           = "+INBOX"
+set postponed           = "+[Gmail]/Drafts"
+set header_cache        = ~/.mutt/gustav.behm/headers
+set message_cachedir    = ~/.mutt/gustav.behm/bodies
+set certificate_file    = ~/.mutt/certificates
+set smtp_url            = "smtp://gustav.behm@smtp.gmail.com:587/"
+set move                = no
+
+set from = "Gustav Behm <gustav.behm@gmail.com>"
+
+set pgp_sign_as = "0xbb43faf5535b14b7"
+source ~/.mutt/gpg.rc
+
+macro index,pager y "<save-message>=[Gmail]/All%20Mail<enter><enter>" "Archive"
+bind index - collapse-thread
+bind index _ collapse-all
+
+set sort="threads"
+set sort_aux=last-date-received
+set sort_re="yes"
+set reply_regexp="^(re|fwd*|sv):[ \t]*"
+
+set timeout             = 10                   # idle time before scanning
+set mail_check          = 10                   # minimum time between scans
+
+set index_format="%4C %Z %-16[%a %d %b %R] (%{%z}) %-17.17L %s"
+
+set fast_reply=yes
+set include=yes
+
+## GooBook
+set query_command="goobook query '%s'"
+macro index,pager a "<pipe-message>goobook add<return>" "add sender to google contacts"
+bind editor <Tab> complete-query
