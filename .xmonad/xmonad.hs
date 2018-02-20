@@ -73,6 +73,7 @@ keysToAdd x =
        , ((0, xF86XK_AudioLowerVolume), spawn "amixer -D pulse sset Master 5%-")
        , ((0, xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
        , ((0, xF86XK_Display), spawn "/home/gustav/.local/bin/displayswitcheroo")
+       , ((0, xK_F11), spawn "/home/gustav/bin/screenshot")
        , ((mod4Mask, xK_n), swapNextScreen)
        , ((mod4Mask, xK_t), nextScreen)
        , ((modMask x, xK_d), spawn "docs")
