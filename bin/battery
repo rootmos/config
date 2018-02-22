@@ -1,0 +1,20 @@
+#/bin/bash
+
+TYPE="battery"
+ORGPATH=$(upower -e | grep $TYPE)
+
+function getPercentage
+{
+    upower -i $ORGPATH | grep "percentage:" | sed "s/.*:\s\+//"
+}
+
+function getTimeToEmpty
+{
+    upower -i $ORGPATH | grep "time to empty:" | sed "s/.*:\s\+//"
+}
+
+echo "$(getPercentage) ($(getTimeToEmpty))"
+
+
+
+

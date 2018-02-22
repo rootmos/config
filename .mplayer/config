@@ -7,10 +7,18 @@ fs=yes
 cache=20000
 
 volume=100
-ass=yes
 embeddedfonts=yes
 sid=0
 alang=jpn,eng
 slang=eng
 
 ass-styles=$HOME/.mplayer/ass.styles
+
+nosub=yes
+
+ass=no
+subfont-text-scale = "2"
+subfont-blur = "4"
+subfont-outline = "4"
+ass-color=ffffffff
+#ass=yes

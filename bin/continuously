@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 
 files() {
     git ls-files -z $1 2>/dev/null || echo -n $1

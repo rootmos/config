@@ -1,0 +1,4 @@
+#!/bin/sh
+ssh pi@raspberry -- cat /proc/mdstat
+ssh pi@raspberry -- df -h /dev/md0
+ssh pi@raspberry -- sudo mdadm --detail /dev/md0

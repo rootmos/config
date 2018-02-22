@@ -45,11 +45,12 @@ viewShift = doF . liftM2 (.) W.greedyView W.shift
 myWebShifts = [className =? b --> viewShift "web" | b <- ["Chromium-browser"]]
 myMusicShifts = [className =? b --> viewShift "music" | b <- ["Spotify"]]
 myTwitchShifts = [title =? b --> viewShift "twitch" | b <- ["Livestreamer Twitch GUI"]]
-myFloats = [className =? "mplayer2" --> doFloat,
+myFloats = [className =? "mpv" --> doFloat,
+            className =? "mplayer" --> doFloat,
             className =? "VirtualBox" --> doFloat]
 myManageHook = manageDocks <+> (composeAll . concat $ [myFloats, myWebShifts, myMusicShifts, myTwitchShifts])
 
-myLayoutHook = avoidStruts $ myTall ||| myFull ||| simpleFloat
+myLayoutHook = myTall ||| myFull ||| simpleFloat
     where
         myTall = smartBorders $ Tall 1 (2/100) (1/2)
         myFull = noBorders $ Full

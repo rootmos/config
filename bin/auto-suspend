@@ -1,0 +1,4 @@
+#!/bin/sh
+
+xautolock -time 35 -locker "sudo pm-suspend"
+

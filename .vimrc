@@ -39,6 +39,8 @@ Bundle 'wincent/command-t'
 Bundle 'drmingdrmer/xptemplate'
 Plugin 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-abolish'
+Plugin 'rust-lang/rust.vim'
+Bundle 'mxw/vim-jsx'
 call vundle#end()
 
 " Import my xpt templates
@@ -99,6 +101,7 @@ noremap <F10> :FSHere<CR>
 autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
 inoremap hh <Esc>
+inoremap uu <Esc>:w<CR>
 nnoremap q <NOP>
 
 let mapleader = ","

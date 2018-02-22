@@ -1,0 +1,1 @@
+unrar p -inul $1 | mplayer -cache 64000 -cache-min 50 -

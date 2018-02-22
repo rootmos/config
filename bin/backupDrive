@@ -8,6 +8,7 @@ copy() {
     echo "Copying $1 to $2 ..."
 
     sudo nice rsync --progress $1 $2
+    sync
 
     if [ $? -eq 0 ]; then
         echo "... copied $1 to $2"

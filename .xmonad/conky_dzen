@@ -5,4 +5,4 @@ out_to_x no
 update_interval 3
  
 TEXT
-^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° M:${memperc}%^fg(\#FFFFFF)  |  ${battery_short} (${battery_time})  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
+${execp hacktivity score --conky}  |  ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° M:${memperc}%^fg(\#FFFFFF)  |  ${battery_short} (${battery_time})  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
