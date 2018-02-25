@@ -1,24 +1,22 @@
 !urxvt*background: black
 !urxvt*foreground: rgb:c3/c3/c3
  
-xterm*faceSize: 10
+xterm*faceSize: 14
 xterm*faceName: Bitstream Vera Sans Mono
  
 urxvt.scrollBar: false
-urxvt.font: xft:Inconsolata:pixelsize=15
+urxvt.font: xft:Inconsolata:pixelsize=22
 
-urxvt.perl-ext-common: default,matcher,font-size
+urxvt.perl-ext-common: default,matcher,resize-font
 
 urxvt.url-launcher: /usr/bin/xdg-open
 urxvt.matcher.button: 1
 urxvt.colorUL: #4682B4
 
-urxvt.keysym.C-Up:     font-size:increase
-urxvt.keysym.C-Down:   font-size:decrease
-urxvt.keysym.C-S-Up:   font-size:incglobal
-urxvt.keysym.C-S-Down: font-size:decglobal
-urxvt.keysym.C-equal:  font-size:reset
-urxvt.keysym.C-slash:  font-size:show
+urxvt.keysym.C-Up:     resize-font:bigger
+urxvt.keysym.C-Down:   resize-font:smaller
+urxvt.keysym.C-equal:  resize-font:reset
+urxvt.keysym.C-slash:  resize-font:show
 urxvt.keysym.C-F8: ^[[19^
 
  

@@ -1,13 +1,14 @@
 #!/bin/sh
 
-xrdb ~/.Xdefaults
+set -o errexit
 
-~/bin/dv
-
+dv
 touchpad disable
 
-xsettingsd &
+xrdb ~/.Xdefaults
 
-systemctl --user import-environment DISPLAY XAUTHORITY
+chromium &
+redshift &
+unclutter &
 
 exec xmonad

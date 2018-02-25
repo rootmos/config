@@ -5,4 +5,4 @@ out_to_x no
 update_interval 2
 
 TEXT
-^fg(\#aaaaaa)D: ${downspeedf enp3s0}kib/s^fg(\#FFFFFF) ^fg(\#aaaaaa)U: ${upspeedf enp3s0}kib/s^fg(\#FFFFFF) | ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF)  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
+^fg(\#aaaaaa)D: ${downspeedf wlp4s0}kib/s^fg(\#FFFFFF) ^fg(\#aaaaaa)U: ${upspeedf wlp4s0}kib/s^fg(\#FFFFFF) | ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF) |  ${battery_short} (${battery_time})  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}

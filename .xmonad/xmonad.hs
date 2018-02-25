@@ -15,7 +15,6 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.FadeInactive
 import XMonad.Layout.NoBorders
 import XMonad.Layout.SimpleFloat
-import XMonad.Layout.PerWorkspace
 import XMonad.Actions.CycleWS
 import Text.Printf
 import Data.Aeson.Lens
@@ -54,7 +53,7 @@ myFloats = [ className =? "MPlayer" --> doFloat
            ]
 myManageHooks = composeAll $ myShifts ++ myFloats
 
-myLayoutHook = onWorkspace "video" myFull $ myTall ||| myFull ||| simpleFloat
+myLayoutHook = myTall ||| myFull ||| simpleFloat
     where
         myTall = smartBorders $ Tall 1 (2/100) (1/2)
         myFull = noBorders $ Full
@@ -117,14 +116,12 @@ statusBar' cmd pp k conf = do
 bars conf =
   (statusBar' myStatusBar myDzenPP toggleStrutsKey conf)
     >>= (statusBar myXmonadBar myDzenPP toggleStrutsKey)
-    where (x, y, width) = (0, 0, 1920) :: (Int, Int, Int)
-          left = 600
+    where (x, y, width) = (0, 0, 2560) :: (Int, Int, Int)
+          left = 1000
           right = width - left
-          fontSize = 13 :: Int
-          font = printf "-h '%d' -fn '-*-*-*-*-*-*-%d-*-*-*-*-*-*-*'" (fontSize + 2) fontSize :: String
           dzen = "dzen2 -e 'onstart=lower' -dock" :: String
-          myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E' %s" dzen left font
-          myStatusBar = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF' %s" dzen left right font
+          myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'" dzen left
+          myStatusBar = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF'" dzen left right
 
 myStartupHook = composeAll [ setWMName "LG3D"
                            , spawnOn "music" "spotify"
