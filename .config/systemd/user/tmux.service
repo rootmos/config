@@ -1,0 +1,11 @@
+[Unit]
+Description=tmux hack session
+After=ssh-agent.service
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/tmux new-session -s hack -d
+ExecStop=/usr/bin/tmux kill-session -t hack 
+
+[Install]
+WantedBy=multi-user.target
