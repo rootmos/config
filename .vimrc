@@ -19,7 +19,7 @@ set matchtime=3
 
 set wildmode=longest,list,full
 set wildmenu
-set wildignore=target,**/META-INF/**,**/build/**,**/bin/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**,*.vo,*.glob,*.v.d,*.aux
+set wildignore=target,**/META-INF/**,**/build/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**,*.vo,*.glob,*.v.d,*.aux
 
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
