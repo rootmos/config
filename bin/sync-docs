@@ -1,0 +1,3 @@
+#!/bin/sh
+rsync -alvz ~/docs/ raspberry:/stash/docs
+rsync -alvz raspberry:/stash/docs/ ~/docs
