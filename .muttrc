@@ -4,7 +4,11 @@ color normal default default
 
 set imap_user           = "gustav.behm@gmail.com"
 set imap_keepalive      = 30
-unset imap_passive  # allow mutt to open new imap connection automatically
+set imap_idle
+set imap_check_subscribed
+unset imap_passive
+unset imap_peek
+
 set folder              = "imaps://imap.gmail.com"
 set spoolfile           = "+INBOX"
 set postponed           = "+[Gmail]/Drafts"

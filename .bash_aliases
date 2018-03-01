@@ -25,3 +25,6 @@ alias halt="sudo halt"
 alias reboot="sudo reboot"
 alias windows="sudo windows"
 alias suspend="sudo suspend"
+
+alias netctl="sudo netctl"
+alias pacman="sudo pacman"
