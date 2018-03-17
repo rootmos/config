@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -o errexit
+
+CONFIG=
+PASSWORD=
+KEY_OPT=--auth-user-pass
+while getopts "p:c:k" opt; do
+    case $opt in
+        c) CONFIG=$OPTARG ;;
+        p) PASSWORD=$OPTARG ;;
+        k) KEY_OPT=--askpass ;;
+        \?) echo "Invalid option: -$OPTARG" >&2
+            exit 2 ;;
+    esac
+done
+
+UP=$(mktemp up.XXXX)
+chmod 0600 $UP
+trap "{ rm -f $UP; }" EXIT
+
+pass $PASSWORD > $UP
+sudo -v
+(sleep 4; ! fuser $UP; rm $UP ) &
+sudo --non-interactive openvpn --config $CONFIG --auth-nocache $KEY_OPT $UP
