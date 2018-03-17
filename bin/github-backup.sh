@@ -9,7 +9,11 @@ ARCHIVE=github-$(date -Im).tar.gz
 TMP=$(mktemp -d -t github-backup.XXXX)
 trap "{ rm -rf $TMP; }" EXIT
 
+# Authorization using personal access token:
+# - https://developer.github.com/v3/auth/#via-oauth-tokens
+# - https://github.com/settings/tokens
 AUTH=$(pass github/backup)
+
 BASEURL=https://api.github.com
 
 function req_wo() {
