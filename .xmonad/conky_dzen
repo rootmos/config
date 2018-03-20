@@ -5,4 +5,7 @@ out_to_x no
 update_interval 2
 
 TEXT
-^fg(\#aaaaaa)D: ${downspeedf enp3s0}kib/s^fg(\#FFFFFF) ^fg(\#aaaaaa)U: ${upspeedf enp3s0}kib/s^fg(\#FFFFFF) | ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF)  |  ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
+^fg(\#aaaaaa) eth:${exec eth-is-active}^fg(\#FFFFFF) \
+| ^fg(\#aaaaaa)D: ${downspeedf enp3s0}kib/s^fg(\#FFFFFF) ^fg(\#aaaaaa)U: ${upspeedf enp3s0}kib/s^fg(\#FFFFFF) \
+| ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 2 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF) \
+| ^fg(\#aaaaaa)${time %d-%m-%Y} ^fg(\#ebac54) ${time %R}
