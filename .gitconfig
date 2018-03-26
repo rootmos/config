@@ -2,6 +2,8 @@
     email = gustav.behm@gmail.com
     name = Gustav Behm
     signingkey = FFA57206A6E8D3CC
+[includeIf "gitdir:~/upvest/"]
+        path = ~/upvest/.gitconfig
 [commit]
     gpgsign = true
 [core]
