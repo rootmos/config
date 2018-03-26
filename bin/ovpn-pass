@@ -5,11 +5,12 @@ set -o errexit
 CONFIG=
 PASSWORD=
 KEY_OPT=--auth-user-pass
-while getopts "p:c:k" opt; do
+while getopts "p:c:ak" opt; do
     case $opt in
         c) CONFIG=$OPTARG ;;
         p) PASSWORD=$OPTARG ;;
-        k) KEY_OPT=--askpass ;;
+        a) KEY_OPT=--askpass ;;
+        k) KEEP=1 ;;
         \?) echo "Invalid option: -$OPTARG" >&2
             exit 2 ;;
     esac
@@ -21,5 +22,7 @@ trap "{ rm -f $UP; }" EXIT
 
 pass $PASSWORD > $UP
 sudo -v
-(sleep 4; ! fuser $UP; rm $UP ) &
+if [ -z "$KEEP" ]; then
+    (sleep 4; ! fuser $UP; rm $UP ) &
+fi
 sudo --non-interactive openvpn --config $CONFIG --auth-nocache $KEY_OPT $UP
