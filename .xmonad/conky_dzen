@@ -6,6 +6,7 @@ update_interval 2
 
 TEXT
 ^fg(\#aaaaaa)D: ${downspeedf wlp4s0}kib/s^fg(\#FFFFFF) ^fg(\#aaaaaa)U: ${upspeedf wlp4s0}kib/s^fg(\#FFFFFF) \
+| ^fg(\#aaaaaa)${exec drop-ping}^fg(\#FFFFFF) \
 | ^fg(\#aaaaaa)TD: ${exec rx-bytes-marker.sh -i wlp4s0} \
 | ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF) \
 | ${battery_short} (${battery_time}) \

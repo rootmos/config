@@ -133,7 +133,7 @@ nmap <leader>j :FufJump<CR>
 nmap <leader>t :CommandT<CR>
 
 imap <C-l> λ
-imap <C-S-l> Λ
+imap <C-a> α
 imap <C-b> ⊥
 imap <C-j> ∘
 
