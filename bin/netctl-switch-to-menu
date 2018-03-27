@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set +o errexit
+
+sudo netctl switch-to $(netctl list | dmenu -p profile -i)

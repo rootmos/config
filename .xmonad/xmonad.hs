@@ -1,29 +1,29 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
-import XMonad
-import Control.Monad
-import qualified XMonad.StackSet as W
-import qualified Data.Map as M
-import XMonad.Hooks.SetWMName
-import Graphics.X11.ExtraTypes.XF86
-import XMonad.Hooks.EwmhDesktops
 
+import Control.Exception
+import Control.Lens
+import Control.Monad
+import Data.Aeson.Lens
+import Data.Maybe
+import Graphics.X11.ExtraTypes.XF86
+import System.Exit
 import System.IO
-import XMonad.Util.Run
+import System.Process
+import Text.Printf
+import XMonad
+import XMonad.Actions.CycleWS
 import XMonad.Actions.SpawnOn
-import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.FadeInactive
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.SetWMName
 import XMonad.Layout.NoBorders
 import XMonad.Layout.SimpleFloat
-import XMonad.Actions.CycleWS
-import Text.Printf
-import Data.Aeson.Lens
-import System.Process
-import System.Exit
-import Control.Lens
-import Data.Maybe
-import Control.Exception
 import XMonad.Util.Run
+import XMonad.Util.Run
+import qualified Data.Map as M
+import qualified XMonad.StackSet as W
 
 myWorkspaces =
     [
@@ -76,6 +76,8 @@ keysToAdd x =
        , ((mod4Mask, xK_n), swapNextScreen)
        , ((mod4Mask, xK_t), nextScreen)
        , ((modMask x, xK_d), spawn "docs")
+       , ((modMask x, xK_w), spawn "/home/gustav/bin/netctl-switch-to-menu")
+       , ((modMask x, xK_period), spawn "/home/gustav/bin/pass-pick")
        ]
 
 keysToRemove x =
@@ -83,7 +85,7 @@ keysToRemove x =
     ]
 
 strippedKeys x = foldr M.delete (keys def x) (keysToRemove x)
-myKeys x = M.union (strippedKeys x) (M.fromList (keysToAdd x))
+myKeys x = M.union (M.fromList (keysToAdd x)) (strippedKeys x)
 
 myDzenPP = def
   { ppCurrent           =   dzenColor "#ebac54" "#1B1D1E" . pad

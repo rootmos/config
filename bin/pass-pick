@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set +o errexit
+
+DIR=${PASSWORD_STORE_DIR-$HOME/.password-store}
+
+choose() {
+    find $DIR -type f -not -path '*/\.git*' \
+       | sed 's,'$DIR'/,,' \
+       | sed 's/.gpg$//' \
+       | sort | dmenu
+}
+
+env \
+    PASSWORD_STORE_X_SELECTION=PRIMARY \
+    PINENTRY_USER_DATA=gtk \
+    pass --clip $(choose)
