@@ -3,7 +3,7 @@
 set -o pipefail
 
 measure() {
-    httping -M -c 1 http://drop:7001 \
+    timeout 1 httping -M -c 1 -f http://drop:7001 \
         | jq .[0].total_ms -r \
         | xargs -I{} calc -p "round({})"
 }
