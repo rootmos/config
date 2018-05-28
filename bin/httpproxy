@@ -1,0 +1,2 @@
+#!/bin/sh
+mitmdump --flow-detail=3 --listen-port=${PORT-9000} --mode=reverse:$1
