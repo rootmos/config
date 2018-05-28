@@ -2,6 +2,8 @@ source "gpg -d ~/.mutt/passwords.gpg |"
 
 color normal default default
 
+set editor="vim"
+
 set imap_user           = "gustav.behm@gmail.com"
 set imap_keepalive      = 30
 set imap_idle

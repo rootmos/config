@@ -1,2 +1,4 @@
 #!/bin/sh
-LD_PRELOAD=/usr/lib/libcurl.so.3:/home/gustav/git/spotifywm/spotifywm.so /usr/share/spotify/spotify
+SPOTIFY=$(which -a spotify | grep -v $HOME | head -n 1)
+SPOTIFYVM=$HOME/git/spotifywm/spotifywm.so
+LD_PRELOAD=/usr/lib/libcurl.so.4:$SPOTIFYVM $SPOTIFY

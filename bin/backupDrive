@@ -60,3 +60,4 @@ for drive in $drives; do
     fi
 done
 
+sync

@@ -10,7 +10,7 @@ set laststatus=2
 set clipboard+=unnamed
 set clipboard+=unnamedplus
 set backspace=indent,eol,start
-set autochdir
+"set autochdir
 
 set nowrap
 
@@ -56,6 +56,7 @@ Plugin 'guersam/vim-j'
 "Plugin 'kovisoft/paredit'
 Plugin 'luochen1990/rainbow'
 "Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'tomlion/vim-solidity'
 call vundle#end()
 
 " Import my xpt templates

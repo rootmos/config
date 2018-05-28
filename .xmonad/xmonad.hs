@@ -36,6 +36,7 @@ myWorkspaces =
         ("pdf", xK_p),
         ("web", xK_w),
         ("video", xK_v),
+        ("twitch", xK_t),
         ("music", xK_m),
         ("chat", xK_c),
         ("graveyard", xK_g)
