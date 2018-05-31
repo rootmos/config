@@ -171,6 +171,31 @@ nmap <leader>C :source ~/.vimrc<cr>
 
 :call has('python')
 
+function! Note(offset)
+    let dir = $NOTES_DIR
+    if dir == ""
+        let dir = "~/notes"
+    endif
+
+    if empty(glob(dir))
+        call system("mkdir -p " . dir)
+        call system("git init " . dir)
+    endif
+
+    let offset = a:offset
+    if a:offset == ""
+        let offset = 0
+    endif
+
+    let date = system('date +%F --date="' . offset . ' day"')[:-2]
+    let fn = date . ".md"
+    execute "e " . dir . "/" . fn
+    execute 'autocmd BufWritePost <buffer> execute "silent !(cd ' dir ' && git add ' fn ' && git commit --no-gpg-sign --message=\"Updated note:' date . '\" -- ' fn ' && git push)" | redraw!'
+endfunction
+
+command! -nargs=? Note call Note(<q-args>)
+
+
 if executable('opam')
   let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
   if executable('ocamlmerlin')

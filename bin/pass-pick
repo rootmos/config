@@ -5,7 +5,10 @@ set -o errexit
 DIR=${PASSWORD_STORE_DIR-$HOME/.password-store}
 
 choose() {
-    find $DIR -type f -not -path '*/\.git*' \
+    cd $DIR
+    git ls-files -z \
+       | xargs -0 -I{} echo {} \
+       | grep -v '^\.' \
        | sed 's,'$DIR'/,,' \
        | sed 's/.gpg$//' \
        | sort | dmenu
