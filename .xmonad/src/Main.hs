@@ -1,14 +1,13 @@
-{-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, ScopedTypeVariables #-}
+module Main where
 
 import Control.Exception
-import Control.Lens
 import Control.Monad
-import Data.Aeson.Lens
 import Data.Maybe
 import Graphics.X11.ExtraTypes.XF86
 import System.Exit
 import System.IO
-import System.Process
+import System.IO.Error
 import Text.Printf
 import XMonad
 import XMonad.Actions.CycleWS
@@ -25,6 +24,8 @@ import XMonad.Util.Run
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
 
+import Utils
+
 myWorkspaces =
     [
         ("1", xK_1),
@@ -33,10 +34,9 @@ myWorkspaces =
         ("4", xK_dollar),
         ("5", xK_braceleft),
         ("6", xK_equal),
+        ("notes", xK_n),
         ("pdf", xK_p),
         ("web", xK_w),
-        ("video", xK_v),
-        ("twitch", xK_t),
         ("music", xK_m),
         ("chat", xK_c),
         ("graveyard", xK_g)
@@ -74,8 +74,8 @@ keysToAdd x =
        , ((0, xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
        , ((0, xF86XK_Display), spawn "/home/gustav/.local/bin/displayswitcheroo")
        , ((0, xK_F11), spawn "/home/gustav/bin/screenshot")
-       , ((mod4Mask, xK_n), swapNextScreen)
-       , ((mod4Mask, xK_t), nextScreen)
+       {-, ((mod4Mask, xK_n), swapNextScreen)-}
+       {-, ((mod4Mask, xK_t), nextScreen)-}
        , ((modMask x, xK_d), spawn "docs")
        , ((modMask x, xK_w), spawn "/home/gustav/bin/netctl-switch-to-menu")
        , ((modMask x, xK_period), spawn "/home/gustav/bin/pass-pick")
@@ -116,22 +116,33 @@ statusBar' cmd pp k conf = do
         }
           where keys' = (`M.singleton` sendMessage ToggleStruts) . k
 
-bars conf =
-  (statusBar' myStatusBar myDzenPP toggleStrutsKey conf)
+currentWidth :: IO Int
+currentWidth = do
+  (root, res) <- currentDefaultDisplay
+  setup <- fetchSetup root res
+  case filter isOutputEnabled . M.elems $ setupOutputs setup of
+    Output { outputMonitor = Just mid } : _ -> do
+      let Just monitor = lookupMonitor mid setup
+      return $ monitorWidth monitor
+    _ -> return 1910
+
+bars conf = do
+  width <- currentWidth
+  (statusBar' (myStatusBar width) myDzenPP toggleStrutsKey conf)
     >>= (statusBar myXmonadBar myDzenPP toggleStrutsKey)
-    where (x, y, width) = (0, 0, 2560) :: (Int, Int, Int)
-          left = 1000
-          right = width - left
-          dzen = "dzen2 -e 'onstart=lower' -dock" :: String
-          myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l' -fg '#FFFFFF' -bg '#1B1D1E'" dzen left
-          myStatusBar = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r' -bg '#1B1D1E' -fg '#FFFFFF'" dzen left right
+    where left = 1000
+          right width = width - left
+          font = "-*-*-*-r-*-*-14-*-*-*-*-*-*-*" :: String
+          dzen = printf "dzen2 -e 'onstart=lower' -dock -fg '#FFFFFF' -bg '#1B1D1E' -fn '%s'" font :: String
+          myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l'" dzen left
+          myStatusBar width = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" dzen left (right width)
 
 myStartupHook = composeAll [ setWMName "LG3D"
-                           , spawnOn "music" "spotify"
-                           , spawnOn "chat" "urxvt -e drop"
-                           , spawnOn "chat" "urxvt -e mail"
-                           , spawnOn "2" "urxvt -e tmx hack"
-                           , spawnOn "pdf" "urxvt -e docs"
+                           {-, spawnOn "music" "spotify"-}
+                           {-, spawnOn "chat" "urxvt -e drop"-}
+                           {-, spawnOn "chat" "urxvt -e mail"-}
+                           {-, spawnOn "2" "urxvt -e tmx hack"-}
+                           {-, spawnOn "pdf" "urxvt -e docs"-}
                            ]
 
 main :: IO ()

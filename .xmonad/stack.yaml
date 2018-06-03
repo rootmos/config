@@ -1,0 +1,12 @@
+resolver: lts-11.11
+
+packages:
+  - '.'
+
+extra-deps:
+  - X11-xft-0.3.1
+  - xmonad-contrib-0.13
+
+flags: {}
+
+extra-package-dbs: []

@@ -98,7 +98,7 @@ if has("gui_running")
 		set guifont=Consolas:h11:cANSI
 	endif
 else
-    set background=dark
+    set background=light
 endif
 
 " <Ctrl-l> redraws the screen and removes any search highlighting.

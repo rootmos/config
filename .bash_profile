@@ -1,7 +1,6 @@
 . ~/.profile
 . ~/.bash_aliases
-. ~/.bash_kubectl
-. ~/.bash_utils
+. ~/.kubectl_aliases
 
 PS1='\u@\h:\w\$ '
 export MANWIDTH=79
