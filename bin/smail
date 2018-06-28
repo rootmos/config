@@ -17,9 +17,9 @@ done
 
 if command -v socat > /dev/null; then
     if [ -n "$RECV" ]; then
-        socat tcp-listen:$PORT,reuseaddr stdout
+        socat tcp-listen:$PORT,reuseaddr -
     elif [ -n "$HOST" ]; then
-        socat stdin,readbytes tcp:$HOST:$PORT
+        socat stdin tcp:$HOST:$PORT
     fi
 elif command -v netcat > /dev/null; then
     if [ -n "$RECV" ]; then
