@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -o errexit
+
+PORT=2525
+RECV=
+SEND=
+while getopts "h:rp:" opt; do
+    case $opt in
+        r) RECV=1 ;;
+        p) PORT=$OPTARG ;;
+        h) HOST=$OPTARG ;;
+        \?) echo "Invalid option: -$OPTARG" >&2
+            exit 2 ;;
+    esac
+done
+
+if command -v socat > /dev/null; then
+    if [ -n "$RECV" ]; then
+        socat tcp-listen:$PORT,reuseaddr stdout
+    elif [ -n "$HOST" ]; then
+        socat stdin,readbytes tcp:$HOST:$PORT
+    fi
+elif command -v netcat > /dev/null; then
+    if [ -n "$RECV" ]; then
+        netcat -l -p $PORT 0.0.0.0
+    elif [ -n "$HOST" ]; then
+        netcat -c $HOST $PORT # NB. -c works for GNU's netcat, not for others
+    fi
+else
+    if [ -n "$RECV" ]; then
+        echo "Neither netcat nor socat found" >&2
+        exit 1
+    elif [ -n "$HOST" ]; then
+        cat > /dev/tcp/$HOST/$PORT
+    fi
+fi
