@@ -1,0 +1,17 @@
+#!/bin/bash
+
+hex_to_dec() {
+    xargs calc -p
+}
+
+bin_to_hex() {
+    xxd -p | tr -d '\n'
+}
+
+hex_to_bin() {
+    xxd -r -p
+}
+
+bin_to_dec() {
+    bin_to_hex | sed 's/^/0x/' | hex_to_dec
+}

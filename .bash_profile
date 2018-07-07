@@ -1,9 +1,8 @@
 . ~/.profile
 . ~/.bash_aliases
-. ~/.bash_kubectl
 . ~/.bash_utils
 
-PS1='\u@\h:\w\$ '
+PS1='\h:\w\$ '
 export MANWIDTH=79
 export GPG_TTY=$(tty)
 

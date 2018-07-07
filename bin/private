@@ -1,0 +1,6 @@
+#!/bin/sh
+if ! grep -qs ~/private /proc/mounts; then
+    open_private
+fi
+
+exec bash --rcfile ~/.bashrc-private

@@ -9,6 +9,6 @@ xrdb ~/.Xdefaults
 
 chromium &
 redshift &
-unclutter &
+unclutter -idle 2 &
 
 exec xmonad
