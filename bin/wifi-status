@@ -1,0 +1,11 @@
+#!/bin/sh
+
+rfkill() {
+    [ "$(cat /sys/class/rfkill/rfkill2/state)" == "0" ]
+}
+
+if rfkill; then
+    echo "rfkill"
+else
+    iwgetid -r
+fi

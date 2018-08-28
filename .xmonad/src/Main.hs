@@ -79,6 +79,7 @@ keysToAdd x =
        , ((modMask x, xK_d), spawn "docs")
        , ((modMask x, xK_w), spawn "/home/gustav/bin/netctl-switch-to-menu")
        , ((modMask x, xK_period), spawn "/home/gustav/bin/pass-pick")
+       , ((0, xF86XK_WLAN), spawn "sudo /home/gustav/bin/wifi-fix")
        ]
 
 keysToRemove x =
@@ -130,7 +131,7 @@ bars conf = do
   width <- currentWidth
   (statusBar' (myStatusBar width) myDzenPP toggleStrutsKey conf)
     >>= (statusBar myXmonadBar myDzenPP toggleStrutsKey)
-    where left = 1000
+    where left = 800
           right width = width - left
           font = "-*-*-*-r-*-*-14-*-*-*-*-*-*-*" :: String
           dzen = printf "dzen2 -e 'onstart=lower' -dock -fg '#FFFFFF' -bg '#1B1D1E' -fn '%s'" font :: String

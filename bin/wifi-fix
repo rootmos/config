@@ -1,0 +1,3 @@
+#!/bin/sh
+netctl-auto enable-all
+systemctl restart netctl-auto@wlp59s0.service
