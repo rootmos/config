@@ -1,0 +1,51 @@
+#!/bin/sh
+
+set -o errexit
+
+AUDIO_JOURNAL=${AUDIO_JOURNAL-$HOME/audio-journal}
+TAKES=${AUDIO_JOURNAL_TAKES-$AUDIO_JOURNAL/takes}
+mkdir -p $AUDIO_JOURNAL $TAKES
+
+take() {
+    exec rec $1
+}
+
+preprocess() {
+    sox $1 $2 norm -1
+}
+
+postprocess() {
+    sox $1 $2
+}
+
+playback() {
+    play $1
+}
+
+clear
+read -n1 -s -p "Ready? "
+
+DATE=$(date -Is)
+RAW=$TAKES/$DATE.raw.flac
+PRE=$TAKES/$DATE.pre.flac
+POST=$AUDIO_JOURNAL/$DATE.mp3
+
+clear
+take $RAW &
+PID=$!
+IFS= read -n1 -s CHOICE
+
+kill -INT $PID
+wait $PID
+
+if [ -z "$CHOICE" ]; then
+    clear
+    preprocess $RAW $PRE
+    playback $PRE
+    read -p "Yay or nay? " CHOICE
+    case "$CHOICE" in
+        y|Y) postprocess $PRE $POST;;
+    esac
+fi
+
+$0
