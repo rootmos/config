@@ -14,8 +14,26 @@ preprocess() {
     sox $1 $2 norm -1
 }
 
+tag() {
+    YEAR=$(date --date="$DATE" +%Y)
+    read -p "Title: " TITLE
+    id3v2 -D $1
+    id3v2 \
+        --artist=rootmos \
+        --song="$TITLE" \
+        --TCOM="Gustav Behm" \
+        --TCOP="$YEAR Gustav Behm" \
+        --WOAR="https://rootmos.github.io" \
+        --WOAF="https://soundcloud.com/rootmos" \
+        --TRDA="$DATE" \
+        --year=$YEAR \
+        --genre=52 \
+        $1
+}
+
 postprocess() {
     sox $1 $2
+    tag $2
 }
 
 playback() {
