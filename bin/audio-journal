@@ -17,7 +17,9 @@ preprocess() {
 tag() {
     YEAR=$(date --date="$DATE" +%Y)
     read -p "Title: " TITLE
-    id3v2 -D $1
+    OUT=$(with_title "$TITLE")
+    cp $1 $OUT
+    id3v2 -D $OUT
     id3v2 \
         --artist=rootmos \
         --song="$TITLE" \
@@ -28,7 +30,7 @@ tag() {
         --TRDA="$DATE" \
         --year=$YEAR \
         --genre=52 \
-        $1
+        $OUT
 }
 
 postprocess() {
@@ -37,7 +39,7 @@ postprocess() {
 }
 
 playback() {
-    play $1
+    mpv $1
 }
 
 clear
@@ -46,7 +48,15 @@ read -n1 -s -p "Ready? "
 DATE=$(date -Is)
 RAW=$TAKES/$DATE.raw.flac
 PRE=$TAKES/$DATE.pre.flac
-POST=$AUDIO_JOURNAL/$DATE.mp3
+POST=$TAKES/$DATE.post.mp3
+with_title() {
+    if [ -z "$1" ]; then
+        echo $AUDIO_JOURNAL/$DATE.mp3
+    else
+        echo $AUDIO_JOURNAL/${DATE}_$(echo "$1" | tr ' ' '-').mp3
+    fi
+}
+
 
 clear
 take $RAW &
