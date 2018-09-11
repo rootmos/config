@@ -11,6 +11,6 @@ else
     exit 2
 fi
 
-NAME="Synaptics TouchPad"
+NAME="TM3381-002"
 ID=$(xinput list | grep "$NAME" | sed "s/.*id=\(\w\+\).*/\1/")
 xinput set-prop $ID "Device Enabled" $SET
