@@ -1,2 +1,2 @@
 #!/bin/sh
-sudo tcpflow -i lo -a -c port $1 -J
+sudo tcpflow -i $1 -a -c port $2
