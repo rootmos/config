@@ -2,12 +2,13 @@
 
 set -o errexit
 
-I=
+I=wlp59s0
 SET=
-while getopts "si:" opt; do
+UNSET=
+while getopts "sui:" opt; do
     case $opt in
-        s) SET=1
-           ;;
+        s) SET=1 ;;
+        u) UNSET=1 ;;
         i) I=$OPTARG ;;
         \?) echo "Invalid option: -$OPTARG" >&2
             exit 2 ;;
@@ -24,6 +25,8 @@ c=$(cat /sys/class/net/$I/statistics/rx_bytes)
 
 if [ -n "$SET" ]; then
     echo $c > $mf
+elif [ -n "$UNSET" ]; then
+    rm -f $mf
 else
     d=
     if [ -f $mf ]; then
