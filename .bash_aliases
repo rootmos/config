@@ -26,3 +26,6 @@ alias suspend="sudo suspend"
 
 alias netctl="sudo netctl"
 alias pacman="sudo pacman"
+
+alias btc-testnet-cli="bitcoin-cli -conf=testnet.conf"
+alias btc-mainnet-cli="bitcoin-cli -conf=mainnet.conf"
