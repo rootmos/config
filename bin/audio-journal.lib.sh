@@ -1,7 +1,19 @@
 #!/bin/sh
 
 AUDIO_JOURNAL="${AUDIO_JOURNAL-$HOME/audio-journal}"
-TAKES="${AUDIO_JOURNAL_TAKES-$AUDIO_JOURNAL/takes}"
+
+choose_takes_dir() {
+    IFS=':' read -ra TAKES <<< "$AUDIO_JOURNAL_TAKES"
+    for target in "${TAKES[@]}"; do
+        if [ -d "$target" ]; then
+            echo "$target"
+            return
+        fi
+    done
+    echo $AUDIO_JOURNAL/takes
+}
+
+TAKES=$(choose_takes_dir)
 mkdir -p "$AUDIO_JOURNAL" "$TAKES"
 
 take() {
