@@ -2,45 +2,7 @@
 
 set -o errexit
 
-AUDIO_JOURNAL=${AUDIO_JOURNAL-$HOME/audio-journal}
-TAKES=${AUDIO_JOURNAL_TAKES-$AUDIO_JOURNAL/takes}
-mkdir -p $AUDIO_JOURNAL $TAKES
-
-take() {
-    exec rec $1
-}
-
-preprocess() {
-    sox $1 $2 norm -1
-}
-
-tag() {
-    YEAR=$(date --date="$DATE" +%Y)
-    read -p "Title: " TITLE
-    OUT=$(with_title "$TITLE")
-    cp $1 $OUT
-    id3v2 -D $OUT
-    id3v2 \
-        --artist=rootmos \
-        --song="$TITLE" \
-        --TCOM="Gustav Behm" \
-        --TCOP="$YEAR Gustav Behm" \
-        --WOAR="https://rootmos.github.io" \
-        --WOAF="https://soundcloud.com/rootmos" \
-        --TRDA="$DATE" \
-        --year=$YEAR \
-        --genre=52 \
-        $OUT
-}
-
-postprocess() {
-    sox $1 $2
-    tag $2
-}
-
-playback() {
-    mpv $1
-}
+. $(readlink -f $0 | xargs dirname)/audio-journal.lib.sh
 
 clear
 read -n1 -s -p "Ready? "
@@ -49,14 +11,6 @@ DATE=$(date -Is)
 RAW=$TAKES/$DATE.raw.flac
 PRE=$TAKES/$DATE.pre.flac
 POST=$TAKES/$DATE.post.mp3
-with_title() {
-    if [ -z "$1" ]; then
-        echo $AUDIO_JOURNAL/$DATE.mp3
-    else
-        echo $AUDIO_JOURNAL/${DATE}_$(echo "$1" | tr ' ' '-').mp3
-    fi
-}
-
 
 clear
 take $RAW &

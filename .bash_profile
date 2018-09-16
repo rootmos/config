@@ -7,6 +7,7 @@ export MANWIDTH=79
 export GPG_TTY=$(tty)
 
 export NOTES_DIR=/home/gustav/git/notes
+export AUDIO_JOURNAL_SECONDARY=/home/gustav/mnt/raspberry/audio-journal
 
 . /home/gustav/.opam/opam-init/init.sh > /dev/null 2> /dev/null || true
 
