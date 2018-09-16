@@ -78,6 +78,8 @@ keysToAdd x =
        {-, ((mod4Mask, xK_t), nextScreen)-}
        , ((modMask x, xK_d), spawn "docs")
        , ((modMask x, xK_w), spawn "/home/gustav/bin/netctl-switch-to-menu")
+       , ((modMask x, xK_m), spawn "/home/gustav/bin/mount-menu")
+       , ((modMask x, xK_u), spawn "/home/gustav/bin/umount-menu")
        , ((modMask x, xK_period), spawn "/home/gustav/bin/pass-pick")
        , ((0, xF86XK_WLAN), spawn "sudo /home/gustav/bin/wifi-fix")
        ]
@@ -138,13 +140,7 @@ bars conf = do
           myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l'" dzen left
           myStatusBar width = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" dzen left (right width)
 
-myStartupHook = composeAll [ setWMName "LG3D"
-                           {-, spawnOn "music" "spotify"-}
-                           {-, spawnOn "chat" "urxvt -e drop"-}
-                           {-, spawnOn "chat" "urxvt -e mail"-}
-                           {-, spawnOn "2" "urxvt -e tmx hack"-}
-                           {-, spawnOn "pdf" "urxvt -e docs"-}
-                           ]
+myStartupHook = composeAll [ setWMName "LG3D" ]
 
 main :: IO ()
 main = xmonad =<< bars (ewmh c)
