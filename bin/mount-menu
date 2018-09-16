@@ -1,0 +1,28 @@
+#!/bin/bash
+
+set -o pipefail
+set -o errexit
+set -o xtrace
+
+mount-menu() {
+    blkid \
+        | grep -v -f <(findmnt --noheadings --raw -o PARTUUID | grep -v '^$') \
+        | dmenu -p "mount:" -l 10 \
+        | cut -d':' -f1 \
+        | xargs -I{} udisksctl mount -b {} \
+        | xargs -I{} notify-send "mount" "{}"
+}
+
+umount-menu() {
+    blkid \
+        | grep -f <(findmnt --noheadings --raw -o PARTUUID | grep -v '^$') \
+        | dmenu -p "umount:" -l 10 \
+        | cut -d':' -f1 \
+        | xargs -I{} udisksctl unmount -b {} \
+        | xargs -I{} notify-send "umount" "{}"
+}
+
+case "$(basename $0)" in
+    mount-menu) mount-menu;;
+    umount-menu) umount-menu;;
+esac
