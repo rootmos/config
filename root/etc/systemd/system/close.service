@@ -1,0 +1,11 @@
+[Unit]
+Description=close on suspend/sleep/hibernate
+
+[Service]
+Type=oneshot
+User=gustav
+Group=gustav
+ExecStart=/home/gustav/bin/close
+
+[Install]
+RequiredBy=sleep.target suspend.target hibernate.target hybrid-sleep.target
