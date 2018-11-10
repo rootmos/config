@@ -1,31 +1,25 @@
-source "gpg -d ~/.mutt/passwords.gpg |"
+source ~/.mutt/gpg.rc
+
+folder-hook 'gmail.com' 'source ~/.mutt/gustav.behm@gmail.com.rc'
+folder-hook 'rootmos.io' 'source ~/.mutt/rootmos.io.rc'
+source ~/.mutt/rootmos.io.rc
+
+macro index <f2> '<sync-mailbox><enter-command>source ~/.mutt/rootmos.io.rc<enter><change-folder>!<enter>'
+macro index <f3> '<sync-mailbox><enter-command>source ~/.mutt/gustav.behm@gmail.com.rc<enter><change-folder>!<enter>'
 
 color normal default default
 
 set editor="vim"
 
-set imap_user           = "gustav.behm@gmail.com"
 set imap_keepalive      = 30
 set imap_idle
 set imap_check_subscribed
 unset imap_passive
 unset imap_peek
 
-set folder              = "imaps://imap.gmail.com"
-set spoolfile           = "+INBOX"
-set postponed           = "+[Gmail]/Drafts"
-set header_cache        = ~/.mutt/gustav.behm/headers
-set message_cachedir    = ~/.mutt/gustav.behm/bodies
-set certificate_file    = ~/.mutt/certificates
-set smtp_url            = "smtp://gustav.behm@smtp.gmail.com:587/"
+set certificate_file = ~/.mutt/certificates
 set move                = no
 
-set from = "Gustav Behm <gustav.behm@gmail.com>"
-
-set pgp_sign_as = "0xbb43faf5535b14b7"
-source ~/.mutt/gpg.rc
-
-macro index,pager y "<save-message>=[Gmail]/All%20Mail<enter><enter>" "Archive"
 bind index - collapse-thread
 bind index _ collapse-all
 
