@@ -1,0 +1,13 @@
+urls-source "inoreader"
+inoreader-login "gustav.behm"
+inoreader-passwordeval "pass social/inoreader"
+inoreader-show-special-feeds no
+
+browser "chromium"
+
+auto-reload yes
+refresh-on-startup yes
+
+color info black color15 dim
+color listfocus white color59
+color listfocus_unread white color59 bold
