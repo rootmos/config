@@ -42,6 +42,10 @@ set index_format="%4C %Z %-16[%a %d %b %R] (%{%z}) %-17.17L %s"
 set fast_reply=yes
 set include=yes
 
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+set mailcap_path = ~/.mutt/mailcap
+
 ## GooBook
 set query_command="goobook query '%s'"
 macro index,pager a "<pipe-message>goobook add<return>" "add sender to google contacts"
