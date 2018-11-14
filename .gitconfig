@@ -1,7 +1,7 @@
 [user]
-    email = gustav.behm@gmail.com
+    email = me@rootmos.io
     name = Gustav Behm
-    signingkey = FFA57206A6E8D3CC
+    signingkey = 413B70A6B053F80C
 [includeIf "gitdir:~/upvest/"]
         path = ~/upvest/.gitconfig
 [commit]
