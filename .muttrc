@@ -1,11 +1,6 @@
 source ~/.mutt/gpg.rc
 
-folder-hook 'gmail.com' 'source ~/.mutt/gustav.behm@gmail.com.rc'
-folder-hook 'rootmos.io' 'source ~/.mutt/rootmos.io.rc'
 source ~/.mutt/rootmos.io.rc
-
-macro index <f2> '<sync-mailbox><enter-command>source ~/.mutt/rootmos.io.rc<enter><change-folder>!<enter>'
-macro index <f3> '<sync-mailbox><enter-command>source ~/.mutt/gustav.behm@gmail.com.rc<enter><change-folder>!<enter>'
 
 color normal default default
 
