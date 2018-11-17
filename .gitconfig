@@ -19,19 +19,11 @@
     ap = add --patch
     c = commit --verbose
     ca = commit --verbose --amend
-    ryck = pull
-    knuffa = push
-    #hämta = fetch
-    gren = branch
-    #förgrena = branch
-    #förbinda = commit
-    ympa = rebase
-    sammanfoga = merge
-    #göm = stash
-    klandra = blame
-    #märke = tag
-    #märk = tag
     ba = branch --sort=committerdate --all -vv
     ls = ls-files
+    co = !sh -c 'git checkout -B $1 ${2-origin}/$1' -
+    b = checkout -B
 [color]
     ui = auto
+[http]
+	postBuffer = 524288000
