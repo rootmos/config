@@ -2,6 +2,8 @@
 
 AUDIO_JOURNAL="${AUDIO_JOURNAL-$HOME/audio-journal}"
 
+SUFFIX=.mp3
+
 choose_takes_dir() {
     IFS=':' read -ra TAKES <<< "$AUDIO_JOURNAL_TAKES"
     for target in "${TAKES[@]}"; do
@@ -33,29 +35,56 @@ save_to_secondary() {
     done
 }
 
+upload() {
+    s3cmd put "$1" s3://rootmos-sounds
+}
+
 tag() {
     YEAR=$(date --date="$DATE" +%Y)
-    read -p "Title: " TITLE
-    OUT=$(with_title "$TITLE")
-    cp "$1" "$OUT"
-    id3v2 -D "$OUT"
-    id3v2 \
+    LENGTH=$(soxi -D "$1")
+    URL="https://rootmos-sounds.ams3.cdn.digitaloceanspaces.com/$1"
+    id3v2  1>&2 -D "$1"
+    id3v2 1>&2 \
         --artist=rootmos \
         --song="$TITLE" \
         --TCOM="Gustav Behm" \
         --TCOP="$YEAR Gustav Behm" \
-        --WOAR="https://rootmos.github.io" \
-        --WOAF="https://soundcloud.com/rootmos" \
+        --WOAR="https://rootmos.io" \
+        --WOAF="$URL" \
         --TRDA="$DATE" \
+        --TLEN="$LENGTH" \
         --year="$YEAR" \
         --genre=52 \
-        "$OUT"
+        "$1"
+
+    METADATA=$(echo "$1" | sed "s/$SUFFIX$/.json/")
+    cat > "$METADATA" <<EOF
+{
+    "title": "$TITLE",
+    "sha1": "$(sha1sum "$1" | cut -d' ' -f1)",
+    "url": "$URL",
+    "filename": "$1",
+    "artist": "rootmos",
+    "composer": "Gustav Behm",
+    "date": "$DATE",
+    "year": $YEAR,
+    "length": $LENGTH
+}
+EOF
+    echo "$METADATA"
 }
 
 postprocess() {
     sox "$1" "$2"
-    tag "$2"
-    save_to_secondary "$2"
+    read -p "Title: " TITLE
+    OUT=$(with_title "$TITLE")
+    cp "$2" "$OUT"
+    METADATA=$(tag "$OUT")
+    cat $METADATA
+    save_to_secondary "$OUT"
+    save_to_secondary "$METADATA"
+    upload "$OUT"
+    upload "$METADATA"
 }
 
 playback() {
@@ -64,8 +93,8 @@ playback() {
 
 with_title() {
     if [ -z "$1" ]; then
-        echo "$AUDIO_JOURNAL/$DATE.mp3"
+        echo "$AUDIO_JOURNAL/$DATE$SUFFIX"
     else
-        echo "$AUDIO_JOURNAL/${DATE}_$(echo "$1" | tr ' ' '-').mp3"
+        echo "$AUDIO_JOURNAL/${DATE}_$(echo "$1" | tr ' ' '-')$SUFFIX"
     fi
 }
