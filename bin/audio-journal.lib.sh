@@ -36,13 +36,14 @@ save_to_secondary() {
 }
 
 upload() {
-    s3cmd put "$1" s3://rootmos-sounds
+    s3cmd put --acl-public "$1" s3://rootmos-sounds
 }
 
 tag() {
     YEAR=$(date --date="$DATE" +%Y)
     LENGTH=$(soxi -D "$1")
-    URL="https://rootmos-sounds.ams3.cdn.digitaloceanspaces.com/$1"
+    FILENAME=$(basename "$1")
+    URL="https://rootmos-sounds.ams3.cdn.digitaloceanspaces.com/$FILENAME"
     id3v2  1>&2 -D "$1"
     id3v2 1>&2 \
         --artist=rootmos \
@@ -63,7 +64,7 @@ tag() {
     "title": "$TITLE",
     "sha1": "$(sha1sum "$1" | cut -d' ' -f1)",
     "url": "$URL",
-    "filename": "$1",
+    "filename": "$FILENAME",
     "artist": "rootmos",
     "composer": "Gustav Behm",
     "date": "$DATE",
@@ -71,6 +72,7 @@ tag() {
     "length": $LENGTH
 }
 EOF
+
     echo "$METADATA"
 }
 
@@ -80,7 +82,6 @@ postprocess() {
     OUT=$(with_title "$TITLE")
     cp "$2" "$OUT"
     METADATA=$(tag "$OUT")
-    cat $METADATA
     save_to_secondary "$OUT"
     save_to_secondary "$METADATA"
     upload "$OUT"
