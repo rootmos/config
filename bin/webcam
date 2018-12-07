@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -o errexit
+
+USBGUARD=usbguard
+
+ID="04f2:b604"
+RULE=$("$USBGUARD" list-devices | grep "$ID")
+USBGUARD_DEVICE=$(echo "$RULE" | cut -d':' -f1)
+
+if [ "$1" = "disable" ]; then
+    "$USBGUARD" block-device "$USBGUARD_DEVICE"
+elif [ "$1" = "enable" ]; then
+    "$USBGUARD" allow-device "$USBGUARD_DEVICE"
+else
+    echo "$RULE" | cut -d' ' -f2
+fi
