@@ -4,8 +4,7 @@ XPTvar $BRif ' '
 XPTvar $BRel \n
 XPTvar $BRloop ' '
 XPTvar $BRfun ' '
-XPTvar $author 'Derek Wyatt'
-XPTvar $email derek@derekwyatt.org
+XPTvar $author 'Derek Wyatt (modified by Gustav Behm)'
 
 XPTinclude
     \ _common/personal
@@ -105,17 +104,29 @@ function! s:f.getCurrentDir(...)
   return expand('%:p:h:t')
 endfunction
 
+XPT id hint=Imports\ dry
+import co.upvest.dry.`cursor^
+
+XPT iu hint=Imports\ upvest\ stuff
+import co.upvest.`cursor^
+
+XPT ic hint=Imports\ cats
+import cats.`cursor^
+
+XPT ici hint=Imports\ cats\ instances
+import cats.instances.`cursor^._
+
+XPT ics hint=Imports\ cats\ syntax
+import cats.syntax.`cursor^._
+
+XPT isu hint=Imports\ cats\ syntax
+import scala.util.`cursor^
+
+XPT isc hint=Imports\ cats\ syntax
+import scala.concurrent.`cursor^
+
 XPT impakka hint=Imports\ basic\ akka\ stuff
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
-
-XPT file hint=Standard\ Scala\ source\ file
-//
-// `getFilenameWithPackage()^
-//
-// Copyright (c) `year()^ Derek Wyatt (derek@derekwyatt.org)
-//
-`getPackageLine()^
-`cursor^
 
 XPT main hint=Creates\ a\ "Main"\ object
 object `objectName^ {
@@ -139,7 +150,7 @@ XPT co hint=Creates\ a\ case\ object
 case object `objectName^
 
 XPT case hint=Creates\ a\ case\ statement
-case `matchAgainst^ => 
+case `matchAgainst^ =>
 
 XPT trait hint=Creates\ a\ trait
 trait `traitName^ {
@@ -358,7 +369,7 @@ object `multijvmObject()^ extends AbstractRemoteActorMultiJvmSpec {
     def commonConfig = ConfigFactory.parseString("""
         akka.actor.provider = "akka.remote.RemoteActorRefProvider",
         akka.remote.transport = "akka.remote.netty.NettyRemoteTransport"
-    """) 
+    """)
 }
 
 trait `multijvmBase()^ extends WordSpec

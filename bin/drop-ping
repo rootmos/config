@@ -1,16 +1,34 @@
-#!/bin/sh
+#!/bin/bash
 
 set -o pipefail
 
-measure() {
-    timeout 1 httping -M -c 1 -f http://drop:7001 \
+TARGET=ip.rootmos.io
+
+icmp() {
+    ping -q -n -c3 -i0.2 $TARGET \
+        | grep avg \
+        | cut -f4 -d' ' | cut -f2 -d'/'
+}
+
+ssl() {
+    ulimit -c 0
+    timeout 1 httping -G -M -c1 -f https://$TARGET \
         | jq .[0].total_ms -r \
         | xargs -I{} calc -p "round({})"
 }
 
-MS=$(measure)
+MS=$(icmp)
 if [ $? -eq 0 ]; then
-    echo "${MS}ms"
+    printf "%.0fms" "$MS"
 else
-    echo "-"
+    echo -n "-"
+fi
+
+echo -n " "
+
+MS=$(ssl)
+if [ $? -eq 0 ]; then
+    echo -n "${MS}ms"
+else
+    echo -n "-"
 fi

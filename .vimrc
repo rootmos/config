@@ -10,6 +10,7 @@ set laststatus=2
 set clipboard+=unnamed
 set clipboard+=unnamedplus
 set backspace=indent,eol,start
+setlocal iskeyword+=-
 "set autochdir
 
 set nowrap
@@ -19,7 +20,7 @@ set matchtime=3
 
 set wildmode=longest,list,full
 set wildmenu
-set wildignore=target,**/META-INF/**,**/build/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**,*.vo,*.glob,*.v.d,*.aux
+set wildignore=target,**/META-INF/**,**/build/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**,*.vo,*.glob,*.v.d,*.aux,node_modules
 
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
@@ -57,6 +58,7 @@ Plugin 'guersam/vim-j'
 Plugin 'luochen1990/rainbow'
 "Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'tomlion/vim-solidity'
+Plugin 'GEverding/vim-hocon'
 call vundle#end()
 
 " Import my xpt templates
@@ -98,7 +100,7 @@ if has("gui_running")
 		set guifont=Consolas:h11:cANSI
 	endif
 else
-    set background=light
+    set background=dark
 endif
 
 " <Ctrl-l> redraws the screen and removes any search highlighting.
@@ -119,6 +121,7 @@ autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
 
 inoremap hh <Esc>
 inoremap uu <Esc>:w<CR>
+inoremap ii <Esc>:wall<CR>
 nnoremap q <NOP>
 nnoremap Q <NOP>
 

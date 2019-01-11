@@ -1,2 +1,9 @@
 #!/bin/sh
-pick ~/docs
+
+set -o errexit
+
+if [ ! -t 1 ]; then
+    exec urxvt -e $0 "$@"
+fi
+
+exec ranger ~/docs

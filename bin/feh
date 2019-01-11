@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/feh --scale-down --image-bg=black --auto-zoom "$@"
+exec /usr/bin/feh --scale-down --image-bg=black --auto-zoom "$@"

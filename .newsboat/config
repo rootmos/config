@@ -8,6 +8,6 @@ browser "chromium"
 auto-reload yes
 refresh-on-startup yes
 
-color info black color15 dim
+color info black color15
 color listfocus white color59
 color listfocus_unread white color59 bold

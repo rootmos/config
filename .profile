@@ -7,11 +7,15 @@ PATH=/home/gustav/root/scrypt/usr/bin:$PATH
 PATH=/home/gustav/root/asn1c/bin:$PATH
 
 PATH=/home/gustav/root/ammonite/bin:$PATH
+PATH=/home/gustav/root/dmenu/bin:$PATH
+PATH=/home/gustav/root/bitcoin/bin:$PATH
+PATH=/home/gustav/root/newsboat/bin:$PATH
+PATH=/home/gustav/root/solidity/usr/local/bin:$PATH
 
 PATH=/home/gustav/.cargo/bin:$PATH
 PATH=/home/gustav/bin:/home/gustav/.local/bin:$PATH
 
-GOPATH=/home/gustav/go
+GOPATH=/home/gustav/upvest/go
 PATH=$GOPATH/bin:$PATH
 
 export PLAYER=mpv
