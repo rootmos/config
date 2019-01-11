@@ -11,6 +11,8 @@ color normal default default
 
 set editor="vim"
 
+set pgp_use_gpg_agent = yes
+
 set imap_keepalive      = 30
 set imap_idle
 set imap_check_subscribed

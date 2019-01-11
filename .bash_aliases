@@ -26,3 +26,5 @@ alias suspend="sudo suspend"
 
 alias netctl="sudo netctl"
 alias pacman="sudo pacman"
+
+alias cal="/usr/bin/cal -m"

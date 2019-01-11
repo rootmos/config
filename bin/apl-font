@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ $# -gt 1 ]; then
+    exec urxvt -fn "xft:APL385 Unicode:pixelsize=24" -e "$@"
+else
+    exec urxvt -fn "xft:APL385 Unicode:pixelsize=24"
+fi

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -z $PINENTRY_FORCE_GTK ]; then
+    exec /usr/bin/pinentry-gtk-2 "$@"
+fi
+
 case $PINENTRY_USER_DATA in
 gtk) exec /usr/bin/pinentry-gtk-2 "$@" ;;
 *) exec /usr/bin/pinentry-curses "$@"

@@ -6,6 +6,8 @@ PATH=/home/gustav/root/sha3sum/bin:$PATH
 PATH=/home/gustav/root/scrypt/usr/bin:$PATH
 PATH=/home/gustav/root/asn1c/bin:$PATH
 
+PATH=/home/gustav/root/dyalog/opt/mdyalog/15.0/64/unicode:$PATH
+
 PATH=/home/gustav/root/ammonite/bin:$PATH
 
 PATH=/home/gustav/.cargo/bin:$PATH

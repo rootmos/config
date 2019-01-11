@@ -3,9 +3,9 @@
 
 HISTFILE=
 
-is_private_mounted()
+is_mounted()
 {
-    if grep -qs ~/private /proc/mounts; then
+    if grep -qs $1 /proc/mounts; then
         echo -n 'm'
     else
         echo -n 'u'
@@ -13,4 +13,4 @@ is_private_mounted()
 }
 
 
-PS1='p$(is_private_mounted) \h:\w\$ '
+PS1='p$(is_mounted ~/private) r$(is_mounted ~/mnt/rp) \h:\w\$ '

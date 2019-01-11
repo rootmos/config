@@ -3,14 +3,21 @@
 set -o pipefail
 
 measure() {
-    timeout 1 httping -M -c 1 -f http://drop:7001 \
+    timeout 1 httping -G -M -c 1 -f https://ip.rootmos.io \
         | jq .[0].total_ms -r \
         | xargs -I{} calc -p "round({})"
 }
 
 MS=$(measure)
 if [ $? -eq 0 ]; then
-    echo "${MS}ms"
+    echo -n "${MS}ms"
 else
-    echo "-"
+    echo -n "-"
+fi
+
+CITY=$(curl --max-time 1 ip.rootmos.io/city)
+if [ $? -eq 0 -a -n "$CITY" ]; then
+    echo -n " $CITY"
+else
+    echo -n " $(curl --max-time 1 ip.rootmos.io/country)"
 fi

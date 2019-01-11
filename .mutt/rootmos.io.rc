@@ -10,3 +10,6 @@ macro index,pager y "<save-message>=Archive<enter><enter>" "Archive"
 
 source "gpg --batch --quiet --decrypt ~/.mutt/rootmos.io.pass.rc.gpg |"
 account-hook $folder "set imap_user=$imap_user imap_pass=$my_fastmail_pass smtp_pass=$my_fastmail_pass"
+
+unmailboxes *
+mailboxes "=INBOX"
