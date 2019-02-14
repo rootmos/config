@@ -1,0 +1,5 @@
+auth  required        pam_unix.so nullok_secure try_first_pass
+auth  [success=1 new_authtok_reqd=ok ignore=ignore default=die] pam_yubico.so mode=challenge-response
+auth  requisite       pam_deny.so
+auth  required        pam_permit.so
+auth  optional        pam_ecryptfs.so unwrap
