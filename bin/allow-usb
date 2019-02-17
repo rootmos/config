@@ -1,0 +1,2 @@
+#!/bin/sh
+usbguard list-devices | dmenu -l 10 | cut -f1 -d: | xargs usbguard allow-device

@@ -1,0 +1,55 @@
+#!/bin/sh
+
+MNT=$HOME/mnt/.cloud
+TARGET=$HOME/mnt/cloud
+
+set -o errexit
+
+OP=m
+while getopts "mu" opt; do
+    case $opt in
+        u) OP=u ;;
+        m) OP=m ;;
+        \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
+    esac
+done
+
+is_mounted() {
+    grep -qs "$1" /proc/mounts
+}
+
+do_mount() {
+    if ! is_mounted "$MNT"; then
+        mkdir -p "$MNT"
+        s3fs rootmos-private "$MNT" \
+            -o url=https://ams3.digitaloceanspaces.com \
+            -o use_path_request_style
+    fi
+}
+
+do_umount() {
+    if is_mounted "$MNT"; then
+        fusermount -u "$MNT"
+    fi
+}
+
+do_open() {
+    if ! is_mounted "$TARGET"; then
+        mkdir -p "$TARGET"
+        pass private/cloud | encfs --stdinpass --idle=60 "$MNT" "$TARGET"
+    fi
+}
+
+do_close() {
+    if is_mounted "$TARGET"; then
+        fusermount -u "$TARGET"
+    fi
+}
+
+if [ "$OP" = "m" ]; then
+    do_mount
+    do_open
+elif [ "$OP" = "u" ]; then
+    do_close
+    do_umount
+fi
