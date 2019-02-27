@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o errexit
 
@@ -9,7 +9,7 @@ trap "{ rm -rf \"$TMP\"; }" EXIT
 # - https://developer.github.com/v3/auth/#via-oauth-tokens
 # - https://github.com/settings/tokens
 AUTH=$(cat "$HOME/.github-personal-access-token")
-TARGET="/mnt/volume_fra1_01/github"
+TARGET="/mnt/volume_ams1_01/github"
 BASEURL=https://api.github.com
 
 function req_wo() {
@@ -22,7 +22,7 @@ function req() {
 }
 
 function next () {
-    grep "^Link" "$1" | grep next | sed 's/.*\s\+<\(\S\+\)>\s*;\s*rel\s*=\s*"next".*/\1/'
+    grep "^Link" "$1" | grep next | sed 's/.*<\(.*\)>; rel="next".*/\1/'
 }
 
 function paginate {
