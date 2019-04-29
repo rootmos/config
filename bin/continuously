@@ -1,17 +1,34 @@
-#!/bin/sh
+#!/bin/bash
 
-files() {
-    git ls-files -z $1 2>/dev/null || echo -n $1
+manual_waiter() {
+  read -sp "[wait] " < /dev/tty && echo 1>&2 "[manual trigger]"
 }
 
-waiter() {
-    xargs -0 inotifywait -e close_write,moved_to --format="%f"
+file_waiter() {
+  inotifywait --quiet -e close_write,moved_to --format="%f" \
+    $(git ls-files "$1" 2>/dev/null || echo "$1")
+  echo 1>&2 "[file trigger]"
 }
 
-target=$1
+TARGET=$1
 shift
 
 while true; do
-    files $target | waiter
-    /bin/sh -c "$*"
+  (manual_waiter) &
+  manual_pid=$!
+  (file_waiter "$TARGET") &
+  file_pid=$!
+
+  trap "kill $manual_pid $file_pid; echo; exit 0" INT
+  wait -n $manual_pid $file_pid
+  kill $manual_pid $file_pid 2>/dev/null
+  wait
+  trap - INT
+
+  ($*) &
+  child_pid=$!
+  trap "killall -q $child_pid; echo" INT
+  wait $child_pid
+  wait
+  trap - INT
 done
