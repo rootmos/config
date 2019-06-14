@@ -1,19 +1,17 @@
 source ~/.mutt/gpg.rc
 
-source ~/.mutt/rootmos.io.rc
-
 color normal default default
 
-set editor="vim"
+set editor = vim
+set pager_stop = yes
 
-set imap_keepalive      = 30
-set imap_idle
-set imap_check_subscribed
-unset imap_passive
-unset imap_peek
+set imap_keepalive = 30
+set imap_idle = no
+set imap_passive = no
+set ssl_force_tls = yes
 
 set certificate_file = ~/.mutt/certificates
-set move                = no
+set move = no
 
 bind index - collapse-thread
 bind index _ collapse-all
@@ -23,8 +21,8 @@ set sort_aux=last-date-received
 set sort_re="yes"
 set reply_regexp="^(re|fwd*|sv):[ \t]*"
 
-set timeout             = 10                   # idle time before scanning
-set mail_check          = 10                   # minimum time between scans
+set timeout = 10
+set mail_check = 10
 
 set index_format="%4C %Z %-16[%a %d %b %R] (%{%z}) %-17.17L %s"
 
@@ -34,8 +32,3 @@ set include=yes
 auto_view text/html
 alternative_order text/plain text/enriched text/html
 set mailcap_path = ~/.mutt/mailcap
-
-## GooBook
-set query_command="goobook query '%s'"
-macro index,pager a "<pipe-message>goobook add<return>" "add sender to google contacts"
-bind editor <Tab> complete-query

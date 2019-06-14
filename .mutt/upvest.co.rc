@@ -1,0 +1,16 @@
+source ~/.muttrc
+
+set from = "Gustav Behm <gustav@upvest.co>"
+set pgp_sign_as = "F9750FED6C062540C00B60D097F50513C78810A7"
+set pgp_autosign = yes
+
+set folder = "imaps://imap.gmail.com:993"
+set imap_user="gustav@upvest.co"
+set smtp_url = "smtps://$imap_user@smtp.gmail.com:465/"
+set spoolfile = "="
+
+mailboxes =INBOX =CircleCI
+
+source "gpg --batch --quiet --decrypt ~/.mutt/upvest.co.pass.rc.gpg |"
+
+macro index,pager y "<save-message>=[Gmail]/All Mail<enter><enter>" "Archive"

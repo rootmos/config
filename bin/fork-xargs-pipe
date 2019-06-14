@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+set -o xtrace
+
+TMP=$(mktemp)
+
+go() {
+    trap "rm -f $TMP" EXIT
+    echo "$TMP" | xargs $@
+}
+
+cat > "$TMP"
+go $@ &
