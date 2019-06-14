@@ -1,2 +1,21 @@
 #!/bin/sh
-sudo tcpflow -i $1 -a -c port $2
+
+I=lo
+FILTERS=
+while getopts "i:p:" opt; do
+    case $opt in
+        i) I=$OPTARG ;;
+        p) FILTERS="$FILTERS or port $OPTARG" ;;
+        \?) echo "Invalid option: -$OPTARG" 1>&2 exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+OPTS="-S enable_report=NO -X/dev/null"
+CMD="tcpflow -i $I $OPTS -c"
+if [ -n "$FILTERS" ]; then
+    CMD="$CMD (0==1) $FILTERS"
+fi
+
+echo 1>&2 "cmd: $CMD"
+sudo $CMD

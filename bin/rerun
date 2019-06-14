@@ -15,4 +15,4 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-$PLAYER $ao_null "$(find "$@" -iname '*.avi' -or -iname '*.mkv' -or -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' | shufflin | head -n 1)"
+find "$@" -iname '*.avi' -or -iname '*.mkv' -or -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' | shufflin | $PLAYER $ao_null --playlist=-

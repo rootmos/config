@@ -35,7 +35,7 @@ findDevice() {
 }
 
 target_dirs=$($get DEFAULT target | tr ':' '\n')
-tmp_dir=/tmp
+tmp_dir=${TMP-$HOME/tmp}
 
 drives=$($get | grep -v DEFAULT | xargs)
 
