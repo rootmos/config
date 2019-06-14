@@ -20,3 +20,15 @@ if(0 != (r = uv_`f^(`args^))) {
 
 XPT cast hint=cast
 `ty^* `v^ = (`ty^*)`w^;
+
+XPT main hint=main
+int main(int argc, char** argv)
+{
+    `cursor^
+    return 0;
+}
+
+XPT for hint=forloop
+for(size_t `i^ = 0; `i^ < `len^; `i^++) {
+    `cursor^
+}

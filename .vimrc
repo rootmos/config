@@ -1,27 +1,31 @@
 scriptencoding utf-8
 set encoding=utf-8
-
 set nocompatible
-set modeline
+set nomodeline
 set ruler
 set number
 set showcmd
 set laststatus=2
-set clipboard+=unnamed
-set clipboard+=unnamedplus
+set clipboard=unnamed
 set backspace=indent,eol,start
-setlocal iskeyword+=-
-"set autochdir
-
+set iskeyword+=-
+set directory^=$HOME/.vim/tmp/
 set nowrap
-
 set showmatch
 set matchtime=3
-
 set wildmode=longest,list,full
 set wildmenu
-set wildignore=target,**/META-INF/**,**/build/**,*class,*.orig,**/_build/**,*.native,*.byte,**/_build/**,*.vo,*.glob,*.v.d,*.aux,node_modules
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set expandtab
+set listchars=tab:»\ 
+set colorcolumn=+1
 
+syntax enable
+
+" plugins
 filetype off
 set runtimepath+=$HOME/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -30,12 +34,10 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'bling/vim-airline'
 Bundle 'tpope/vim-fugitive'
 Bundle 'Valloric/YouCompleteMe'
-"Bundle 'airblade/vim-gitgutter'
 Bundle 'derekwyatt/vim-fswitch'
 Bundle 'jlanzarotta/bufexplorer'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
-"Bundle 'raichoo/haskell-vim'
 Plugin 'neovimhaskell/haskell-vim.git'
 Bundle 'derekwyatt/vim-scala'
 Plugin 'rootmos/ack.vim'
@@ -43,47 +45,27 @@ Bundle 'wincent/command-t'
 Bundle 'drmingdrmer/xptemplate'
 Plugin 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-abolish'
-"Bundle 'mpollmeier/vim-scalaConceal'
 Bundle 'godlygeek/tabular'
 Bundle 'IN3D/vim-raml'
 Plugin 'rust-lang/rust.vim'
 Plugin 'ngn/vim-apl'
 Plugin 'rootmos/vim-slime'
-"Plugin 'tounaishouta/coq.vim'
 Plugin 'bluelightning32/coquille'
 Plugin 'let-def/vimbufsync'
 Plugin 'idris-hackers/idris-vim.git'
 Plugin 'guersam/vim-j'
-"Plugin 'kovisoft/paredit'
 Plugin 'luochen1990/rainbow'
-"Plugin 'kien/rainbow_parentheses.vim'
 Plugin 'tomlion/vim-solidity'
 Plugin 'GEverding/vim-hocon'
 call vundle#end()
 
-" Import my xpt templates
+filetype plugin indent on
+
 set runtimepath+=~/.vim/xpt-personal
 let g:xptemplate_key = '<C-t>'
 let g:xptemplate_nav_next = '<C-t>'
 
-filetype plugin indent on
-
-set tabstop=4 softtabstop=4 shiftwidth=4 expandtab
-
-set list
-set listchars=tab:»\ 
-
-set colorcolumn=+1
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%81v.\+/
-
-syntax enable
-
-set ignorecase
-set smartcase
-set incsearch
-set hlsearch
-
+" colors
 colorscheme solarized
 set t_Co=256
 call togglebg#map("<F12>")
@@ -103,21 +85,9 @@ else
     set background=dark
 endif
 
-" <Ctrl-l> redraws the screen and removes any search highlighting.
+" bindings
 nnoremap <silent> <C-l> :nohl<CR><C-l>
-
-
-"noremap <F5> :w<CR>:make<CR>
-
-noremap <F5> :bp<CR>
-noremap <F6> :bn<CR>
-noremap <F7> :bdelete<CR>
-noremap <F8> :BufExplorer<CR>
-
-noremap <F9> :Explore<CR>
-noremap <F10> :FSHere<CR>
-
-autocmd FileType netrw nmap <silent> <buffer> q :bdelete<CR>
+nnoremap <C-W><C-W> <NOP>
 
 inoremap hh <Esc>
 inoremap uu <Esc>:w<CR>
@@ -125,7 +95,13 @@ inoremap ii <Esc>:wall<CR>
 nnoremap q <NOP>
 nnoremap Q <NOP>
 
-nnoremap <C-W><C-W> <NOP>
+nnoremap <F4> :Ack 
+nnoremap <F3> :AckWord<CR>
+command! -bang AckWord call ack#Ack('grep<bang>', "'\\b" . expand("<cword>") . "\\b'")
+nmap ^[[19^ :wqall<CR>
+imap ^[[19^ <Esc>:wqall<CR>
+nmap <F8> :w<CR>
+imap <F8> <Esc>:w<CR>
 
 let mapleader = ","
 let maplocalleader = '-'
@@ -135,47 +111,37 @@ nmap <leader>f :FufFileWithCurrentBufferDir<CR>
 nmap <leader>c :FufChange<CR>
 nmap <leader>j :FufJump<CR>
 nmap <leader>t :CommandT<CR>
+nmap <leader>n :cn<CR>
+nmap <leader>p :cp<CR>
+nmap <leader>o :copen<CR>
+nmap <leader>q :cclose<CR>
+nmap <leader>C :source ~/.vimrc<cr>
+
+runtime ftplugin/man.vim
+set keywordprg=:Man
+nmap <leader>m :Man 
 
 imap <C-l> λ
 imap <C-a> α
 imap <C-b> ⊥
 imap <C-j> ∘
+nmap <c-c><c-l> :SlimeSendCurrentLine<cr>
+nmap <c-c><c-d> :SlimeSendCurrentLine<cr>
 
 command! FixTrailing execute ':%s/\s\+$//c'
 
+" plugin configs
 let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_complete_in_comments = 1
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_add_preview_to_completeopt = 1
 let g:ycm_autoclose_preview_window_after_completion = 1
-
-"let g:ycm_global_ycm_extra_conf = '~/.vim/ycm_global_conf.py'
-"let g:ycm_filetype_whitelist = { 'cpp': 1 }
-
+let g:CommandTFileScanner = 'git'
 let g:ackprg = 'ag --nogroup --nocolor --column --ignore=META-INF'
-nnoremap <F4> :Ack 
-nnoremap <F3> :AckWord<CR>
-command! -bang AckWord call ack#Ack('grep<bang>', "'\\b" . expand("<cword>") . "\\b'")
-
-nmap ^[[19^ :wqall<CR>
-imap ^[[19^ <Esc>:wqall<CR>
-nmap <F8> :w<CR>
-imap <F8> <Esc>:w<CR>
-
-nmap <leader>n :cn<CR>
-nmap <leader>p :cp<CR>
-nmap <leader>o :copen<CR>
-nmap <leader>q :cclose<CR>
-
 let g:slime_target = "tmux"
-nmap <c-c><c-l> :SlimeSendCurrentLine<cr>
-nmap <c-c><c-d> :SlimeSendCurrentLine<cr>
 
-nmap <leader>C :source ~/.vimrc<cr>
-
-:call has('python')
-
+" Notes command
 function! Note(offset)
     let dir = $NOTES_DIR
     if dir == ""
@@ -200,22 +166,6 @@ endfunction
 
 command! -nargs=? Note call Note(<q-args>)
 
-
-if executable('opam')
-  let g:opamshare = substitute(system('opam config var share'),'\n$','','''')
-  if executable('ocamlmerlin')
-    execute 'set rtp+=' . g:opamshare . '/merlin/vim'
-    let g:merlin_split_method = 'vertical'
-    let g:syntastic_ocaml_checkers = ['merlin']
-    nmap <buffer> <C-]> :MerlinLocate<CR>
-  endif
-  if executable('ocp-indent')
-    execute 'set rtp+=' . g:opamshare . '/ocp-indent/vim'
-  endif
-  if executable('ocp-index')
-    execute 'set rtp+=' . g:opamshare . '/ocp-index/vim'
-  endif
-endif
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
 let s:opam_share_dir = system("opam config var share")
 let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
