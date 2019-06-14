@@ -1,8 +1,9 @@
 . ~/.profile
 . ~/.bash_aliases
 . ~/.kubectl_aliases
+. ~/.gcloud_aliases
 
-PS1='\u@\h:\w\$ '
+PS1='\w '
 export MANWIDTH=79
 export GPG_TTY=$(tty)
 
@@ -13,13 +14,3 @@ export TELEPRESENCE_BINARY=/home/gustav/root/telepresence/bin/telepresence
 
 NPM_PACKAGES="$HOME/.npm-packages"
 PATH="$NPM_PACKAGES/bin:$PATH"
-
-# ssh-agent
-
-if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-    ssh-agent > ~/.ssh-agent-thing
-fi
-
-if [[ "$SSH_AGENT_PID" == "" ]]; then
-    eval "$(<~/.ssh-agent-thing)"
-fi

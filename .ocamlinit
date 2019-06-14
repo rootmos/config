@@ -1,6 +1,4 @@
 #use "topfind";;
-#require "core_kernel";;
-open Core_kernel.Std;;
 
 #require "lambda-term";;
 let () =
