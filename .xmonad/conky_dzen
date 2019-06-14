@@ -6,10 +6,10 @@ conky.config = {
 }
 
 conky.text = [[
-^fg(\#aaaaaa)D: ${downspeedf wlp59s0}kib/s^fg(\#FFFFFF) ^fg(\#aaaaaa)U: ${upspeedf wlp59s0}kib/s^fg(\#FFFFFF) \
+^fg(\#aaaaaa)↓${downspeedf wlp59s0}^fg(\#FFFFFF) ^fg(\#aaaaaa)↑${upspeedf wlp59s0}^fg(\#FFFFFF) \
 | ^fg(\#aaaaaa)${exec wifi-status}^fg(\#FFFFFF) \
 | ^fg(\#aaaaaa)${exec drop-ping}^fg(\#FFFFFF) \
-| ^fg(\#aaaaaa)TD: ${exec rx-bytes-marker.sh -i wlp59s0}^fg(\#FFFFFF) \
+| ^fg(\#aaaaaa)↓${exec rx-bytes-marker.sh -i wlp59s0}^fg(\#FFFFFF) \
 | ^fg(\#aaaaaa)${exec lock-status}^fg(\#FFFFFF) \
 | ^fg(\#aaaaaa)${exec [ -c /dev/video0 ] && echo V}^fg(\#FFFFFF) \
 | ^fg(\#aaaaaa)C:${cpu}% T:${hwmon 0 temp 1}° S:${swapperc}% M:${memperc}%^fg(\#FFFFFF) \

@@ -135,7 +135,7 @@ bars conf = do
     >>= (statusBar myXmonadBar myDzenPP toggleStrutsKey)
     where left = 800
           right width = width - left
-          font = "-*-*-*-r-*-*-14-*-*-*-*-*-*-*" :: String
+          font = "-*-helvetica-*-r-*-*-14-*-*-*-*-*-*-*" :: String
           dzen = printf "dzen2 -e 'onstart=lower' -dock -fg '#FFFFFF' -bg '#1B1D1E' -fn '%s'" font :: String
           myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l'" dzen left
           myStatusBar width = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" dzen left (right width)
@@ -153,4 +153,5 @@ main = xmonad =<< bars (ewmh c)
                 , keys = myKeys
                 , focusFollowsMouse = False
                 , focusedBorderColor = "red"
+                , borderWidth = 5
                 }
