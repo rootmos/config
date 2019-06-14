@@ -5,12 +5,10 @@ color normal default default
 set editor = vim
 set pager_stop = yes
 
-set imap_keepalive = 30
-set imap_idle = no
-set imap_passive = no
-set ssl_force_tls = yes
-
+set timeout = 5
+set mail_check = 5
 set certificate_file = ~/.mutt/certificates
+
 set move = no
 
 bind index - collapse-thread
@@ -20,9 +18,6 @@ set sort="threads"
 set sort_aux=last-date-received
 set sort_re="yes"
 set reply_regexp="^(re|fwd*|sv):[ \t]*"
-
-set timeout = 10
-set mail_check = 10
 
 set index_format="%4C %Z %-16[%a %d %b %R] (%{%z}) %-17.17L %s"
 

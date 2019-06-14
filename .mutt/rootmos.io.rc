@@ -3,15 +3,13 @@ source ~/.muttrc
 set from = "Gustav Behm <me@rootmos.io>"
 set pgp_sign_as = "8219E49C138B117F6CBA3FD9413B70A6B053F80C"
 set pgp_autosign = yes
-set folder = "imaps://imap.fastmail.com"
-set record = "=Sent"
-set postponed = "=Drafts"
-set imap_user = "me@rootmos.io"
-set smtp_url = "smtps://$imap_user@smtp.fastmail.com:465/"
-set spoolfile = "="
+set smtp_url = "smtps://me@rootmos.io@smtp.fastmail.com:465/"
 
-mailboxes =INBOX
+set folder = "~/mail/private"
+set record = "+/Sent"
+set postponed = "+/Drafts"
+set spoolfile = "+/INBOX"
 
-macro index,pager y "<save-message>=Archive<enter><enter>" "Archive"
+macro index,pager d "<save-message>+/Archive<enter><enter>" "Archive"
 
 source "gpg --batch --quiet --decrypt ~/.mutt/rootmos.io.pass.rc.gpg |"
