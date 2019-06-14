@@ -1,2 +1,30 @@
 #!/bin/sh
-tmux attach -t mail || tmux new -s mail mutt
+
+PRIVATE=
+WORK=
+SESSION=mail
+while getopts "pws:" OPT; do
+    case $OPT in
+        p) PRIVATE=1; WORK= ;;
+        w) PRIVATE=; WORK=1 ;;
+        s) SESSION=$OPTARG ;;
+        \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -n "$TMUX" ]; then
+    if [ -n "$PRIVATE" ]; then
+        tmux select-window -t private-mail 2>/dev/null \
+            || tmux new-window -n private-mail mutt -F ~/.mutt/rootmos.io.rc
+    elif [ -n "$WORK" ]; then
+        tmux select-window -t work-mail 2>/dev/null \
+            || tmux new-window -n work-mail mutt -F ~/.mutt/upvest.co.rc
+    fi
+elif [ -n "$PRIVATE" ]; then
+    mutt -F ~/.mutt/rootmos.io.rc
+elif [ -n "$WORK" ]; then
+    mutt -F ~/.mutt/upvest.co.rc
+else
+    exec tmux new-session -t "$SESSION"
+fi
