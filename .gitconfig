@@ -3,7 +3,7 @@
     name = Gustav Behm
     signingkey = 413B70A6B053F80C
 [includeIf "gitdir:~/upvest/"]
-        path = ~/upvest/.gitconfig
+    path = ~/upvest/.gitconfig
 [commit]
     gpgsign = true
 [core]
@@ -23,7 +23,7 @@
     ls = ls-files
     co = !sh -c 'git checkout -B $1 ${2-origin}/$1' -
     b = checkout -B
+    d = checkout --detach
+    fb = filter-branch --prune-empty --subdirectory-filter
 [color]
     ui = auto
-[http]
-	postBuffer = 524288000
