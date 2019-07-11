@@ -8,6 +8,7 @@ executable xmonad
   main-is:             Main.hs
   other-modules:       Utils
   build-depends:       base
+                     , directory
                      , xmonad
                      , xmonad-contrib
                      , containers

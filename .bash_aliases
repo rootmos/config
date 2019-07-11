@@ -6,6 +6,8 @@ alias p="exec /home/gustav/bin/p"
 alias c="continuously"
 alias g="git"
 alias gp="gist -p -c"
+alias v="vim"
+alias e="$EDITOR"
 
 alias ghc="stack ghc --"
 alias xmonad="stack exec xmonad --"

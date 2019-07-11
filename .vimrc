@@ -70,20 +70,7 @@ colorscheme solarized
 set t_Co=256
 call togglebg#map("<F12>")
 
-if has("gui_running")
-	set guioptions-=m
-	set guioptions-=T
-
-	set background=light
-
-    if has("gui_gtk2")
-		set guifont=Inconsolata\ 12
-	elseif has("gui_win32")
-		set guifont=Consolas:h11:cANSI
-	endif
-else
-    set background=dark
-endif
+let &background = join(readfile($HOME."/.theme"))
 
 " bindings
 nnoremap <silent> <C-l> :nohl<CR><C-l>

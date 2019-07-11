@@ -4,7 +4,7 @@ dv
 xset m 0 0
 
 xrdb ~/.Xdefaults
-xrdb -merge ~/git/config/solarized.dark
+xrdb -merge ~/git/config/solarized.$(<$HOME/.theme)
 
 chromium &
 redshift &

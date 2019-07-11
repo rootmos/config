@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts, ScopedTypeVariables #-}
+{-# LANGUAGE LambdaCase #-}
 module Main where
 
 import Control.Exception
@@ -8,6 +9,8 @@ import Graphics.X11.ExtraTypes.XF86
 import System.Exit
 import System.IO
 import System.IO.Error
+import System.Environment ( lookupEnv )
+import System.Directory ( getAppUserDataDirectory, doesFileExist )
 import Text.Printf
 import XMonad
 import XMonad.Actions.CycleWS
@@ -143,15 +146,20 @@ bars conf = do
 myStartupHook = composeAll [ setWMName "LG3D" ]
 
 main :: IO ()
-main = xmonad =<< bars (ewmh c)
-  where c = def { terminal = "urxvt"
-                , workspaces = map fst myWorkspaces
-                , manageHook = myManageHooks <+> manageSpawn <+> manageHook def
-                , layoutHook = myLayoutHook
-                , logHook = fadeInactiveLogHook 0xdddddddd <+> logHook def
-                , startupHook = myStartupHook <+> startupHook def
-                , keys = myKeys
-                , focusFollowsMouse = False
-                , focusedBorderColor = "red"
-                , borderWidth = 5
-                }
+main = do
+  fn <- getAppUserDataDirectory "xmonad" >>= \ d -> return $ d ++ "/border-width"
+  bw <- doesFileExist fn >>= \case
+    False -> return 4
+    True -> read <$> readFile fn
+  xmonad =<< bars (ewmh $ c bw)
+    where c bw = def { terminal = "term"
+                  , workspaces = map fst myWorkspaces
+                  , manageHook = myManageHooks <+> manageSpawn <+> manageHook def
+                  , layoutHook = myLayoutHook
+                  , logHook = fadeInactiveLogHook 0xdddddddd <+> logHook def
+                  , startupHook = myStartupHook <+> startupHook def
+                  , keys = myKeys
+                  , focusFollowsMouse = False
+                  , focusedBorderColor = "red"
+                  , borderWidth = bw
+                  }
