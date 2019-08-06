@@ -1,33 +1,57 @@
-#!/bin/sh
+#!/bin/bash
 
-set -o errexit
+set -o nounset -o pipefail -o errexit
+
+TMP=$(mktemp -d)
+trap "rm -rf $TMP" EXIT
+
+MODE=release
+while getopts "pr" OPT; do
+    case $OPT in
+        p) MODE=practice ;;
+        r) MODE=release ;;
+        \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
 
 . $(readlink -f $0 | xargs dirname)/audio-journal.lib.sh
 
+while true; do
+
 clear
-read -n1 -s -p "Ready? "
+read -n1 -s -p "Ready? ($MODE) "
 
 DATE=$(date -Is)
-RAW=$TAKES/$DATE.raw.flac
-PRE=$TAKES/$DATE.pre.flac
-POST=$TAKES/$DATE.post.mp3
+case "$MODE" in
+    release)
+        RAW=$TAKES/$DATE.raw.flac
+        PRE=$TMP/$DATE.pre.flac
+        ;;
+    practice)
+        RAW=$TMP/$DATE.raw.flac
+        PRE=$TMP/$DATE.pre.flac
+        ;;
+    *) echo "Unsupported mode: $MODE" >&2; exit 2;;
+esac
 
 clear
-take $RAW &
+take "$RAW" &
 PID=$!
-IFS= read -n1 -s CHOICE
+IFS= read -n1 -s TAKE_CHOICE
 
 kill -INT $PID
 wait $PID
 
-if [ -z "$CHOICE" ]; then
+if [ "$MODE" = "release" -a -z "$TAKE_CHOICE" ]; then
     clear
-    preprocess $RAW $PRE
-    playback $PRE
-    read -p "Yay or nay? " CHOICE
-    case "$CHOICE" in
-        y|Y) postprocess $PRE $POST;;
-    esac
+    preprocess "$RAW" "$PRE"
+    playback "$PRE"
+    read -p "Yay or nay? " POST_CHOICE
 fi
 
-$0
+case "${POST_CHOICE-y}" in
+    y|Y) postprocess "$RAW";;
+esac
+
+done

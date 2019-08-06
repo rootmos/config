@@ -1,11 +1,13 @@
 #!/bin/sh
 
-AUDIO_JOURNAL="${AUDIO_JOURNAL-$HOME/audio-journal}"
+PRE_FILTERS="norm earwax"
+POST_FILTERS="norm"
 
-SUFFIX=.mp3
+AUDIO_JOURNAL=${AUDIO_JOURNAL-$HOME/audio-journal}
+SUFFIX=${AUDIO_JOURNAL_SUFFIX-.mp3}
 
 choose_takes_dir() {
-    IFS=':' read -ra TAKES <<< "$AUDIO_JOURNAL_TAKES"
+    IFS=':' read -ra TAKES <<< "${AUDIO_JOURNAL_TAKES-}"
     for target in "${TAKES[@]}"; do
         if [ -d "$target" ]; then
             echo "$target"
@@ -15,7 +17,7 @@ choose_takes_dir() {
     echo $AUDIO_JOURNAL/takes
 }
 
-TAKES=$(choose_takes_dir)
+TAKES=${TAKES-$(choose_takes_dir)}
 mkdir -p "$AUDIO_JOURNAL" "$TAKES"
 
 take() {
@@ -23,7 +25,7 @@ take() {
 }
 
 preprocess() {
-    sox "$1" "$2" norm -1
+    sox "$1" "$2" $PRE_FILTERS
 }
 
 save_to_secondary() {
@@ -35,16 +37,22 @@ save_to_secondary() {
     done
 }
 
+BUCKET=${AUDIO_JOURNAL_BUCKET-rootmos-sounds}
+case "$MODE" in
+    release) PREFIX= ;;
+    *) PREFIX=$MODE/ ;;
+esac
+
 upload() {
-    s3cmd put --acl-public "$1" s3://rootmos-sounds
+    s3cmd put --acl-public "$1" "s3://$BUCKET/$PREFIX"
 }
 
 tag() {
     YEAR=$(date --date="$DATE" +%Y)
     LENGTH=$(soxi -D "$1")
     FILENAME=$(basename "$1")
-    URL="https://rootmos-sounds.ams3.cdn.digitaloceanspaces.com/$FILENAME"
-    id3v2  1>&2 -D "$1"
+    URL="https://$BUCKET.ams3.cdn.digitaloceanspaces.com/$PREFIX$FILENAME"
+    id3v2 1>&2 -D "$1"
     id3v2 1>&2 \
         --artist=rootmos \
         --song="$TITLE" \
@@ -58,7 +66,7 @@ tag() {
         --genre=52 \
         "$1"
 
-    METADATA=$(echo "$1" | sed "s/$SUFFIX$/.json/")
+    METADATA=$(sed "s/$SUFFIX$/.json/" <<< "$1")
     cat > "$METADATA" <<EOF
 {
     "title": "$TITLE",
@@ -77,10 +85,20 @@ EOF
 }
 
 postprocess() {
-    sox "$1" "$2"
-    read -p "Title: " TITLE
-    OUT=$(with_title "$TITLE")
-    cp "$2" "$OUT"
+    if [ "$MODE" = "release" ]; then
+        read -p "Title: " TITLE
+        if [ -n "$TITLE" ]; then
+            OUT=$AUDIO_JOURNAL/${DATE}_$(tr ' ' '-' <<< "$TITLE")$SUFFIX
+        fi
+    fi
+
+    if [[ ! -v OUT ]]; then
+        mkdir -p "$AUDIO_JOURNAL/$MODE"
+        OUT=$AUDIO_JOURNAL/$MODE/$DATE$SUFFIX
+        TITLE="Session @ $DATE"
+    fi
+
+    sox "$1" "$OUT" $POST_FILTERS
     METADATA=$(tag "$OUT")
     save_to_secondary "$OUT"
     save_to_secondary "$METADATA"
@@ -89,13 +107,5 @@ postprocess() {
 }
 
 playback() {
-    mpv "$1"
-}
-
-with_title() {
-    if [ -z "$1" ]; then
-        echo "$AUDIO_JOURNAL/$DATE$SUFFIX"
-    else
-        echo "$AUDIO_JOURNAL/${DATE}_$(echo "$1" | tr ' ' '-')$SUFFIX"
-    fi
+    $PLAYER "$1"
 }
