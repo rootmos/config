@@ -1,0 +1,9 @@
+[Unit]
+Description=The OpenSnitch UI
+
+[Service]
+Restart=always
+ExecStart=/home/gustav/.local/bin/opensnitch-ui
+
+[Install]
+WantedBy=default.target

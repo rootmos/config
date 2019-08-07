@@ -6,8 +6,8 @@ set pgp_autosign = yes
 set smtp_url = "smtps://gustav@upvest.co@smtp.gmail.com:465/"
 
 set folder = "~/mail/work"
-set record = "+/[Gmail]/Sent Mail"
-set postponed = "+/[Gmail]/Drafts"
+set record = "+/[Gmail].Sent Mail"
+set postponed = "+/[Gmail].Drafts"
 set spoolfile = "+/INBOX"
 
 source "gpg --batch --quiet --decrypt ~/.mutt/upvest.co.pass.rc.gpg |"

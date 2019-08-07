@@ -1,9 +1,11 @@
 #!/bin/bash
 
 TARGET=.
-while getopts "t:" OPT; do
+WRAPPER=$(pwd)/.k
+while getopts "t:w:" OPT; do
     case $OPT in
         t) TARGET=$OPTARG ;;
+        w) WRAPPER=$OPTARG ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
 done
@@ -19,6 +21,14 @@ file_waiter() {
   echo 1>&2 "[file trigger]"
 }
 
+go() {
+    if [ -f "$WRAPPER" ]; then
+        /bin/sh $WRAPPER $*
+    else
+        $*
+    fi
+}
+
 while true; do
   manual_waiter &
   manual_pid=$!
@@ -31,7 +41,7 @@ while true; do
   wait
   trap - INT
 
-  ($*) &
+  (go $*) &
   child_pid=$!
   trap "killall -q $child_pid; echo" INT
   wait $child_pid

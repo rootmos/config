@@ -25,4 +25,4 @@ sudo -v
 if [ -z "$KEEP" ]; then
     (sleep 4; ! fuser $UP; rm $UP ) &
 fi
-sudo --non-interactive openvpn --config $CONFIG --auth-nocache $KEY_OPT $UP
+sudo --non-interactive openvpn --config "$CONFIG" --auth-nocache $KEY_OPT "$UP"

@@ -57,6 +57,7 @@ Plugin 'guersam/vim-j'
 Plugin 'luochen1990/rainbow'
 Plugin 'tomlion/vim-solidity'
 Plugin 'GEverding/vim-hocon'
+Bundle 'hashivim/vim-terraform.git'
 call vundle#end()
 
 filetype plugin indent on

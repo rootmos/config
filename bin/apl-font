@@ -1,0 +1,2 @@
+#!/bin/sh
+exec urxvt -fn "xft:APL385 Unicode" -e tmx apl 
