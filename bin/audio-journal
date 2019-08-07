@@ -5,11 +5,15 @@ set -o nounset -o pipefail -o errexit
 TMP=$(mktemp -d)
 trap "rm -rf $TMP" EXIT
 
+ACTION=record
 MODE=release
-while getopts "pr" OPT; do
+while getopts "prRlm:" OPT; do
     case $OPT in
+        r) ACTION=record ;;
+        l) ACTION=list ;;
         p) MODE=practice ;;
-        r) MODE=release ;;
+        R) MODE=release ;;
+        m) MODE=$OPTARG ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
 done
@@ -17,41 +21,45 @@ shift $((OPTIND-1))
 
 . $(readlink -f $0 | xargs dirname)/audio-journal.lib.sh
 
-while true; do
-
-clear
-read -n1 -s -p "Ready? ($MODE) "
-
-DATE=$(date -Is)
-case "$MODE" in
-    release)
-        RAW=$TAKES/$DATE.raw.flac
-        PRE=$TMP/$DATE.pre.flac
-        ;;
-    practice)
-        RAW=$TMP/$DATE.raw.flac
-        PRE=$TMP/$DATE.pre.flac
-        ;;
-    *) echo "Unsupported mode: $MODE" >&2; exit 2;;
-esac
-
-clear
-take "$RAW" &
-PID=$!
-IFS= read -n1 -s TAKE_CHOICE
-
-kill -INT $PID
-wait $PID
-
-if [ "$MODE" = "release" -a -z "$TAKE_CHOICE" ]; then
+record() {
     clear
-    preprocess "$RAW" "$PRE"
-    playback "$PRE"
-    read -p "Yay or nay? " POST_CHOICE
+    read -n1 -s -p "Ready? ($MODE) "
+
+    DATE=$(date -Is)
+    case "$MODE" in
+        release)
+            RAW=$TAKES/$DATE.raw.flac
+            PRE=$TMP/$DATE.pre.flac
+            ;;
+        practice)
+            RAW=$TMP/$DATE.raw.flac
+            PRE=$TMP/$DATE.pre.flac
+            ;;
+        *) echo "Unsupported mode: $MODE" >&2; exit 2;;
+    esac
+
+    clear
+    take "$RAW" &
+    PID=$!
+    IFS= read -n1 -s TAKE_CHOICE
+
+    kill -INT $PID
+    wait $PID
+
+    if [ "$MODE" = "release" -a -z "$TAKE_CHOICE" ]; then
+        clear
+        preprocess "$RAW" "$PRE"
+        playback "$PRE"
+        read -p "Yay or nay? " POST_CHOICE
+    fi
+
+    case "${POST_CHOICE-y}" in
+        y|Y) postprocess "$RAW";;
+    esac
+}
+
+if [ "$ACTION" = "record" ]; then
+    while true; do record; done
+elif [ "$ACTION" = "list" ]; then
+    list | mpv --playlist=-
 fi
-
-case "${POST_CHOICE-y}" in
-    y|Y) postprocess "$RAW";;
-esac
-
-done

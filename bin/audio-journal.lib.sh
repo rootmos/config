@@ -47,11 +47,15 @@ upload() {
     s3cmd put --acl-public "$1" "s3://$BUCKET/$PREFIX"
 }
 
+url() {
+    echo "https://$BUCKET.ams3.cdn.digitaloceanspaces.com/$PREFIX$1"
+}
+
 tag() {
     YEAR=$(date --date="$DATE" +%Y)
     LENGTH=$(soxi -D "$1")
     FILENAME=$(basename "$1")
-    URL="https://$BUCKET.ams3.cdn.digitaloceanspaces.com/$PREFIX$FILENAME"
+    URL=$(url "$FILENAME")
     id3v2 1>&2 -D "$1"
     id3v2 1>&2 \
         --artist=rootmos \
@@ -108,4 +112,11 @@ postprocess() {
 
 playback() {
     $PLAYER "$1"
+}
+
+list() {
+    export -f url
+    s3cmd ls -l s3://$BUCKET/$PREFIX | awk '{ print $6 }' | grep "$SUFFIX$" | sort -r | while read f; do
+        url "$(basename "$f")"
+    done
 }
