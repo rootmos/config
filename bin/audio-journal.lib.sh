@@ -52,6 +52,7 @@ url() {
 }
 
 tag() {
+    DATE=$2
     YEAR=$(date --date="$DATE" +%Y)
     LENGTH=$(soxi -D "$1")
     FILENAME=$(basename "$1")
@@ -103,7 +104,7 @@ postprocess() {
     fi
 
     sox "$1" "$OUT" $POST_FILTERS
-    METADATA=$(tag "$OUT")
+    METADATA=$(tag "$OUT" "$2")
     save_to_secondary "$OUT"
     save_to_secondary "$METADATA"
     upload "$OUT"

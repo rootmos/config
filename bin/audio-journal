@@ -54,7 +54,7 @@ record() {
     fi
 
     case "${POST_CHOICE-y}" in
-        y|Y) postprocess "$RAW";;
+        y|Y) postprocess "$RAW" "$DATE";;
     esac
 }
 
