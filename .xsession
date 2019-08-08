@@ -13,4 +13,6 @@ unclutter -idle 2 &
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
+xset s off -dpms
+
 exec xmonad

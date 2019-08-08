@@ -32,3 +32,10 @@ if [ $? -eq 0 ]; then
 else
     echo -n "-"
 fi
+
+CITY=$(curl --max-time 1 https://ip.rootmos.io/city)
+if [ $? -eq 0 -a -n "$CITY" ]; then
+    echo -n " $CITY"
+else
+    echo -n "-"
+fi

@@ -1,8 +1,17 @@
 #!/bin/bash
 
-set -o errexit
+set -o errexit -o pipefail
 
 DIR=${PASSWORD_STORE_DIR-$HOME/.password-store}
+MULTILINE=
+while getopts "d:m" opt; do
+    case $opt in
+        d) DIR=$OPTARG ;;
+        m) MULTILINE=1 ;;
+        \?) echo "Invalid option: -$OPTARG" >&2
+            exit 2 ;;
+    esac
+done
 
 choose() {
     cd $DIR
@@ -14,7 +23,21 @@ choose() {
        | sort | dmenu
 }
 
-env \
-    PASSWORD_STORE_X_SELECTION=PRIMARY \
-    PINENTRY_USER_DATA=gtk \
-    pass --clip $(choose)
+run_pass() {
+    env \
+        PASSWORD_STORE_X_SELECTION=PRIMARY \
+        PINENTRY_USER_DATA=gtk \
+        pass "$CHOICE"
+}
+
+CHOICE=$(choose)
+
+if [ -n "$MULTILINE" ]; then
+    run_pass | dmenu -l 20 | sed 's/^.*:\s*//' | xclip
+else
+    run_pass | head -n1 | xclip
+fi
+
+if type notify-send &> /dev/null; then
+  notify-send "pass: $CHOICE"
+fi

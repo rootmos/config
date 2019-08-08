@@ -1,20 +1,25 @@
 PATH=/home/gustav/.gem/ruby/2.5.0/bin:$PATH
-PATH=/home/gustav/root/vim/bin:$PATH
-PATH=/home/gustav/root/kubectl/bin:/home/gustav/root/telepresence/bin:$PATH
 
-PATH=/home/gustav/root/dmenu/bin:$PATH
-PATH=/home/gustav/root/bitcoin/bin:$PATH
-PATH=/home/gustav/root/newsboat/bin:$PATH
-PATH=/home/gustav/root/solidity/usr/local/bin:$PATH
-PATH=/home/gustav/root/go-ethereum/bin:$PATH
-PATH=/home/gustav/root/pomodoro:$PATH
 
-PATH=/home/gustav/root/terraform/0.12.5:$PATH
+for p in /home/gustav/root/*; do
+    if [ -d "$p/bin" ]; then
+        PATH="$p/bin:$PATH"
+    fi
 
-PATH=/home/gustav/.cargo/bin:$PATH
-PATH=/home/gustav/bin:/home/gustav/.local/bin:$PATH
+    if [ -d "$p/usr/bin" ]; then
+        PATH="$p/usr/bin:$PATH"
+    fi
 
-export GOPATH=/home/gustav/upvest/go:/home/gustav/go
+    if [ -d "$p/share/man" ]; then
+        MANPATH="$p/share/man:$MANPATH"
+    fi
+done
+
+GOPATH=$HOME/upvest/go:$HOME/go
+PATH=$HOME/upvest/go/bin:$HOME/go/bin:$PATH
+PATH=$HOME/.cargo/bin:$PATH
+
+PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 export PLAYER=mpv
 export EDITOR=vim
