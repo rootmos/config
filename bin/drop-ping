@@ -12,7 +12,7 @@ icmp() {
 
 ssl() {
     ulimit -c 0
-    timeout 1 httping -G -M -c1 -f https://$TARGET \
+    timeout 1 httping -G -M -c1 -f https://$TARGET 2>/dev/null \
         | jq .[0].total_ms -r \
         | xargs -I{} calc -p "round({})"
 }
@@ -33,9 +33,16 @@ else
     echo -n "-"
 fi
 
-CITY=$(curl --max-time 1 https://ip.rootmos.io/city)
+echo -n " "
+
+CITY=$(curl -s --max-time 1 https://$TARGET/city)
 if [ $? -eq 0 -a -n "$CITY" ]; then
-    echo -n " $CITY"
+    echo -n "$CITY"
 else
-    echo -n "-"
+    COUNTRY=$(curl -s --max-time 1 https://$TARGET/country)
+    if [ $? -eq 0 -a -n "$COUNTRY" ]; then
+        echo -n "$COUNTRY"
+    else
+        echo -n "-"
+    fi
 fi
