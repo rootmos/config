@@ -1,0 +1,16 @@
+. ~/.profile
+. ~/.bash_aliases
+
+HISTFILE=
+
+is_mounted()
+{
+    if grep -qs $1 /proc/mounts; then
+        echo -n 'm'
+    else
+        echo -n 'u'
+    fi
+}
+
+
+PS1='p$(is_mounted ~/private) r$(is_mounted ~/mnt/rp) \h:\w\$ '

@@ -5,6 +5,7 @@ set -o nounset -o pipefail -o errexit
 TMP=$(mktemp -d)
 trap "rm -rf $TMP" EXIT
 
+<<<<<<< HEAD
 ACTION=record
 MODE=release
 while getopts "prRlm:" OPT; do
