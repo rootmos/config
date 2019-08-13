@@ -90,6 +90,8 @@ EOF
 }
 
 postprocess() {
+    DATE=$2
+    unset OUT
     if [ "$MODE" = "release" ]; then
         read -p "Title: " TITLE
         if [ -n "$TITLE" ]; then
@@ -104,7 +106,7 @@ postprocess() {
     fi
 
     sox "$1" "$OUT" $POST_FILTERS
-    METADATA=$(tag "$OUT" "$2")
+    METADATA=$(tag "$OUT" "$DATE")
     save_to_secondary "$OUT"
     save_to_secondary "$METADATA"
     upload "$OUT"
