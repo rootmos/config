@@ -16,8 +16,6 @@ import XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.SpawnOn
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.EwmhDesktops
-import XMonad.Hooks.FadeInactive
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.NoBorders
@@ -81,14 +79,15 @@ keysToAdd x =
        {-, ((mod4Mask, xK_t), nextScreen)-}
        , ((modMask x, xK_d), spawn "docs")
        , ((modMask x, xK_w), spawn "/home/gustav/bin/netctl-switch-to-menu")
-       , ((modMask x, xK_m), spawn "/home/gustav/bin/mount-menu")
-       , ((modMask x, xK_u), spawn "/home/gustav/bin/umount-menu")
        , ((modMask x, xK_period), spawn "/home/gustav/bin/pass-pick")
        , ((0, xF86XK_WLAN), spawn "sudo /home/gustav/bin/wifi-fix")
+       , ((mod4Mask, xK_comma), sendMessage (IncMasterN 1))
+       , ((mod4Mask, xK_period), sendMessage (IncMasterN (-1)))
        ]
 
 keysToRemove x =
-    [
+    [ (modMask x, xK_comma)
+    , (modMask x, xK_period)
     ]
 
 strippedKeys x = foldr M.delete (keys def x) (keysToRemove x)
