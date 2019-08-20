@@ -16,6 +16,8 @@ import XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.SpawnOn
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.FadeInactive
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.NoBorders
