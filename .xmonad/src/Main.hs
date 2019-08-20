@@ -37,20 +37,20 @@ myWorkspaces =
         ("4", xK_dollar),
         ("5", xK_braceleft),
         ("6", xK_equal),
-        ("notes", xK_n),
-        ("pdf", xK_p),
-        ("web", xK_w),
-        ("music", xK_m),
-        ("chat", xK_c),
-        ("graveyard", xK_g)
+        ("p", xK_p),
+        ("w", xK_w),
+        ("v", xK_v),
+        ("m", xK_m),
+        ("c", xK_c),
+        ("g", xK_g)
     ]
 
 viewShift = doF . liftM2 (.) W.greedyView W.shift
 
-myShifts = [ className =? "Chromium" --> doShift "web"
-           , className =? "Spotify" --> doShift "music"
-           , className =? "Zathura" --> viewShift "pdf"
-           , className =? "Kodi" --> viewShift "video"
+myShifts = [ className =? "Chromium" --> doShift "w"
+           , className =? "Spotify" --> doShift "m"
+           , className =? "Zathura" --> viewShift "p"
+           , className =? "Kodi" --> viewShift "v"
            ]
 myFloats = [ className =? "MPlayer" --> doFloat
            , className =? "VirtualBox" --> doFloat
@@ -96,14 +96,15 @@ strippedKeys x = foldr M.delete (keys def x) (keysToRemove x)
 myKeys x = M.union (M.fromList (keysToAdd x)) (strippedKeys x)
 
 myDzenPP = def
-  { ppCurrent           =   dzenColor "#ebac54" "#1B1D1E" . pad
-  , ppVisible           =   dzenColor "white" "#1B1D1E" . pad
-  , ppHidden            =   dzenColor "white" "#1B1D1E" . pad
-  , ppHiddenNoWindows   =   dzenColor "#7b7b7b" "#1B1D1E" . pad
-  , ppUrgent            =   dzenColor "#ff0000" "#1B1D1E" . pad
+  { ppCurrent           =   dzenColor "#ebac54" "#1B1D1E"
+  , ppVisible           =   dzenColor "white" "#1B1D1E"
+  , ppHidden            =   dzenColor "white" "#1B1D1E"
+  , ppHiddenNoWindows   =   dzenColor "#7b7b7b" "#1B1D1E"
+  , ppUrgent            =   dzenColor "#ff0000" "#1B1D1E"
+  , ppLayout            =   dzenColor "#7b7b7b" "#1B1D1E"
   , ppWsSep             =   " "
-  , ppSep               =   "  |  "
-  , ppTitle             =   (" " ++) . dzenColor "white" "#1B1D1E" . dzenEscape
+  , ppSep               =   " | "
+  , ppTitle             =   dzenColor "white" "#1B1D1E" . dzenEscape
   }
 
 toggleStrutsKey :: XConfig t -> (KeyMask, KeySym)
@@ -136,25 +137,25 @@ currentWidth = do
 bars conf = do
   width <- currentWidth
   (statusBar' (myStatusBar width) myDzenPP toggleStrutsKey conf)
-    >>= (statusBar myXmonadBar myDzenPP toggleStrutsKey)
-    where left = 800
-          right width = width - left
+    >>= (statusBar (myXmonadBar width) myDzenPP toggleStrutsKey)
+    where right = 900
+          left width = width - right
           font = "-*-helvetica-*-r-*-*-14-*-*-*-*-*-*-*" :: String
           dzen = printf "dzen2 -e 'onstart=lower' -dock -fg '#FFFFFF' -bg '#1B1D1E' -fn '%s'" font :: String
-          myXmonadBar = printf "%s -x '0' -y '0' -w '%d' -ta 'l'" dzen left
-          myStatusBar width = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" dzen left (right width)
+          myXmonadBar width = printf "%s -x '0' -y '0' -w '%d' -ta 'l'" dzen (left width)
+          myStatusBar width = printf "conky -c ~/.xmonad/conky_dzen 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" dzen (left width) right
 
 myStartupHook = composeAll [ setWMName "LG3D" ]
 
 main :: IO ()
 main = do
-  fn <- getAppUserDataDirectory "xmonad" >>= \ d -> return $ d ++ "/border-width"
+  fn <- getAppUserDataDirectory "xmonad/border-width"
   bw <- doesFileExist fn >>= \case
     False -> return 4
     True -> read <$> readFile fn
   xmonad =<< bars (ewmh $ c bw)
     where c bw = def { terminal = "term"
-                  , workspaces = map fst myWorkspaces
+                  , workspaces = fst <$> myWorkspaces
                   , manageHook = myManageHooks <+> manageSpawn <+> manageHook def
                   , layoutHook = myLayoutHook
                   , logHook = fadeInactiveLogHook 0xdddddddd <+> logHook def
