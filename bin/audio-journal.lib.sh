@@ -1,6 +1,4 @@
-#!/bin/sh
-
-PRE_FILTERS="norm earwax"
+PRE_FILTERS="norm"
 POST_FILTERS="norm"
 
 AUDIO_JOURNAL=${AUDIO_JOURNAL-$HOME/audio-journal}
@@ -29,12 +27,14 @@ preprocess() {
 }
 
 save_to_secondary() {
-    IFS=':' read -ra SECONDARY <<< "$AUDIO_JOURNAL_SECONDARY"
-    for target in "${SECONDARY[@]}"; do
-        if [ -d "$target" ]; then
-            rsync -ha --progress "$1" "$target"
-        fi
-    done
+    if [[ -v AUDIO_JOURNAL_SECONDARY ]]; then
+        IFS=':' read -ra SECONDARY <<< "$AUDIO_JOURNAL_SECONDARY"
+        for target in "${SECONDARY[@]}"; do
+            if [ -d "$target" ]; then
+                rsync -ha --progress "$1" "$target"
+            fi
+        done
+    fi
 }
 
 BUCKET=${AUDIO_JOURNAL_BUCKET-rootmos-sounds}
@@ -53,6 +53,7 @@ url() {
 
 tag() {
     DATE=$2
+    TITLE=$3
     YEAR=$(date --date="$DATE" +%Y)
     LENGTH=$(soxi -D "$1")
     FILENAME=$(basename "$1")
@@ -91,9 +92,13 @@ EOF
 
 postprocess() {
     DATE=$2
+    TITLE=$3
     unset OUT
     if [ "$MODE" = "release" ]; then
-        read -p "Title: " TITLE
+        if [ -z "$TITLE" ]; then
+            read -p "Title: " TITLE
+        fi
+
         if [ -n "$TITLE" ]; then
             OUT=$AUDIO_JOURNAL/${DATE}_$(tr ' ' '-' <<< "$TITLE")$SUFFIX
         fi
@@ -105,12 +110,32 @@ postprocess() {
         TITLE="Session @ $DATE"
     fi
 
-    sox "$1" "$OUT" $POST_FILTERS
-    METADATA=$(tag "$OUT" "$DATE")
-    save_to_secondary "$OUT"
-    save_to_secondary "$METADATA"
-    upload "$OUT"
-    upload "$METADATA"
+    sox --ignore-length "$1" "$OUT" $POST_FILTERS
+    METADATA=$(tag "$OUT" "$DATE" "$TITLE")
+    if [[ ! -v DRY_RUN ]]; then
+        save_to_secondary "$OUT"
+        save_to_secondary "$METADATA"
+        upload "$OUT"
+        upload "$METADATA"
+    fi
+}
+
+get_tag() {
+    id3v2 --list "$2" | grep "^$1" | sed 's/^'"$1"'[^:]*: \(.*\)$/\1/'
+}
+
+publish() {
+    TITLE=$2
+    if [ -z "$TITLE" ]; then
+        TITLE=$(get_tag TIT2 "$1")
+    fi
+
+    DATE=$(get_tag TRDA "$1")
+    if [ -z "$DATE" ]; then
+        DATE=$(date -Is)
+    fi
+
+    POST_FILTERS= postprocess "$1" "$DATE" "$TITLE"
 }
 
 playback() {
