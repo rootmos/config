@@ -1,50 +1,58 @@
 #!/bin/bash
 
-TARGET=.
+set -o nounset -o pipefail -o errexit
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
 WRAPPER=$(pwd)/.k
-while getopts "t:w:" OPT; do
+while getopts "t:w:-" OPT; do
     case $OPT in
-        t) TARGET=$OPTARG ;;
+        t) echo -ne "$OPTARG\0" >> "$TMP/targets" ;;
         w) WRAPPER=$OPTARG ;;
+        -) break ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
 done
 shift $((OPTIND-1))
 
 manual_waiter() {
-  read -sp "[wait] " < /dev/tty && echo 1>&2 "[manual trigger]"
+    read -sp "[wait] " < /dev/tty
+    kill $(<"$TMP/file.pid")
+    echo 1>&2 "[manual trigger]"
+}
+
+files() {
+    xargs -0 -a "$TMP/targets" -L1 sh -c '(cd "$0" && git ls-files -z 2>/dev/null | xargs -0 readlink -zf) || echo -ne "$0\0"'
 }
 
 file_waiter() {
-  inotifywait --quiet -e close_write,moved_to --format="%f" \
-    $(git ls-files "$1" 2>/dev/null || echo "$1")
-  echo 1>&2 "[file trigger]"
+    files | tr '\0' '\n' | inotifywait --fromfile=- -e close_write,moved_to,move_self --format="%f" --quiet
+    kill $(<"$TMP/manual.pid")
+    echo 1>&2 "[file trigger]"
 }
 
-go() {
-    if [ -f "$WRAPPER" ]; then
-        /bin/sh $WRAPPER $*
-    else
-        $*
-    fi
-}
+if [ ! -f "$TMP/targets" ]; then
+    echo -ne ".\0" > "$TMP/targets"
+fi
+
+trap 'find "$TMP" -name "*.pid" -exec killall -q {} \; ; echo' INT
 
 while true; do
-  manual_waiter &
-  manual_pid=$!
-  file_waiter "$TARGET" &
-  file_pid=$!
+    manual_waiter &
+    echo "$!" > "$TMP/manual.pid"
+    file_waiter &
+    echo "$!" > "$TMP/file.pid"
 
-  trap "kill $manual_pid $file_pid; echo; exit 0" INT
-  wait -n $manual_pid $file_pid
-  kill $manual_pid $file_pid 2>/dev/null
-  wait
-  trap - INT
+    wait
 
-  (go $*) &
-  child_pid=$!
-  trap "killall -q $child_pid; echo" INT
-  wait $child_pid
-  wait
-  trap - INT
+    ( if [ -f "$WRAPPER" ]; then /bin/sh "$WRAPPER" $*; else $*; fi ) &
+    echo "$!" > "$TMP/child.pid"
+    set +o errexit
+    wait
+    EC=$?
+    set -o errexit
+    if [ "$EC" -ne 0 ]; then
+        echo "non-zero exit code: $EC" 1>&2
+    fi
 done
