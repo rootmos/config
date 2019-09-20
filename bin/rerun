@@ -1,18 +1,98 @@
 #!/bin/bash
 
-OPTIND=1         # Reset in case getopts has been used previously in the shell.
+set -o nounset -o pipefail -o errexit
 
-ao_null=""
-
-while getopts "n" opt; do
+PLAYER_OPTS=
+ACTION=play
+SHUF=yes
+TYPE=video
+while getopts "P:mpelf:F:M:-zZt:T:v:" opt; do
     case "$opt" in
-        n)  ao_null="-ao null"
-            ;;
+        P) PLAYER_OPTS="$PLAYER_OPTS $OPTARG" ;;
+        m) PLAYER_OPTS="$PLAYER_OPTS -mute" ;;
+        l) ACTION=list ;;
+        e) ACTION=edit ;;
+        p) ACTION=play ;;
+        F) FILTER=$OPTARG ;;
+        v) FILTER_NOT=$OPTARG ;;
+        f) FILENAME=$OPTARG ;;
+        M) MAP=$OPTARG ;;
+        t) FILTER='^#\s+['"$OPTARG"']+\s+'; MAP='s/#\s\+\w\+\s\+//' ;;
+        z) SHUF=yes ;;
+        Z) SHUF=no ;;
+        T) TYPE=$OPTARG ;;
+        -) break ;;
+        \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
 done
-
 shift $((OPTIND-1))
 
-[ "$1" = "--" ] && shift
+files() {
+    if [[ -v FILENAME ]]; then
+        cat "$FILENAME"
+    else
+        if [ "$TYPE" = "video" ]; then
+            find "$@" \
+                -iname '*.avi' -or -iname '*.mkv' -or \
+                -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' \
+                -or -iname '*.rar'
+        elif [ "$TYPE" = "image" ]; then
+            find "$@" -iname '*.jpg' -or -iname '*.jpeg' -or -iname '*.png' -exec dirname {} \; \
+                | sort -u
+        fi
+    fi
+}
 
-find "$@" -iname '*.avi' -or -iname '*.mkv' -or -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' | shufflin | $PLAYER $ao_null --playlist=-
+filter() {
+    if [[ -v FILTER ]]; then
+        grep -E "$FILTER"
+    else
+        cat
+    fi
+}
+
+filter_not() {
+    if [[ -v FILTER_NOT ]]; then
+        grep -Ev "$FILTER_NOT"
+    else
+        cat
+    fi
+}
+
+map() {
+    if [[ -v MAP ]]; then
+        sed "$MAP"
+    else
+        cat
+    fi
+}
+
+shuf() {
+    if [ "$SHUF" = "yes" ]; then
+        shufflin
+    else
+        sort
+    fi
+}
+
+play() {
+    if [ "$TYPE" = "video" ]; then
+        $PLAYER $PLAYER_OPTS --playlist=-
+    elif [ "$TYPE" = "image" ]; then
+        tr '\n' '\0' | xargs -I{} -0 feh $PLAYER_OPTS {}
+    fi
+}
+
+go() {
+    filter | filter_not | map
+}
+
+if [ "$ACTION" = "play" ]; then
+    files "$@" | shuf | go | play
+elif [ "$ACTION" = "list" ]; then
+    files "$@" | shuf | go
+elif [ "$ACTION" = "edit" ]; then
+    while $EDITOR "$FILENAME"; do
+        files "$@" | grep '^[^#]' | go | head -n1 | play
+    done
+fi
