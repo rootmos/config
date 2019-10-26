@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+if [ "${5-}" = "" ]; then
+    exit 0
+fi
+
+DEV=/sys/class/backlight/intel_backlight
+current() {
+    cat $DEV/brightness
+}
+MAX=$(<$DEV/max_brightness)
+INCREMENT=$((MAX/20))
+
+case "$2" in
+    BRTDN) NEXT=$(($(current) - INCREMENT));;
+    BRTUP) NEXT=$(($(current) + INCREMENT));;
+esac
+
+if [ $NEXT -gt $MAX ]; then NEXT=$MAX; fi
+if [ $NEXT -lt 0 ]; then NEXT=0; fi
+
+echo $NEXT > $DEV/brightness
+
+USER=gustav
+CONFIG=/home/$USER/.config
+
+if [ -f "$CONFIG/color_temp_max" ]; then
+    TEMP_MAX=$(<$CONFIG/color_temp_max)
+else
+    TEMP_MAX=6500
+fi
+
+if [ -f "$CONFIG/color_temp_min" ]; then
+    TEMP_MIN=$(<$CONFIG/color_temp_min)
+else
+    TEMP_MIN=1000
+fi
+
+COLOR=$(((MAX*TEMP_MIN + $(current)*(TEMP_MAX-TEMP_MIN))/MAX))
+
+DISPLAY=:0 XAUTHORITY=/home/$USER/.Xauthority redshift -PO$COLOR
+sudo -u $USER env \
+    DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u $USER)/bus \
+    notify-send backlight "brightness: $((100*$(current)/MAX))% color: ${COLOR}K" \
+    -t 1000 -h string:x-canonical-private-synchronous:anything
