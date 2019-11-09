@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+K=.k
+while getopts "k:eg-cC" OPT; do
+    case "$OPT" in
+        k) K=$OPTARG ;;
+        e) ACTION=edit ;;
+        g) ACTION=go ;;
+        c) ACTION=completion-script; COMPLETE_NAME=$(basename "$0") ;;
+        C) ACTION=completions ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [[ ! -v ACTION && "$#" -eq 0 ]]; then
+    ACTION=edit
+fi
+
+if [[ ! -v ACTION ]]; then
+    ACTION=go
+fi
+
+if [ "$ACTION" = "completion-script" ]; then
+    cat <<EOF
+complete -C '"$0" -C' "$COMPLETE_NAME"
+EOF
+else
+    if [ ! -x "$K" ]; then
+        touch "$K"
+        chmod +x "$K"
+    fi
+    case "$ACTION" in
+        edit) $EDITOR +"set ft=sh" "$K" < /dev/tty ;;
+        go) exec $SHELL -c ". \"$K\" && $@" "$K" ;;
+        completions)
+            $SHELL -r -c ". \"$K\" && declare -F | cut -f3 -d' '" "$K" \
+                | grep -vf <($SHELL -r -c 'declare -F | cut -f3 -d" "') \
+                | grep "^$2"
+            ;;
+    esac
+fi
