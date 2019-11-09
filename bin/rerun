@@ -2,14 +2,15 @@
 
 set -o nounset -o pipefail -o errexit
 
-PLAYER_OPTS=
+PLAYER_OPTS=()
 ACTION=play
 SHUF=yes
 TYPE=video
-while getopts "P:mpelf:F:M:-zZt:T:v:" opt; do
+RAR=
+while getopts "P:mpelf:F:M:-zZt:T:v:R" opt; do
     case "$opt" in
-        P) PLAYER_OPTS="$PLAYER_OPTS $OPTARG" ;;
-        m) PLAYER_OPTS="$PLAYER_OPTS -mute" ;;
+        P) PLAYER_OPTS+=("$OPTARG") ;;
+        m) PLAYER_OPTS+=(-mute) ;;
         l) ACTION=list ;;
         e) ACTION=edit ;;
         p) ACTION=play ;;
@@ -21,6 +22,7 @@ while getopts "P:mpelf:F:M:-zZt:T:v:" opt; do
         z) SHUF=yes ;;
         Z) SHUF=no ;;
         T) TYPE=$OPTARG ;;
+        R) RAR=yes ;;
         -) break ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
@@ -32,12 +34,18 @@ files() {
         cat "$FILENAME"
     else
         if [ "$TYPE" = "video" ]; then
-            find "$@" \
-                -iname '*.avi' -or -iname '*.mkv' -or \
-                -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' \
-                -or -iname '*.rar'
+            if [ "$RAR" = "yes" ]; then
+                find "$@" \
+                    -iname '*.avi' -or -iname '*.mkv' -or \
+                    -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' \
+                    -or -iname '*.rar'
+            else
+                find "$@" \
+                    -iname '*.avi' -or -iname '*.mkv' -or \
+                    -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv'
+            fi
         elif [ "$TYPE" = "image" ]; then
-            find "$@" -iname '*.jpg' -or -iname '*.jpeg' -or -iname '*.png' -exec dirname {} \; \
+            find "$@" \( -iname '*.jpg' -or -iname '*.jpeg' -or -iname '*.png' \) -exec dirname {} \; \
                 | sort -u
         fi
     fi
@@ -77,9 +85,9 @@ shuf() {
 
 play() {
     if [ "$TYPE" = "video" ]; then
-        $PLAYER $PLAYER_OPTS --playlist=-
+        $PLAYER "${PLAYER_OPTS[@]}" --playlist=-
     elif [ "$TYPE" = "image" ]; then
-        tr '\n' '\0' | xargs -I{} -0 feh $PLAYER_OPTS {}
+        tr '\n' '\0' | xargs -I{} -0 feh "${PLAYER_OPTS[@]}" {}
     fi
 }
 

@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+LIST_BASE=${LIST_BASE-$HOME/.config/lists}
+mkdir -p "$LIST_BASE"
+
+if [ $# -eq 0 ]; then
+    ls -1 "$LIST_BASE"
+elif [ "$1" = "-" ] ; then
+    if [ $# -eq 2 ]; then
+        cat "$2" | grep -vFf <(cat "$LIST_BASE"/*)
+    else
+        ls -1 \
+            | xargs -I{} readlink -f {} \
+            | grep -vFf <(cat "$LIST_BASE"/*) \
+            | xargs -I{} basename {}
+    fi
+elif [ $# -eq 1 ]; then
+    echo -n "+=-pe" | sed 's/\(\S\)/\1\n/g'
+else
+    LIST=$LIST_BASE/$1
+    case "$2" in
+        +) readlink -f "$3" >> "$LIST" ;;
+        =) cat "$LIST" ;;
+        -) ls -1 | xargs -I{} readlink -f {} \
+            | grep -vFf "$LIST" \
+            | xargs -I{} basename {} ;;
+        p) dmenu -i -l 30 < "$LIST" | xargs -I{} $PLAYER {} ;;
+        e) $EDITOR "$LIST" ;;
+        \?) exit 2;;
+    esac
+fi
