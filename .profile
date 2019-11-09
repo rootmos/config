@@ -1,5 +1,4 @@
-PATH=/home/gustav/.gem/ruby/2.5.0/bin:$PATH
-
+PATH=$HOME/.gem/ruby/2.5.0/bin:$PATH
 
 for p in /home/gustav/root/*; do
     if [ -d "$p/bin" ]; then
