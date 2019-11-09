@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+cat > "$HOME/.xmonad/border-width" <<< "$1"
+xmonad --restart

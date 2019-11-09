@@ -154,7 +154,7 @@ main = do
     False -> return 4
     True -> read <$> readFile fn
   xmonad =<< bars (ewmh $ c bw)
-    where c bw = def { terminal = "term"
+    where c bw = def { terminal = "st"
                   , workspaces = fst <$> myWorkspaces
                   , manageHook = myManageHooks <+> manageSpawn <+> manageHook def
                   , layoutHook = myLayoutHook
