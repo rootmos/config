@@ -7,7 +7,7 @@ xrdb ~/.Xdefaults
 xrdb -merge ~/git/config/solarized.$(<$HOME/.theme)
 
 chromium &
-redshift &
+#redshift &
 unclutter -idle 2 &
 
 autocutsel -fork &

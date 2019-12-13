@@ -80,7 +80,7 @@ keysToAdd x =
        {-, ((mod4Mask, xK_n), swapNextScreen)-}
        {-, ((mod4Mask, xK_t), nextScreen)-}
        , ((modMask x, xK_d), spawn "docs")
-       , ((modMask x, xK_w), spawn "/home/gustav/bin/netctl-switch-to-menu")
+       --, ((modMask x, xK_w), spawn "/home/gustav/bin/netctl-switch-to-menu")
        , ((modMask x, xK_period), spawn "/home/gustav/bin/pass-pick")
        , ((0, xF86XK_WLAN), spawn "sudo /home/gustav/bin/wifi-fix")
        , ((mod4Mask, xK_comma), sendMessage (IncMasterN 1))

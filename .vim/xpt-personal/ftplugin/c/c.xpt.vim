@@ -11,7 +11,7 @@ XPT malloc hint=malloc
 `ty^* `v^ = (`ty^*)malloc(sizeof(*`v^));
 
 XPT calloc hint=calloc
-`ty^* `v^ = (`ty^*)calloc(sizeof(*`v^), 1);
+`ty^* `v^ = calloc(1, sizeof(*`v^));
 
 XPT uv
 if(0 != (r = uv_`f^(`args^))) {
@@ -22,7 +22,7 @@ XPT cast hint=cast
 `ty^* `v^ = (`ty^*)`w^;
 
 XPT main hint=main
-int main(int argc, char** argv)
+int main(int argc, char* argv[])
 {
     `cursor^
     return 0;

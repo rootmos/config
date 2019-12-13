@@ -31,7 +31,8 @@ set runtimepath+=$HOME/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 Bundle 'altercation/vim-colors-solarized'
-Bundle 'bling/vim-airline'
+Bundle 'vim-airline/vim-airline'
+Bundle 'vim-airline/vim-airline-themes'
 Bundle 'tpope/vim-fugitive'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'derekwyatt/vim-fswitch'
@@ -58,6 +59,7 @@ Plugin 'luochen1990/rainbow'
 Plugin 'tomlion/vim-solidity'
 Plugin 'GEverding/vim-hocon'
 Bundle 'hashivim/vim-terraform.git'
+Plugin 'derekelkins/agda-vim'
 call vundle#end()
 
 filetype plugin indent on
@@ -69,9 +71,8 @@ let g:xptemplate_nav_next = '<C-t>'
 " colors
 colorscheme solarized
 set t_Co=256
-call togglebg#map("<F12>")
-
-let &background = join(readfile($HOME."/.theme"))
+let &background = 'dark'
+let g:airline_solarized_bg = 'dark'
 
 " bindings
 nnoremap <silent> <C-l> :nohl<CR><C-l>
@@ -186,3 +187,6 @@ for tool in s:opam_packages
   endif
 endfor
 " ## end of OPAM user-setup addition for vim / base ## keep this line
+
+
+let g:agdavim_enable_goto_definition = 0

@@ -25,9 +25,10 @@ XPT errexit
 set -o nounset -o pipefail -o errexit
 
 XPT getopts
-while getopts "`args^" OPT; do
+while getopts "`args^-" OPT; do
     case $OPT in
         `cursor^
+        -) break ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
 done

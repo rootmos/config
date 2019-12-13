@@ -3,13 +3,14 @@
 set -o nounset -o pipefail -o errexit
 
 K=.k
-while getopts "k:eg-cC" OPT; do
+while getopts "k:eg-cCd" OPT; do
     case "$OPT" in
         k) K=$OPTARG ;;
         e) ACTION=edit ;;
         g) ACTION=go ;;
         c) ACTION=completion-script; COMPLETE_NAME=$(basename "$0") ;;
         C) ACTION=completions ;;
+        d) ACTION=dmenu ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -28,9 +29,13 @@ if [ "$ACTION" = "completion-script" ]; then
     cat <<EOF
 complete -C '"$0" -C' "$COMPLETE_NAME"
 EOF
+elif [ "$ACTION" = "dmenu" ]; then
+    "$0" -C | dmenu -p "k ($(pwd)):"
 else
     if [ ! -x "$K" ]; then
-        touch "$K"
+        cat <<EOF > "$K"
+# a function f defined here can be called from the command line as: k f
+EOF
         chmod +x "$K"
     fi
     case "$ACTION" in

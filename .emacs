@@ -77,4 +77,4 @@
  '(agda2-highlight-primitive-type-face ((t (:foreground "DarkOrchid3"))))
  '(agda2-highlight-record-face ((t (:foreground "DarkOrchid3"))))
  '(line-number ((t (:background "#073642"))))
- '(line-number-current-line ((t (:inherit line-number :weight bold))))
+ '(line-number-current-line ((t (:inherit line-number :weight bold)))))
