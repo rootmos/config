@@ -1,7 +1,5 @@
 . ~/.profile
 . ~/.bash_aliases
-. ~/.kubectl_aliases
-. ~/.gcloud_aliases
 
 PS1='\w '
 export MANWIDTH=79

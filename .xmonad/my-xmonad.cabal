@@ -13,4 +13,5 @@ executable xmonad
                      , xmonad-contrib
                      , containers
                      , X11
+                     , hostname
   default-language:    Haskell2010

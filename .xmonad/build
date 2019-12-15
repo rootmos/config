@@ -1,9 +1,9 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -e
+set -o nounset -o pipefail -o errexit
 
 BIN=${1:-xmonad}
 
-stack install --local-bin-path "$PWD"
+stack install --pedantic --local-bin-path "$PWD"
 
 [[ -f $BIN ]] || ln -s xmonad $BIN
