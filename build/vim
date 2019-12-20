@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -o nounset -o errexit
+
+APP=vim
+GIT_URL=https://github.com/vim/vim.git
+GIT_REV=v8.2.0
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+cd "$SRC"
+
+./configure --prefix="$ROOT" \
+    --disable-gui \
+    --enable-pythoninterp --enable-python3interp \
+    --enable-rubyinterp
+
+m clean
+m install

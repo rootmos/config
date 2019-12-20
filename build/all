@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+
+./st
+
+./vim
+./command-t
+./YouCompleteMe

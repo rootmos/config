@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+APP=st
+GIT_URL=https://github.com/rootmos/st
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+m -C "$SRC" clean
+m -C "$SRC" install PREFIX="$ROOT"

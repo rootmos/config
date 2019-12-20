@@ -2,6 +2,9 @@
 
 set -o nounset -o pipefail -o errexit
 
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+cd "$SCRIPT_DIR"
+
 BIN=${1:-xmonad}
 
 stack install --pedantic --local-bin-path "$PWD"
