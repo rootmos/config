@@ -24,13 +24,15 @@ else
     echo -n "-"
 fi
 
-echo -n " "
 
-MS=$(ssl)
-if [ $? -eq 0 ]; then
-    echo -n "${MS}ms"
-else
-    echo -n "-"
+if command -v httping > /dev/null; then
+    echo -n " "
+    MS=$(ssl)
+    if [ $? -eq 0 ]; then
+        echo -n "${MS}ms"
+    else
+        echo -n "-"
+    fi
 fi
 
 echo -n " "

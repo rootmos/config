@@ -1,4 +1,6 @@
-#!/bin/sh
-set -e
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
 cp -v $(readlink -f $0 | xargs dirname)/windows-grubenv /mnt/win-esp/EFI/ubuntu/grubenv
 reboot
