@@ -60,6 +60,7 @@ Plugin 'tomlion/vim-solidity'
 Plugin 'GEverding/vim-hocon'
 Bundle 'hashivim/vim-terraform.git'
 Plugin 'derekelkins/agda-vim'
+Plugin 'rootmos/tabs-vs-spaces'
 call vundle#end()
 
 filetype plugin indent on

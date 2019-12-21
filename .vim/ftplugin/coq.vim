@@ -1,7 +1,7 @@
-set tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+call TabsVsSpaces(2)
 nmap <leader>. :SlimeSend1 .<cr>
 
-set noautochdir
+setlocal noautochdir
 
 call coquille#FNMapping()
 nmap <leader>r :CoqToCursor<cr>

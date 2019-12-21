@@ -1,1 +1,1 @@
-set kmp=dyalog
+setlocal kmp=dyalog

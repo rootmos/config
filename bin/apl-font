@@ -1,7 +1,21 @@
-#!/bin/sh
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+FONT="APL385 Unicode"
+FONT_URL="https://www.dyalog.com/uploads/files/download.php?file=fonts_and_keyboards/Apl385.ttf"
+
+if [ "$(fc-list | grep -c "$FONT")" -eq 0 ]; then
+    TMP=$(mktemp -d)
+    trap 'rm -rf $TMP' EXIT
+    wget --output-document="$TMP/Apl385.ttf" "$FONT_URL"
+    FONT_BASE_DIR=/usr/share/fonts
+    sudo install -m 644 -D -t "$FONT_BASE_DIR/truetype/dyalog" "$TMP/Apl385.ttf"
+    fc-cache "$FONT_BASE_DIR"
+fi
 
 if [ $# -gt 1 ]; then
-    exec urxvt -fn "xft:APL385 Unicode:pixelsize=24" -e "$@"
+    exec urxvt -fn "xft:$FONT:pixelsize=22" -e "$@"
 else
-    exec urxvt -fn "xft:APL385 Unicode:pixelsize=24"
+    exec urxvt -fn "xft:$FONT:pixelsize=22"
 fi

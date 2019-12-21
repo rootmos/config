@@ -29,7 +29,7 @@ while getopts "`args^-" OPT; do
     case $OPT in
         `cursor^
         -) break ;;
-        \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
+        ?) exit 2 ;;
     esac
 done
 shift $((OPTIND-1))

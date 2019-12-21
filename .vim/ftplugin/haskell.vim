@@ -1,3 +1,2 @@
-setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+call TabsVsSpaces(2)
 let g:haskell_indent_let = 0
-

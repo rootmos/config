@@ -1,5 +1,4 @@
-"setlocal autoindent noexpandtab tabstop=4 shiftwidth=4
-setlocal tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+call TabsVsSpaces(-4)
 
 setlocal list
 setlocal listchars=tab:>-
