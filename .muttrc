@@ -1,15 +1,18 @@
-source ~/.mutt/gpg.rc
+source /usr/share/doc/mutt/samples/gpg.rc
 
 color normal default default
 
 set editor = vim
 set pager_stop = yes
+set move = no
+
+set sidebar_visible = yes
+set mail_check_stats = yes
+set sidebar_format = "%B%* %N"
 
 set timeout = 5
 set mail_check = 5
 set certificate_file = ~/.mutt/certificates
-
-set move = no
 
 bind index - collapse-thread
 bind index _ collapse-all

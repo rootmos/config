@@ -4,12 +4,11 @@ set -o errexit -o pipefail
 
 DIR=${PASSWORD_STORE_DIR-$HOME/.password-store}
 MULTILINE=
-while getopts "d:m" opt; do
-    case $opt in
+while getopts "d:m" OPT; do
+    case $OPT in
         d) DIR=$OPTARG ;;
         m) MULTILINE=1 ;;
-        \?) echo "Invalid option: -$OPTARG" >&2
-            exit 2 ;;
+        ?) exit 2 ;;
     esac
 done
 
@@ -38,6 +37,6 @@ else
     run_pass | head -n1 | xclip
 fi
 
-if type notify-send &> /dev/null; then
+if command -v notify-send > /dev/null; then
   notify-send "pass: $CHOICE"
 fi

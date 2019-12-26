@@ -9,7 +9,4 @@ def load_pass(f):
             return v
 
 def fastmail_pass():
-    return load_pass("~/.mutt/rootmos.io.pass.rc.gpg")
-
-def upvest_pass():
-    return load_pass("~/.mutt/upvest.co.pass.rc.gpg")
+    return load_pass("~/.password-store/fastmail/pass.rc.gpg")

@@ -10,6 +10,10 @@ set record = "+/Sent"
 set postponed = "+/Drafts"
 set spoolfile = "+/INBOX"
 
-macro index,pager d "<save-message>+/Archive<enter><enter>" "Archive"
+mailboxes "+/INBOX" "+/Berlin" "+/Berlin.apt-get" "+/arXiv" "+/Games"
 
-source "gpg --batch --quiet --decrypt ~/.mutt/rootmos.io.pass.rc.gpg |"
+macro index,pager d "<save-message>+/Archive<enter><enter>" "Archive"
+macro index,pager N "<sidebar-next><sidebar-open>"
+macro index,pager P "<sidebar-prev><sidebar-open>"
+
+source "gpg --batch --quiet --decrypt ~/.password-store/fastmail/pass.rc.gpg |"
