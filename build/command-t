@@ -7,6 +7,7 @@ SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
 
 cd $HOME/.vim/bundle/command-t/ruby/command-t/ext/command-t
 
+ruby extconf.rb
 m clean
 ruby extconf.rb
 m

@@ -9,9 +9,4 @@ alias g="git"
 alias gp="gist -p -c"
 alias e="$EDITOR"
 
-alias xmonad="stack exec xmonad --"
-
-alias btc-testnet-cli="bitcoin-cli -conf=testnet.conf"
-alias btc-mainnet-cli="bitcoin-cli -conf=mainnet.conf"
-
 alias cal="/usr/bin/cal -m"
