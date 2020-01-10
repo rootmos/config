@@ -5,6 +5,8 @@ set pgp_sign_as = "D7B6636B193B88F78FF6BBCE5D7AAEB0B28AD588"
 set pgp_autosign = yes
 set smtp_url = "smtps://gustav@arweave.org@smtp.gmail.com:465/"
 
+set sidebar_visible = no
+
 set folder = "~/mail/work"
 set record = "+/Sent"
 set postponed = "+/Drafts"

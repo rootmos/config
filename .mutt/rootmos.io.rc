@@ -5,6 +5,8 @@ set pgp_sign_as = "8219E49C138B117F6CBA3FD9413B70A6B053F80C"
 set pgp_autosign = yes
 set smtp_url = "smtps://me@rootmos.io@smtp.fastmail.com:465/"
 
+set sidebar_visible = yes
+
 set folder = "~/mail/private"
 set record = "+/Sent"
 set postponed = "+/Drafts"

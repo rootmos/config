@@ -6,7 +6,6 @@ set editor = vim
 set pager_stop = yes
 set move = no
 
-set sidebar_visible = yes
 set mail_check_stats = yes
 set sidebar_format = "%B%* %N"
 
