@@ -22,12 +22,12 @@ if [ -n "$TMUX" ]; then
             || tmux new-window -n private-mail $MUTT -F ~/.mutt/rootmos.io.rc
     elif [ -n "$WORK" ]; then
         tmux select-window -t work-mail 2>/dev/null \
-            || tmux new-window -n work-mail $MUTT -F ~/.mutt/upvest.co.rc
+            || tmux new-window -n work-mail $MUTT -F ~/.mutt/arweave.org.rc
     fi
 elif [ -n "$PRIVATE" ]; then
     $MUTT -F ~/.mutt/rootmos.io.rc
 elif [ -n "$WORK" ]; then
-    $MUTT -F ~/.mutt/upvest.co.rc
+    $MUTT -F ~/.mutt/arweave.org.rc
 else
     exec tmux new-session -t "$SESSION"
 fi

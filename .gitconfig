@@ -2,8 +2,8 @@
     email = me@rootmos.io
     name = Gustav Behm
     signingkey = 413B70A6B053F80C
-[includeIf "gitdir:~/upvest/"]
-    path = ~/upvest/.gitconfig
+[includeIf "gitdir:~/arweave/"]
+    path = ~/arweave/.gitconfig
 [commit]
     gpgsign = true
 [core]

@@ -1,0 +1,15 @@
+source ~/.muttrc
+
+set from = "Gustav Behm <gustav@arweave.org>"
+set pgp_sign_as = "D7B6636B193B88F78FF6BBCE5D7AAEB0B28AD588"
+set pgp_autosign = yes
+set smtp_url = "smtps://gustav@arweave.org@smtp.gmail.com:465/"
+
+set folder = "~/mail/work"
+set record = "+/Sent"
+set postponed = "+/Drafts"
+set spoolfile = "+/INBOX"
+
+macro index,pager d "<save-message>+/Archive<enter><enter>" "Archive"
+
+source "gpg --batch --quiet --decrypt ~/.password-store/arweave/google.rc.gpg |"

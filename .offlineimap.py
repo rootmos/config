@@ -10,3 +10,6 @@ def load_pass(f):
 
 def fastmail_pass():
     return load_pass("~/.password-store/fastmail/pass.rc.gpg")
+
+def arweave_pass():
+    return load_pass("~/.password-store/arweave/google.rc.gpg")

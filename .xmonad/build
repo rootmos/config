@@ -7,6 +7,4 @@ cd "$SCRIPT_DIR"
 
 BIN=${1:-xmonad}
 
-stack install --pedantic --local-bin-path "$PWD"
-
-[[ -f $BIN ]] || ln -s xmonad $BIN
+stack install --pedantic

@@ -23,8 +23,10 @@
 (require 'projectile)
 (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
 (projectile-mode +1)
-(setq projectile-project-search-path '("~/git" "~/upvest"))
+(setq projectile-project-search-path '("~/git" "~/arweave"))
 
+(unless (package-installed-p 'solarized-theme)
+  (package-install 'solarized-theme))
 (load-theme 'solarized-dark t)
 (set-default-font "Inconsolata:pixelsize=22")
 
