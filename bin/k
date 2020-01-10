@@ -2,6 +2,7 @@
 
 set -o nounset -o pipefail -o errexit
 
+export K_DIR=$(readlink -f "$(pwd)")
 K=.k
 while getopts "k:eg-cCd" OPT; do
     case "$OPT" in
@@ -30,7 +31,7 @@ if [ "$ACTION" = "completion-script" ]; then
 complete -C '"$0" -C' "$COMPLETE_NAME"
 EOF
 elif [ "$ACTION" = "dmenu" ]; then
-    "$0" -C | dmenu -p "k ($(pwd)):"
+    "$0" -C | dmenu -p "k ($K_DIR):"
 else
     if [ ! -x "$K" ]; then
         cat <<EOF > "$K"

@@ -1,2 +1,2 @@
 #!/bin/sh
-perl -MList::Util -e "print List::Util::shuffle <>"
+exec perl -MList::Util -e "print List::Util::shuffle <>"

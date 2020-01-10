@@ -1,5 +1,7 @@
-#!/bin/sh
-if ! grep -qs ~/private /proc/mounts; then
+#!/bin/bash
+
+if command -v open_private >/dev/null \
+    && ! grep -qs ~/private /proc/mounts; then
     open_private
 fi
 
