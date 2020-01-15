@@ -53,7 +53,8 @@
 
 (setq inhibit-startup-screen t)
 
-
+(add-hook 'focus-in-hook (lambda () (shell-command "text")))
+(add-hook 'focus-out-hook (lambda () (shell-command "dv")))
 
 ;; (grep-apply-setting 'grep-command "ag --filename --nogroup --column")
 

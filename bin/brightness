@@ -30,7 +30,10 @@ if command -v redshift > /dev/null; then
 fi
 
 if command -v dunstify > /dev/null; then
-    dunstify --replace=221615 --timeout=1000 "$MSG"
+    dunstify --replace=221615 \
+        --timeout=750 \
+        --icon=weather-clear \
+        --appname="brightness" "$MSG"
 elif command -v notify-send > /dev/null; then
     notify-send "$MSG"
 fi
