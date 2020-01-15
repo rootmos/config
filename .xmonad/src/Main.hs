@@ -59,6 +59,7 @@ myKeys :: FilePath -> FilePath
        -> XConfig l -> M.Map (ButtonMask, KeySym) (X ())
 myKeys bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys mod4Mask myWorkspaces ++
   [ ((mod1Mask .|. shiftMask, xK_Return), spawn t)
+  , ((mod1Mask, xK_p), spawn "dmenu_run")
   , ((mod1Mask .|. shiftMask, xK_c), kill)
   , ((mod1Mask, xK_space), sendMessage NextLayout)
   , ((mod1Mask, xK_Tab), windows W.focusDown)
@@ -77,8 +78,8 @@ myKeys bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys mo
   , ((mod4Mask, xK_period), sendMessage (IncMasterN (-1)))
   , ((mod4Mask, xK_d), spawn "docs")
   , ((mod4Mask, xK_period), spawn $ bin </> "pass-pick")
-  , ((0, xF86XK_MonBrightnessUp), spawn $ bin </> "xbacklight -inc 10")
-  , ((0, xF86XK_MonBrightnessDown), spawn $ bin </> "xbacklight -dec 10")
+  , ((0, xF86XK_MonBrightnessUp), spawn $ bin </> "brightness +5")
+  , ((0, xF86XK_MonBrightnessDown), spawn $ bin </> "brightness -5")
   , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -D pulse sset Master 5%+")
   , ((0, xF86XK_AudioLowerVolume), spawn "amixer -D pulse sset Master 5%-")
   , ((0, xF86XK_AudioMute), spawn "amixer -D pulse sset Master toggle")
@@ -105,10 +106,11 @@ bars conf = do
   return $ docks $ conf { logHook = logHook conf >> dynamicLogWithPP pp { ppOutput = hPutStrLn h } }
     where right = 900
           left width = width - right
-          font = "-*-helvetica-*-r-*-*-14-*-*-*-*-*-*-*" :: String
-          dzenCmd = printf "dzen2 -e 'onstart=lower' -dock -fg '#FFFFFF' -bg '#1B1D1E' -fn '%s'" font :: String
+          height = 16 :: Int
+          font = printf "-*-*-*-*-*-*-%d-*-*-*-*-*-*-*" (height - 4) :: String
+          dzenCmd = printf "dzen2 -e 'onstart=lower' -dock -fg '#FFFFFF' -bg '#1B1D1E' -fn '%s' -h '%d'" font height :: String
           myXmonadBar width = printf "%s -x '0' -y '0' -w '%d' -ta 'l'" dzenCmd (left width)
-          myStatusBar width h = printf "conky -c ~/.xmonad/conky.%s.config 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" h dzenCmd (left width) right
+          myStatusBar width h = printf "conky -c ~/.xmonad/conky.%s.config 2>/dev/null 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" h dzenCmd (left width) right
           pp = def { ppCurrent         = dzenColor "#ebac54" "#1B1D1E"
                    , ppVisible         = dzenColor "white" "#1B1D1E"
                    , ppHidden          = dzenColor "white" "#1B1D1E"

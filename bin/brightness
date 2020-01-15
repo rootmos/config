@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+SYS=/sys/class/backlight/intel_backlight
+
+CUR=$(<$SYS/brightness)
+MAX=$(<$SYS/max_brightness)
+
+OP=$(head -c1 <<< "${1-}")
+V=$(tail -c+2 <<< "${1-}")
+case "$OP" in
+    +) NEXT=$(calc -dp "min(1,$CUR/$MAX + $V/100)*$MAX") ;;
+    -) NEXT=$(calc -dp "min(1,$CUR/$MAX - $V/100)*$MAX") ;;
+    =) NEXT=$(calc -dp "min(1,$V/100)*$MAX") ;;
+    *) exit 2 ;;
+esac
+
+cat > "$SYS/brightness" <<< "$NEXT"
+
+MSG="$(calc -dp "round($NEXT/$MAX*100)")%"
+
+if command -v redshift > /dev/null; then
+    A=1000
+    B=7000
+    T=$(calc -dp "round($A+($B-$A)*($NEXT/$MAX))")
+
+    redshift -P -O "$T" >/dev/null
+    MSG="$MSG ${T}K"
+fi
+
+if command -v dunstify > /dev/null; then
+    dunstify --replace=221615 --timeout=1000 "$MSG"
+elif command -v notify-send > /dev/null; then
+    notify-send "$MSG"
+fi

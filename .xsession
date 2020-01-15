@@ -9,4 +9,4 @@ chromium &
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
-exec $HOME/.xmonad/xmonad
+exec $HOME/.local/bin/xmonad
