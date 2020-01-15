@@ -1,0 +1,69 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+DEVICE=pulse
+CONTROL=Master
+
+am() {
+    COMMAND=$1
+    shift 1
+    amixer -D "$DEVICE" "$COMMAND" "$CONTROL" "$@"
+}
+
+OP=$(head -c1 <<< "${1-}")
+V=$(tail -c+2 <<< "${1-}")
+case "$OP" in
+    +) am sset "$V%+" > /dev/null ;;
+    -) am sset "$V%-" > /dev/null ;;
+    =) am sset "$V%" > /dev/null ;;
+    m) am sset toggle > /dev/null ;;
+    *) exit 2 ;;
+esac
+
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
+STATUS_FILE=$TMP/$DEVICE.$CONTROL.status
+am get > "$STATUS_FILE"
+
+get_volume() {
+    grep "$1:" "$STATUS_FILE" | sed 's/.*\[\([0-9]\+\)%\].*/\1/'
+}
+
+muted_status() {
+    grep "$1:" "$STATUS_FILE" | sed 's/.*\[\([onf]\+\)\].*/\1/'
+}
+
+VL=$(get_volume "Front Left")
+VR=$(get_volume "Front Right")
+ML=$(muted_status "Front Left")
+MR=$(muted_status "Front Right")
+if [ "$VL" = "$VR" ] && [ "$ML" = "$MR" ]; then
+    case "$ML" in
+        on) MSG="$VL%"; ICON=audio-volume-medium ;;
+        off) MSG="muted"; ICON=audio-volume-muted ;;
+    esac
+else
+    ICON=audio-volume-medium
+
+    case "$ML" in
+        on) MSG="$VL%" ;;
+        off) MSG="muted" ;;
+    esac
+
+    case "$MR" in
+        on) MSG="$MSG $VR%" ;;
+        off) MSG="$MSG muted" ;;
+    esac
+fi
+
+if command -v dunstify > /dev/null; then
+    dunstify --replace=610655 \
+        --timeout=750 \
+        --icon="$ICON" \
+        --appname="volume" "$MSG"
+elif command -v notify-send > /dev/null; then
+    notify-send "$MSG"
+fi
