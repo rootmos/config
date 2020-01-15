@@ -7,11 +7,12 @@ executable xmonad
   hs-source-dirs:      src
   main-is:             Main.hs
   other-modules:       Utils
-  build-depends:       base
+  build-depends:       base >= 4.11.0.0
                      , directory
                      , xmonad
                      , xmonad-contrib
                      , containers
                      , X11
                      , hostname
+                     , filepath
   default-language:    Haskell2010

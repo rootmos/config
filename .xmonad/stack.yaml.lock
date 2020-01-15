@@ -12,15 +12,15 @@ packages:
   original:
     hackage: X11-xft-0.3.1
 - completed:
-    hackage: xmonad-contrib-0.13@sha256:1cb5740276a23dbbc45751c3e6a676862fd95c67fb20c5a586aa60efaba612f7,15069
+    hackage: xmonad-contrib-0.16@sha256:a47da91613dc8e04c040424ab605acb2e8693bcf76e397f924b39af89b954da1,15927
     pantry-tree:
-      size: 18449
-      sha256: bd9cf3d707589e7503d190c20b2ff7199dfed9c9ffff709abdd500972d8f3621
+      size: 19578
+      sha256: 934bc533bb08aebb72e51cb0fa5aab9e27e5c6c25a0a1edaa2c76058f8771167
   original:
-    hackage: xmonad-contrib-0.13
+    hackage: xmonad-contrib-0.16
 snapshots:
 - completed:
-    size: 507599
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/11/11.yaml
-    sha256: 5ec0a1ff4dadde524eb529784556bcc32014422fd1e1ed91231c59f001e92ca9
-  original: lts-11.11
+    size: 524154
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/20.yaml
+    sha256: 2f5099f69ddb6abfe64400fe1e6a604e8e628f55e6837211cd70a81eb0a8fa4d
+  original: lts-14.20
