@@ -55,17 +55,16 @@ makeWorkspaceKeys mask ws = gotoKeys ws ++ moveKeys ws
     where gotoKeys = map (\(name, key) -> ((mask, key), windows $ W.view name))
           moveKeys = map (\(name, key) -> ((mask .|. shiftMask, key), windows $ W.shift name))
 
-myKeys :: FilePath -> FilePath
+myKeys :: FilePath -> FilePath -> FilePath
        -> XConfig l -> M.Map (ButtonMask, KeySym) (X ())
-myKeys bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys mod4Mask myWorkspaces ++
+myKeys _ bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys mod4Mask myWorkspaces ++
   [ ((mod1Mask .|. shiftMask, xK_Return), spawn t)
   , ((mod1Mask, xK_p), spawn "dmenu_run")
+  , ((mod1Mask, xK_k), spawn "k")
   , ((mod1Mask .|. shiftMask, xK_c), kill)
   , ((mod1Mask, xK_space), sendMessage NextLayout)
   , ((mod1Mask, xK_Tab), windows W.focusDown)
   , ((mod1Mask .|. shiftMask, xK_Tab), windows W.focusUp )
-  , ((mod1Mask, xK_j), windows W.focusDown)
-  , ((mod1Mask, xK_k), windows W.focusUp )
   , ((mod1Mask, xK_m), windows W.focusMaster )
   , ((mod1Mask, xK_Return), windows W.swapMaster)
   , ((mod1Mask .|. shiftMask, xK_j), windows W.swapDown )
@@ -73,13 +72,15 @@ myKeys bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys mo
   , ((mod1Mask, xK_h), sendMessage Shrink)
   , ((mod1Mask, xK_l), sendMessage Expand)
   , ((mod1Mask, xK_t), withFocused $ windows . W.sink)
+  , ((mod1Mask, xK_period), spawn $ bin </> "pass-pick")
   , ((mod4Mask, xK_b), sendMessage ToggleStruts)
   , ((mod4Mask, xK_comma), sendMessage (IncMasterN 1))
   , ((mod4Mask, xK_period), sendMessage (IncMasterN (-1)))
   , ((mod4Mask, xK_d), spawn "docs")
-  , ((mod4Mask, xK_period), spawn $ bin </> "pass-pick")
-  , ((0, xF86XK_MonBrightnessUp), spawn $ bin </> "brightness +5")
-  , ((0, xF86XK_MonBrightnessDown), spawn $ bin </> "brightness -5")
+  , ((0, xF86XK_MonBrightnessUp), spawn $ bin </> "brightness +1")
+  , ((0, xF86XK_MonBrightnessDown), spawn $ bin </> "brightness -1")
+  , ((shiftMask, xF86XK_MonBrightnessUp), spawn $ bin </> "brightness +5")
+  , ((shiftMask, xF86XK_MonBrightnessDown), spawn $ bin </> "brightness -5")
   , ((0, xF86XK_AudioRaiseVolume), spawn $ bin </> "volume +1")
   , ((0, xF86XK_AudioLowerVolume), spawn $ bin </> "volume -1")
   , ((shiftMask, xF86XK_AudioRaiseVolume), spawn $ bin </> "volume +5")
@@ -126,7 +127,8 @@ bars conf = do
 
 main :: IO ()
 main = do
-  (bin, localBin) <- getHomeDirectory <&> \h -> (h </> "bin", h </> ".local" </> "bin")
+  home <- getHomeDirectory
+  let (bin, localBin) = (home </> "bin", home </> ".local" </> "bin")
   bw <- getAppUserDataDirectory "xmonad" <&> (\x -> x </> "border-width") >>= \fn ->
     doesFileExist fn >>= \case
       False -> return 4
@@ -138,7 +140,7 @@ main = do
         , layoutHook = avoidStruts $ smartBorders (Tall 1 (2/100) (1/2)) ||| noBorders Full ||| simpleFloat
         , logHook = fadeInactiveLogHook 0xdddddddd <+> logHook def
         , startupHook = composeAll [ setWMName "LG3D" ] <+> startupHook def
-        , keys = myKeys bin localBin
+        , keys = myKeys home bin localBin
         , focusFollowsMouse = False
         , focusedBorderColor = "red"
         , borderWidth = bw

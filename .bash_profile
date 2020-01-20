@@ -11,7 +11,7 @@ export TELEPRESENCE_BINARY=/home/gustav/root/telepresence/bin/telepresence
 . /home/gustav/.opam/opam-init/init.sh &> /dev/null || true
 
 if command -v k > /dev/null; then
-	. <(k -c)
+    . <(k -c)
 fi
 
 NPM_PACKAGES="$HOME/.npm-packages"

@@ -10,9 +10,9 @@ MAX=$(<$SYS/max_brightness)
 OP=$(head -c1 <<< "${1-}")
 V=$(tail -c+2 <<< "${1-}")
 case "$OP" in
-    +) NEXT=$(calc -dp "min(1,$CUR/$MAX + $V/100)*$MAX") ;;
-    -) NEXT=$(calc -dp "min(1,$CUR/$MAX - $V/100)*$MAX") ;;
-    =) NEXT=$(calc -dp "min(1,$V/100)*$MAX") ;;
+    +) NEXT=$(calc -dp "round(min(1,$CUR/$MAX + $V/100)*$MAX)") ;;
+    -) NEXT=$(calc -dp "round(min(1,$CUR/$MAX - $V/100)*$MAX)") ;;
+    =) NEXT=$(calc -dp "round(min(1,$V/100)*$MAX)") ;;
     *) exit 2 ;;
 esac
 
@@ -21,8 +21,8 @@ cat > "$SYS/brightness" <<< "$NEXT"
 MSG="$(calc -dp "round($NEXT/$MAX*100)")%"
 
 if command -v redshift > /dev/null; then
-    A=1000
-    B=7000
+    A=1500
+    B=6000
     T=$(calc -dp "round($A+($B-$A)*($NEXT/$MAX))")
 
     redshift -P -O "$T" >/dev/null
