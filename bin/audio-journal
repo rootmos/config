@@ -32,7 +32,7 @@ shift $((OPTIND-1))
 # functions
 
 take() {
-    rec "$1"
+    exec rec "$1"
 }
 
 preprocess() {
@@ -79,7 +79,7 @@ tag() {
         --genre=52 \
         "$1"
 
-    METADATA=$(basename --suffix="$SUFFIX" "$1").json
+    METADATA=$(dirname "$1")/$(basename --suffix="$SUFFIX" "$1").json
     cat > "$METADATA" <<EOF
 {
     "title": "$TITLE",
@@ -193,7 +193,7 @@ record() {
     clear
     take "$RAW" &
     PID=$!
-    IFS= read -rsfn1 TAKE_CHOICE
+    IFS= read -rs -n1 TAKE_CHOICE
 
     kill -INT $PID
     wait $PID
