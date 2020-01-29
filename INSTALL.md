@@ -39,7 +39,7 @@ sudo dd bs=4M if=archlinux-$VERSION-x86_64.iso of=/dev/null status=progress ofla
 * `chmod 0600 /mnt/keyfile`
 * `cryptsetup luksAddKey /dev/nvme0n1p2 /mnt/keyfile`
 * Edit mirror list (pick a few of a local/newly refreshed list)
-* `pacstrap /mnt base linux linux-firmware netctl wpa_supplicant dhclent vim lvm2 grub efibootmgr intel-ucode`
+* `pacstrap /mnt base linux linux-firmware netctl wpa_supplicant dhclent vim lvm2 grub efibootmgr intel-ucode dialog`
 * `genfstab -U /mnt >> /mnt/etc/fstab`
 * `arch-chroot /mnt`
 * `ln -sf /usr/share/zoneinfo/Region/City /etc/localtime`
@@ -60,4 +60,72 @@ sudo dd bs=4M if=archlinux-$VERSION-x86_64.iso of=/dev/null status=progress ofla
   - `GRUB_ENABLE_CRYPTODISK=y`
 * `grub-install --target=x86_64-efi --efi-directory=/mnt/efi --bootloader-id=GRUB`
 * `grub-mkconfig -o /boot/grub/grub.cfg`
+* reboot
+
+## First boot
+### Networking
+* `wifi-menu`
+* `vim /etc/netctl/hooks/dhcp`
+```sh
+#!/bin/sh
+DHCPClient=dhclient
+```
+* `chmod +x /etc/netctl/hooks/dhcp`
+* `systemctl start netctl-auto@wlp0s20f3.service`
+* `systemctl enable netctl-auto@wlp0s20f3.service`
+
+### Userspace
+* `pacman -S git tmux sudo`
+* `pacman -S make gcc pkgconfig`
+
+* `useradd -m gustav`
+* log in
+* `mkdir bin`
+
+* `git clone https://github.com/rootmos/config git/config`
+  - assuming `cd ~/git/config` from here
+* as root: `cp sudoers /etc/sudoers.d/username`
+
+* `ln -sf ~/git/config/.bashrc ~/.bashrc`
+* `./install.sh -h .profile`
+* `./install.sh -h .bash_aliases`
+
+* `pacman -S fontconfig freetype2 libxft` (to build st)
+* `build/st`
+
+* `pacman -S ruby python cmake`
+* `build/vim`
+* refresh PATH
+* `./install.sh -h .vim`
+* `./install.sh -h .vimrc`
+* `git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim`
+* `vim +BundleInstall`
+* `build/YouCompleteMe`
+* `build/command-t`
+
+* `pacman -S chromium autocutsel`
+
+* `pacman -S stack dzen2 conky`
+* `./install.sh -h .xmonad`
+* `~/.xmonad/build`
+
+* `git clone https://github.com/rootmos/dvorak ~/git/dvorak`
+* `ln -s ~/git/dvorak/bin/dvorak ~/bin/dv`
+* `ln -s ~/git/dvorak/bin/swedish ~/bin/sv`
+* `ln -s ~/git/dvorak/bin/english ~/bin/us`
+* `ln -s ~/git/dvorak/bin/text ~/bin/text`
+
+* `pacman -S lightdm xorg-server`
+* as root: `mkdir /usr/share/xsessions/`
+* as root: `cp root/usr/share/xsessions/custom.desktop /usr/share/xsessions/`
+* `./install.sh -h .xsession`
+* `groupadd -r autologin`
+* `gpasswd -a username autologin`
+* `vim /etc/lightdm/lightdm.conf`
+```
+[Seat:*]
+autologin-user=username
+autologin-session=custom
+```
+* as root: `systemctl enable lightdm`
 * reboot
