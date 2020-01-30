@@ -1,7 +1,10 @@
 {
     "setups" : [
-        { "outputs": ["HDMI2"] },
-        { "outputs": ["eDP1"], "name": "Internal montior" }
+        { "outputs": ["HDMI-1"] },
+        { "outputs": ["DP-1"] },
+        { "outputs": ["HDMI-2"] },
+        { "outputs": ["DP-2"] },
+        { "outputs": ["eDP-1"], "name": "Internal montior" }
     ],
     "logging": { "stderr": "debug", "syslog": "info" }
 }

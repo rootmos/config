@@ -76,7 +76,7 @@ DHCPClient=dhclient
 
 ### Userspace (first pass)
 * `pacman -S git tmux sudo bash-completion man`
-* `pacman -S make gcc pkgconfig`
+* `pacman -S make gcc pkgconfig patch autoconf automake cmake`
 
 * `useradd -m gustav`
 * log in
@@ -91,11 +91,11 @@ DHCPClient=dhclient
 * `./install.sh -h .bash_aliases`
 * `./install.sh -h .tmux`
 
-* `pacman -S fontconfig freetype2 libxft` (to build st)
 * `pacman -S ttf-inconsolata`
+* `pacman -S fontconfig freetype2 libxft` (to build st)
 * `build/st`
 
-* `pacman -S ruby python cmake`
+* `pacman -S ruby python`
 * `build/vim`
 * refresh PATH
 * `./install.sh -h .vim`
@@ -107,7 +107,7 @@ DHCPClient=dhclient
 
 * `pacman -S chromium autocutsel`
 
-* `pacman -S stack dzen2 conky dmenu`
+* `pacman -S stack dzen2 conky dmenu ttf-dejavu`
 * `./install.sh -h .xmonad`
 * `~/.xmonad/build`
 
@@ -139,6 +139,24 @@ autologin-session=custom
 * `pacman -S dunst libnotify`
 * `./install.sh -h .config/dunst/dunstrc`
 
+* `pacman -S httping`
+* `./install.sh -b bin/drop-ping`
+
+* `pacman -S calc redshift`
+* `./install.sh -rs etc/udev/rules.d/backlight.rules`
+* `gpasswd -a username video`
+* `./install.sh -b bin/brightness`
+
+### AUR
+* `git clone https://aur.archlinux.org/yay.git ~/git/yay`
+* `pacman -S fakeroot`
+* `makepkg -si`
+
+### Audio
+* `yay -S spotify`
+* `./install.sh -b bin/volume`
+* `pacman -S pulseaudio-alsa pavucontrol alsa-utils`
+
 ### Credentials
 * `pacman -S pass encfs gnupg gtk2 git-crypt`
 * `sudo cryptsetup open /dev/sda1 keys`
@@ -148,7 +166,7 @@ autologin-session=custom
 * `git clone ~/mnt/keys/password-store-private ~/sensitive/password-store/`
 * `ln -s ~/sensitive/password-store/ ~/.password-store`
 * `gpg --import ~/mnt/keys/gpg/...`
-* `mv .gnupg/private-keys-v1.d ~/sensitive/*
+* `mv .gnupg/private-keys-v1.d ~/sensitive/*`
 * `ln -s ~/sensitive/private-keys-v1.d ~/.gnupg/private-keys-v1.d`
 * remove primary keys
   - `gpg --list-secret-keys --with-keygrip`
@@ -157,3 +175,34 @@ autologin-session=custom
 * remove passphrases and add trust
   - `gpg --edit-key ...`: `passwd` and `trust`
 * `./install.sh -b bin/pass-pick`
+* `git-crypt unlock`
+* `pacman -S usbutils`
+* `./install.sh -b sensitive/bin/open*`
+* `./install.sh -b sensitive/bin/close*`
+* `./install.sh -b sensitive/bin/private`
+* `./install.sh -b sensitive/bin/lock-status`
+
+* `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
+  - generate secret key at `~/sensitive/id_rsa`
+* `ln -s ~/sensitive/id_rsa ~/.ssh/id_rsa`
+* `cp ~/.ssh/id_rsa ~/mnt/keys/keys/id_rsa_ar1`
+
+* `pass generate laptop/hostname/root 24`
+* `sudo passwd`
+
+### Displays
+* `pacman -S xorg-xrandr`
+* `git clone git@github.com:rootmos/displayswitcheroo.git`
+* `git submodule update --init`
+* `stack install`
+* `./install.sh -h .config/systemd/user/displayswitcheroo.service .config/displayswitcheroo.json`
+* `systemctl --user enable displayswitcheroo`
+
+### Firewall
+TODO
+
+### USB Guard
+TODO
+
+### Mail
+TODO
