@@ -17,5 +17,6 @@ mailboxes "+/INBOX" "+/Berlin" "+/Berlin.apt-get" "+/arXiv" "+/Games"
 macro index,pager d "<save-message>+/Archive<enter><enter>" "Archive"
 macro index,pager N "<sidebar-next><sidebar-open>"
 macro index,pager P "<sidebar-prev><sidebar-open>"
+macro index,pager B "<sidebar-toggle-visible>"
 
 source "gpg --batch --quiet --decrypt ~/.password-store/fastmail/pass.rc.gpg |"
