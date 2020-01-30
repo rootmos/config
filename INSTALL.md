@@ -134,6 +134,9 @@ autologin-session=custom
 
 ## Second boot
 
+* `wget -Obin/tmx https://raw.githubusercontent.com/brandur/tmux-extra/master/tmx`
+* `chmod +x bin/tmx`
+
 * `./install.sh -h .gitconfig`
 * `./install.sh -h .gitignore_global`
 * `pacman -S dunst libnotify`
@@ -141,6 +144,8 @@ autologin-session=custom
 
 * `pacman -S httping`
 * `./install.sh -b bin/drop-ping`
+
+* `./install.sh -b bin/border-width`
 
 * `pacman -S calc redshift`
 * `./install.sh -rs etc/udev/rules.d/backlight.rules`
@@ -198,11 +203,17 @@ autologin-session=custom
 * `./install.sh -h .config/systemd/user/displayswitcheroo.service .config/displayswitcheroo.json`
 * `systemctl --user enable displayswitcheroo`
 
+### Mail
+* `pacman -S mutt offlineimap`
+* `./install.sh -h .mutt .muttrc .offlineimap.py .offlineimaprc`
+* `./install.sh -b bin/mm`
+* `systemctl --user enable offlineimap@private.service`
+* `systemctl --user start offlineimap@private.service`
+* `systemctl --user enable offlineimap@work.service`
+* `systemctl --user start offlineimap@work.service`
+
 ### Firewall
 TODO
 
 ### USB Guard
-TODO
-
-### Mail
 TODO
