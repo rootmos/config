@@ -74,8 +74,8 @@ DHCPClient=dhclient
 * `systemctl start netctl-auto@wlp0s20f3.service`
 * `systemctl enable netctl-auto@wlp0s20f3.service`
 
-### Userspace
-* `pacman -S git tmux sudo`
+### Userspace (first pass)
+* `pacman -S git tmux sudo bash-completion man`
 * `pacman -S make gcc pkgconfig`
 
 * `useradd -m gustav`
@@ -89,8 +89,10 @@ DHCPClient=dhclient
 * `ln -sf ~/git/config/.bashrc ~/.bashrc`
 * `./install.sh -h .profile`
 * `./install.sh -h .bash_aliases`
+* `./install.sh -h .tmux`
 
 * `pacman -S fontconfig freetype2 libxft` (to build st)
+* `pacman -S ttf-inconsolata`
 * `build/st`
 
 * `pacman -S ruby python cmake`
@@ -105,7 +107,7 @@ DHCPClient=dhclient
 
 * `pacman -S chromium autocutsel`
 
-* `pacman -S stack dzen2 conky`
+* `pacman -S stack dzen2 conky dmenu`
 * `./install.sh -h .xmonad`
 * `~/.xmonad/build`
 
@@ -129,3 +131,29 @@ autologin-session=custom
 ```
 * as root: `systemctl enable lightdm`
 * reboot
+
+## Second boot
+
+* `./install.sh -h .gitconfig`
+* `./install.sh -h .gitignore_global`
+* `pacman -S dunst libnotify`
+* `./install.sh -h .config/dunst/dunstrc`
+
+### Credentials
+* `pacman -S pass encfs gnupg gtk2 git-crypt`
+* `sudo cryptsetup open /dev/sda1 keys`
+* `mkdir -p mnt/keys`
+* `sudo mount /dev/mapper/keys mnt/keys`
+* `encfs ~/.sensitive ~/sensitive`
+* `git clone ~/mnt/keys/password-store-private ~/sensitive/password-store/`
+* `ln -s ~/sensitive/password-store/ ~/.password-store`
+* `gpg --import ~/mnt/keys/gpg/...`
+* `mv .gnupg/private-keys-v1.d ~/sensitive/*
+* `ln -s ~/sensitive/private-keys-v1.d ~/.gnupg/private-keys-v1.d`
+* remove primary keys
+  - `gpg --list-secret-keys --with-keygrip`
+  - `rm ~/.gnupg/private-keys-v1.d/...`
+* `./install.sh -h .gnupg/gpg-agent.conf`
+* remove passphrases and add trust
+  - `gpg --edit-key ...`: `passwd` and `trust`
+* `./install.sh -b bin/pass-pick`
