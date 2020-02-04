@@ -152,6 +152,9 @@ autologin-session=custom
 * `gpasswd -a username video`
 * `./install.sh -b bin/brightness`
 
+* `pacman -S pacman-contrib`
+* `bin/refresh-mirrorlist`
+
 ### AUR
 * `git clone https://aur.archlinux.org/yay.git ~/git/yay`
 * `pacman -S fakeroot`
@@ -192,7 +195,7 @@ autologin-session=custom
 * `ln -s ~/sensitive/id_rsa ~/.ssh/id_rsa`
 * `cp ~/.ssh/id_rsa ~/mnt/keys/keys/id_rsa_ar1`
 
-* `pass generate laptop/hostname/root 24`
+* `pass generate -n laptop/hostname/root 32`
 * `sudo passwd`
 
 ### Displays
@@ -204,9 +207,9 @@ autologin-session=custom
 * `systemctl --user enable displayswitcheroo`
 
 ### Mail
-* `pacman -S mutt offlineimap`
+* `pacman -S mutt offlineimap w3m`
 * `./install.sh -h .mutt .muttrc .offlineimap.py .offlineimaprc`
-* `./install.sh -b bin/mm`
+* `./install.sh -b bin/mm bin/fork-xargs-pipe`
 * `systemctl --user enable offlineimap@private.service`
 * `systemctl --user start offlineimap@private.service`
 * `systemctl --user enable offlineimap@work.service`
@@ -215,5 +218,17 @@ autologin-session=custom
 ### Firewall
 TODO
 
+### DNS over TLS
+* stubby
 ### USB Guard
 TODO
+
+### Printer
+* `pacman -S avahi nss-mdns`
+* `vim /etc/nsswitch.conf`
+  - `hosts: ... mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] dns ...`
+* `systemctl enable avahi-daemon.service`
+* `systemctl start avahi-daemon.service`
+* `pacman -S cups foomatic-db-ppds`
+* `systemctl enable org.cups.cupsd.service`
+* `systemctl start org.cups.cupsd.service`

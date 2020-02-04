@@ -6,6 +6,8 @@
         { "outputs": ["DP-2"] },
         { "outputs": ["eDP-1"], "name": "Internal montior" }
     ],
-    "logging": { "stderr": "debug", "syslog": "info" }
+    "logging": { "stderr": "debug", "syslog": "info" },
+    "preSwitchHooks": [ "pkill dzen2" ],
+    "postSwitchHooks": [ "/home/gustav/.local/bin/xmonad --restart", "/home/gustav/bin/dv" ]
 }
 
