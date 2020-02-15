@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-set -o errexit
+set -o nounset -o pipefail -o errexit
 
 if [ "$1" = "disable" ]; then
     SET=0
@@ -11,6 +11,10 @@ else
     exit 2
 fi
 
-NAME="TM3381-002"
+case $(hostname) in
+    ar0) NAME="TM3289-021";;
+    *) echo "unconfigured host $(hostname)"; exit 1;;
+esac
+
 ID=$(xinput list | grep "$NAME" | sed "s/.*id=\(\w\+\).*/\1/")
-xinput set-prop $ID "Device Enabled" $SET
+xinput set-prop "$ID" "Device Enabled" $SET
