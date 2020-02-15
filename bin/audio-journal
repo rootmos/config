@@ -6,7 +6,7 @@ TMP=$(mktemp -d)
 trap 'rm -rf $TMP' EXIT
 
 ACTION=record
-MODE=release
+MODE=practice
 TITLE=
 PRE_FILTERS="norm"
 POST_FILTERS="norm"
@@ -14,20 +14,45 @@ AUDIO_JOURNAL=${AUDIO_JOURNAL-$HOME/audio-journal}
 SUFFIX=${AUDIO_JOURNAL_SUFFIX-.mp3}
 PLAYER=${PLAYER-mpv}
 BUCKET=${AUDIO_JOURNAL_BUCKET-rootmos-sounds}
-while getopts "pRrlLPm:t:" OPT; do
+DRY_RUN=
+while getopts "hpRrlLP:m:t:n" OPT; do
     case $OPT in
+        h) ACTION=usage ;;
         r) ACTION=record ;;
         l) ACTION=listen ;;
         L) ACTION=list ;;
-        P) ACTION=publish ;;
+        P) ACTION=publish; SRC=$OPTARG; MODE=release ;;
         p) MODE=practice ;;
         R) MODE=release ;;
+        n) DRY_RUN=1 ;;
         m) MODE=$OPTARG ;;
         t) TITLE=$OPTARG ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
 done
 shift $((OPTIND-1))
+
+if [ "$ACTION" = "usage" ]; then
+    cat <<EOF 1>&2
+$(basename "$0")
+
+actions:
+    -r      record (default)
+    -l      listen
+    -L      list
+    -P SRC  publish
+    -h      show this message
+
+options:
+    -t TITLE    set title
+    -n          dry run (skip upload)
+
+mode:
+    -p       practice (default)
+    -r       release
+    -m MODE  custom mode
+EOF
+fi
 
 # functions
 
@@ -114,12 +139,14 @@ postprocess() {
     if [[ ! -v OUT ]]; then
         mkdir -p "$AUDIO_JOURNAL/$MODE"
         OUT=$AUDIO_JOURNAL/$MODE/$DATE$SUFFIX
-        TITLE="Session @ $DATE"
+        if [ -z "$TITLE" ]; then
+            TITLE="Session @ $DATE"
+        fi
     fi
 
     sox --ignore-length "$1" "$OUT" $POST_FILTERS
     METADATA=$(tag "$OUT" "$DATE" "$TITLE")
-    if [[ ! -v DRY_RUN ]]; then
+    if [ "$DRY_RUN" != 1 ]; then
         save_to_secondary "$OUT"
         save_to_secondary "$METADATA"
         upload "$OUT"
@@ -245,7 +272,7 @@ case $ACTION in
         ;;
     publish)
         prepare
-        publish "$1" "$TITLE"
+        publish "$SRC" "$TITLE"
         ;;
     list)
         prepare_read_only
