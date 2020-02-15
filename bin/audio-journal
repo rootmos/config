@@ -124,24 +124,21 @@ EOF
 
 postprocess() {
     DATE=$2
-    TITLE=$3
-    unset OUT
-    if [ "$MODE" = "release" ]; then
-        if [ -z "$TITLE" ]; then
-            read -rp "Title: " TITLE
-        fi
+    TITLE=${3-}
 
-        if [ -n "$TITLE" ]; then
-            OUT=$AUDIO_JOURNAL/${DATE}_$(tr ' ' '-' <<< "$TITLE")$SUFFIX
+    if [ -z "$TITLE" ]; then
+        if [ "$MODE" = "practice" ]; then
+            TITLE="Session @ $DATE"
+        else
+            read -rp "Title: " TITLE
         fi
     fi
 
-    if [[ ! -v OUT ]]; then
+    if [ "$MODE" = "release" ]; then
+        OUT=$AUDIO_JOURNAL/${DATE}_$(tr ' ' '-' <<< "$TITLE")$SUFFIX
+    else
         mkdir -p "$AUDIO_JOURNAL/$MODE"
         OUT=$AUDIO_JOURNAL/$MODE/$DATE$SUFFIX
-        if [ -z "$TITLE" ]; then
-            TITLE="Session @ $DATE"
-        fi
     fi
 
     sox --ignore-length "$1" "$OUT" $POST_FILTERS
@@ -233,7 +230,7 @@ record() {
     fi
 
     case "${POST_CHOICE-y}" in
-        y|Y) postprocess "$RAW" "$DATE" "$TITLE";;
+        y|Y) postprocess "$RAW" "$DATE";;
     esac
 }
 
