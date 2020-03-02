@@ -4,9 +4,11 @@ set -o nounset -o pipefail -o errexit
 
 export K_DIR=$(readlink -f "$(pwd)")
 K=.k
-while getopts "k:eg-cCm" OPT; do
+while getopts "k:eg-cCmhd:" OPT; do
     case "$OPT" in
         k) K=$OPTARG ;;
+        d) cd "$OPTARG" ;;
+        h) ACTION=usage ;;
         e) ACTION=edit ;;
         g) ACTION=go ;;
         c) ACTION=completion-script; COMPLETE_NAME=$(basename "$0") ;;
@@ -28,6 +30,26 @@ if [[ ! -v ACTION ]]; then
     else
         ACTION=go
     fi
+fi
+
+
+if [ "$ACTION" = "usage" ]; then
+    cat <<EOF 1>&2
+$(basename "$0")
+
+user actions:
+    -g      go (default)
+    -e      edit
+    -h      show this message
+    -m      display menu (using dmenu)
+
+script usage:
+    -c      completion script
+    -C      list completions
+
+options:
+    -d DIR  change directory to DIR
+EOF
 fi
 
 if [ "$ACTION" = "completion-script" ]; then
