@@ -6,7 +6,7 @@ TMP=$(mktemp -d)
 trap 'rm -rf $TMP' EXIT
 
 ACTION=record
-MODE=practice
+MODE=sessions
 TITLE=
 PRE_FILTERS="norm"
 POST_FILTERS="norm"
@@ -14,8 +14,9 @@ AUDIO_JOURNAL=${AUDIO_JOURNAL-$HOME/audio-journal}
 SUFFIX=${AUDIO_JOURNAL_SUFFIX-.mp3}
 PLAYER=${PLAYER-mpv}
 BUCKET=${AUDIO_JOURNAL_BUCKET-rootmos-sounds}
+BUCKET_REGION=${AUDIO_JOURNAL_BUCKET_REGION-eu-central-1}
 DRY_RUN=
-while getopts "hpRrlLP:m:t:n" OPT; do
+while getopts "hspRrlLP:m:t:n" OPT; do
     case $OPT in
         h) ACTION=usage ;;
         r) ACTION=record ;;
@@ -23,6 +24,7 @@ while getopts "hpRrlLP:m:t:n" OPT; do
         L) ACTION=list ;;
         P) ACTION=publish; SRC=$OPTARG; MODE=release ;;
         p) MODE=practice ;;
+        s) MODE=sessions ;;
         R) MODE=release ;;
         n) DRY_RUN=1 ;;
         m) MODE=$OPTARG ;;
@@ -48,7 +50,8 @@ options:
     -n          dry run (skip upload)
 
 mode:
-    -p       practice (default)
+    -s       jam sesssion (default)
+    -p       practice
     -r       release
     -m MODE  custom mode
 EOF
@@ -80,7 +83,8 @@ upload() {
 }
 
 url() {
-    echo "https://$BUCKET.ams3.cdn.digitaloceanspaces.com/$PREFIX$1"
+    echo "https://$BUCKET.s3.$BUCKET_REGION.amazonaws.com/$PREFIX$1" \
+        | sed 's/+/%2B/g'
 }
 
 tag() {
@@ -177,7 +181,7 @@ list() {
     export -f url
     s3cmd ls -l "s3://$BUCKET/$PREFIX" \
         | awk '{ print $6 }' \
-        | grep "$SUFFIX$" \
+        | grep -v ".json$" \
         | sort -r | while read -r f; do
         url "$(basename "$f")"
     done

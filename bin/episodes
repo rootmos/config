@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+S=1
+E=1
+
+while getopts "s:e:-" OPT; do
+    case $OPT in
+        s) S=$OPTARG ;;
+        e) E=$OPTARG ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+PATTERN=$1
+
+pattern() {
+    sed 's/%s/'"$1"'/g' <<< "$PATTERN" \
+        | sed 's/%e/'"$2"'/g' \
+        | sed 's/%.2s/'$(printf '%.2d' "$1")'/g' \
+        | sed 's/%.2e/'$(printf '%.2d' "$2")'/g'
+}
+
+while true; do
+    FILE=$(find -path "$(pattern "$S" "$E")" -print -quit)
+    if [ -n "$FILE" ]; then
+        E=$((E+1))
+    else
+        FILE=$(find -path "$(pattern "$S" "$((E+1))")" -print -quit)
+        if [ -n "$FILE" ]; then
+            E=$((E+2))
+        else
+            FILE=$(find -path "$(pattern "$((S+1))" 1)" -print -quit)
+            if [ -n "$FILE" ]; then
+                S=$((S+1))
+                E=2
+            else
+                break
+            fi
+        fi
+    fi
+    echo "$FILE"
+done

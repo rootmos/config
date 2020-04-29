@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+WD=$(pwd)
+while getopts "c:-" OPT; do
+    case $OPT in
+        c) WD=$OPTARG ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
+cat <<EOF > "$TMP/dosbox.conf"
+[sdl]
+fullscreen = false
+autolock = true
+
+[render]
+scaler = normal3x
+
+[dosbox]
+machine=svga_s3
+
+[cpu]
+cycles = auto
+
+[autoexec]
+MOUNT C "$WD"
+C:
+$@
+EOF
+
+cd $TMP
+/usr/bin/dosbox

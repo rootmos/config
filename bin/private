@@ -5,4 +5,9 @@ if command -v open_private >/dev/null \
     open_private
 fi
 
+if command -v open_rp >/dev/null \
+    && ! grep -qs ~/mnt/rp /proc/mounts; then
+    open_rp
+fi
+
 exec bash --rcfile ~/.bashrc-private

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+IFACE=enp0s25
+
+config() {
+    cat <<EOF
+conky.config = {
+    background = false,
+    own_window = true,
+    own_window_type = 'desktop',
+    gap_x = 0,
+    gap_y = 0,
+    update_interval = 1,
+    alignment = 'top_left',
+    use_xft = true,
+    font = 'Inconsolata:pixelsize=50'
+}
+
+conky.text = [[
+\${time %R}
+\${exec monitor-client ping avg}ms \${exec monitor-client ping loss}% \${exec monitor-client location}
+↓\${downspeedf $IFACE} ↑\${upspeedf $IFACE}
+C:\${cpu}% T:\${hwmon 0 temp 1}° S:\${swapperc}% M:\${memperc}%
+]]
+EOF
+}
+
+timeout 5s conky --config=<(config)

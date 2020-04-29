@@ -1,0 +1,11 @@
+[Unit]
+Description=Controller mapping service
+
+[Service]
+Restart=always
+WorkingDirectory=~
+ExecStartPre=/bin/systemctl --user import-environment DISPLAY XAUTHORITY
+ExecStart=/home/gustav/.local/bin/controller -n "SZMy-power LTD CO.  Dual Box WII" -I 0
+
+[Install]
+WantedBy=default.target

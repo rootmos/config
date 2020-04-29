@@ -9,4 +9,6 @@ chromium &
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
+xcompmgr &
+
 exec $HOME/.local/bin/xmonad

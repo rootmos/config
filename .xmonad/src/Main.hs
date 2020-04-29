@@ -12,7 +12,6 @@ import System.FilePath.Posix ( (</>) )
 import Text.Printf ( printf )
 import XMonad
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.FadeInactive ( fadeInactiveLogHook )
 import XMonad.Hooks.ManageDocks ( avoidStruts, docks, ToggleStruts(..) )
 import XMonad.Hooks.SetWMName ( setWMName )
 import XMonad.Layout.NoBorders ( smartBorders, noBorders )
@@ -138,7 +137,6 @@ main = do
         , workspaces = fst <$> myWorkspaces
         , manageHook = myManageHooks <+> manageHook def
         , layoutHook = avoidStruts $ smartBorders (Tall 1 (2/100) (1/2)) ||| noBorders Full ||| simpleFloat
-        , logHook = fadeInactiveLogHook 0xdddddddd <+> logHook def
         , startupHook = composeAll [ setWMName "LG3D" ] <+> startupHook def
         , keys = myKeys home bin localBin
         , focusFollowsMouse = False

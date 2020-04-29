@@ -36,12 +36,12 @@ files() {
         if [ "$TYPE" = "video" ]; then
             if [ "$RAR" = "yes" ]; then
                 find "$@" \
-                    -iname '*.avi' -or -iname '*.mkv' -or \
+                    -iname '*.avi' -or -iname '*.mkv' -or -iname '*.webm' -or \
                     -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' \
                     -or -iname '*.rar'
             else
                 find "$@" \
-                    -iname '*.avi' -or -iname '*.mkv' -or \
+                    -iname '*.avi' -or -iname '*.mkv' -or -iname '*.webm' -or \
                     -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv'
             fi
         elif [ "$TYPE" = "image" ]; then
