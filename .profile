@@ -22,3 +22,4 @@ PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 export PLAYER=mpv
 export EDITOR=vim
+export VOD_DIR=$HOME/vods

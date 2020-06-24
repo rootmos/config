@@ -2,8 +2,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Main where
 
-import Control.Monad ( liftM2, (<=<) )
-import Data.Monoid ( Endo )
+import Control.Monad ( (<=<) )
 import Data.Functor ( (<&>) )
 import Graphics.X11.ExtraTypes.XF86
 import Network.HostName ( getHostName )
@@ -36,18 +35,6 @@ myWorkspaces = [ ("1", xK_1)
                , ("c", xK_c)
                , ("g", xK_g)
                ]
-
-viewShift :: WorkspaceId -> Query (Endo (W.StackSet WorkspaceId l Window ScreenId sd))
-viewShift = doF . liftM2 (.) W.greedyView W.shift
-
-myManageHooks :: Query (Endo WindowSet)
-myManageHooks = composeAll $ [ className =? "Chromium" --> doShift "w"
-                             , className =? "Spotify" --> doShift "m"
-                             , className =? "Zathura" --> viewShift "p"
-                             , className =? "Kodi" --> viewShift "v"
-                             , className =? "MPlayer" --> doFloat
-                             , className =? "VirtualBox" --> doFloat
-                             ]
 
 makeWorkspaceKeys :: ButtonMask -> [(String,KeySym)] -> [((ButtonMask,KeySym), X())]
 makeWorkspaceKeys mask ws = gotoKeys ws ++ moveKeys ws
@@ -135,7 +122,6 @@ main = do
   xmonad <=< bars $
     def { terminal = "st"
         , workspaces = fst <$> myWorkspaces
-        , manageHook = myManageHooks <+> manageHook def
         , layoutHook = avoidStruts $ smartBorders (Tall 1 (2/100) (1/2)) ||| noBorders Full ||| simpleFloat
         , startupHook = composeAll [ setWMName "LG3D" ] <+> startupHook def
         , keys = myKeys home bin localBin
