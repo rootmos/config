@@ -17,18 +17,18 @@ function cut(from, to)
     local i = mp.get_property("stream-path")
     local b = utils.join_path(os.getenv("HOME"), "slices")
     local o = utils.join_path(b,
-        string.format("%s.%s-%s", mp.get_property("filename"),
+        string.format("%s.%s-%s.mkv", mp.get_property("filename"),
             timestamp(from), timestamp(to)))
 
     os.execute(string.format([[mkdir -p "%s"]], b))
     local cmd = nil
     if state.video then
         cmd = string.format(
-            [[ffmpeg -loglevel warning -accurate_seek -ss "%s" -to "%s" -i "%s" -c copy -f matroska "%s"]],
+            [[ffmpeg -loglevel warning -ss "%s" -to "%s" -i "%s" -f matroska "%s"]],
             timestamp(from), timestamp(to), i, o)
     else
         cmd = string.format(
-            [[ffmpeg -loglevel warning -accurate_seek -ss "%s" -to "%s" -i "%s" -vn -c copy -f matroska "%s"]],
+            [[ffmpeg -loglevel warning -ss "%s" -to "%s" -i "%s" -vn -f matroska "%s"]],
             timestamp(from), timestamp(to), i, o)
     end
     msg.info(cmd)
