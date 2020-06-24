@@ -1,0 +1,87 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+VOD_DIR=/home/gustav/vods # TOOD: fix this
+ACTION=$1
+shift
+
+id() {
+    echo $((16#$(sha1sum <<< "$1" | head -c6)))
+}
+
+notify() {
+    ID=$(id "$1")
+    shift
+    dunstify --replace="$ID" \
+        --timeout=5000 \
+        --appname="vods" "$@"
+}
+
+fetch() {
+    URL=$1
+    DOWNLOAD_DIR=${DOWNLOAD_DIR-$VOD_DIR/.ongoing}
+    DOWNLOAD_DIR=$DOWNLOAD_DIR/$(id "$URL")
+
+    mkdir -p "$DOWNLOAD_DIR"
+    trap 'pkill -P $$' EXIT
+
+    cd "$DOWNLOAD_DIR"
+    youtube-dl --write-info-json \
+        --retries=infinite --fragment-retries=infinite \
+        --socket-timeout=30 \
+        --newline --verbose \
+        "$URL" &
+    PID=$!
+
+    while [ ! -f *".info.json" ]; do
+        sleep 1
+    done
+
+    TITLE=$(jq -r .title *".info.json")
+
+    notify "$URL" "downloading" "$TITLE"
+
+    wait $PID
+    mv -v * "$VOD_DIR"
+
+    notify "$URL" "completed" "$TITLE"
+}
+
+if [ "$ACTION" = "list" ]; then
+    cd "$VOD_DIR"
+    find -maxdepth 1 -type f -not -name "*.part" -and -not -name "*.json" \
+        | tr '\n' '\0' | xargs -0 ls --time=birth -1t
+elif [ "$ACTION" = "get" ]; then
+    fetch "${1-$(xclip -o)}"
+elif [ "$ACTION" = "enqueue" ]; then
+    URL=${1-$(xclip -o)}
+    cat >> "$VOD_DIR/.queue" <<< "$URL"
+    notify "$URL" "enqueued" "$URL"
+elif [ "$ACTION" = "service" ]; then
+    while sleep 5; do
+        if [ ! -f "$VOD_DIR/.queue" ]; then
+            continue
+        fi
+        if [ -f "$VOD_DIR/.completed" ]; then
+            URL=$(grep -v -f "$VOD_DIR/.completed" < "$VOD_DIR/.queue" | head -n1 || true)
+        else
+            URL=$(head -n1 < "$VOD_DIR/.queue")
+        fi
+        if [ -n "$URL" ]; then
+            echo "fetching: $URL"
+            fetch "$URL"
+            cat >> "$VOD_DIR/.completed" <<< "$URL"
+        else
+            echo "nothing in queue..."
+        fi
+    done
+elif [ "$ACTION" = "start" ]; then
+    systemctl --user start vod.service
+elif [ "$ACTION" = "stop" ]; then
+    systemctl --user stop vod.service
+elif [ "$ACTION" = "restart" ]; then
+    systemctl --user restart vod.service
+elif [ "$ACTION" = "logs" ]; then
+    journalctl --user -u vod.service "$@"
+fi
