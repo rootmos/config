@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+CHANNEL=$1
+SESSION=twitch
+TERMINAL=st
+
+CMD=(twitch-cli --chat --chat-read-only "$CHANNEL")
+
+go() {
+    nohup $TERMINAL "$@" > /dev/null 2>&1 < /dev/null &
+}
+
+if ! tmux has-session -t "$SESSION"; then
+    go tmux new-session -s "$SESSION" -n "$CHANNEL" "${CMD[@]}"
+elif ! tmux list-windows -t "$SESSION" -F '#{window_name}' \
+    | grep -cq "^$CHANNEL$"; then
+    go tmux new-window -t "$SESSION:" -n "$CHANNEL" "${CMD[@]}"
+else
+    tmux select-window -t "$SESSION:$CHANNEL"
+    go tmux attach-session -d -t "$SESSION"
+fi
