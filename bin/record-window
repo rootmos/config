@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+WAIT=0
+PLAY=
+ACTION=record
+PLAYER=${PLAYER-mpv}
+while getopts "hpw:-" OPT; do
+    case $OPT in
+        h) ACTION=usage ;;
+        p) PLAY=1 ;;
+        w) WAIT=$OPTARG ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ "$ACTION" = "usage" ]; then
+    cat <<EOF 1>&2
+usage: $(basename "$0") [options] [output]
+
+options:
+    -p    play file after recording (using PLAYER variable: $PLAYER)
+    -w N  wait N seconds before recording
+EOF
+    exit 0
+fi
+
+OUTPUT=${1-$(date -Is).mkv}
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
+echo "click window to capture..." >&2
+xwininfo > "$TMP/xwininfo"
+
+if [ "$WAIT" -gt 0 ]; then
+    echo -n "recording in"
+    for i in $(seq "$WAIT"); do
+        echo -n " $i"
+        sleep 1
+    done
+fi
+
+field() {
+    grep "$1:" "$TMP/xwininfo" | sed 's/^.*:\s\+\([0-9]\+\)$/\1/'
+}
+W=$(field "Width")
+H=$(field "Height")
+X=$(field "Absolute upper-left X")
+Y=$(field "Absolute upper-left Y")
+
+ffmpeg -video_size "${W}x${H}" -framerate 30000/1001 \
+    -f x11grab -draw_mouse 0 -i "$DISPLAY+$X,$Y" \
+    -c:v hevc_nvenc -rc vbr_hq -cq 30 -qmin 20 -qmax 40 \
+    -level 4.1 -tier high -profile:v main10 -pix_fmt bgr0 \
+    -2pass 1 -spatial_aq 1 -aq-strength 15 -rc-lookahead 32 \
+    "$TMP/out.mkv"
+
+mv "$TMP/out.mkv" "$OUTPUT"
+
+if [ -n "$PLAY" ]; then
+    $PLAYER "$OUTPUT"
+fi
