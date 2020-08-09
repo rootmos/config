@@ -47,7 +47,7 @@ end
 mp.add_hook("on_load", 50, function()
     local p = mp.get_property("path")
     if p:find("https://twitch.tv") or p:find("https://www.twitch.tv") then
-        mp.add_key_binding("t", "twitch_chat", launch_twitch_chat)
-        mp.add_key_binding("T", "twitch_chat", launch_twitch_chat_vod)
+        mp.add_key_binding("t", "twitch_chat_live", launch_twitch_chat)
+        mp.add_key_binding("T", "twitch_chat_vod", launch_twitch_chat_vod)
     end
 end)
