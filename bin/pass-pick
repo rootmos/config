@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -o errexit -o pipefail
+set -o nounset -o pipefail -o errexit
 
 DIR=${PASSWORD_STORE_DIR-$HOME/.password-store}
 MULTILINE=
@@ -19,7 +19,7 @@ choose() {
        | grep -v '^\.' \
        | sed 's,'$DIR'/,,' \
        | sed 's/.gpg$//' \
-       | sort | dmenu
+       | sort | dmenu -l 20
 }
 
 run_pass() {
@@ -32,11 +32,16 @@ run_pass() {
 CHOICE=$(choose)
 
 if [ -n "$MULTILINE" ]; then
-    run_pass | dmenu -l 20 | sed 's/^.*:\s*//' | xclip
+    LINE=$(run_pass | tail -n+2 | dmenu -l 20)
+    TYPE=$(sed 's/:\s*.*$//' <<< "$LINE")
+    sed 's/^.*:\s*//' <<< "$LINE" | xclip -r
 else
-    run_pass | head -n1 | xclip
+    TYPE=password
+    run_pass | head -n1 | xclip -r
 fi
 
-if command -v notify-send > /dev/null; then
-  notify-send "pass: $CHOICE"
+if command -v dunstify > /dev/null; then
+    dunstify --icon=dialog-password --appname=pass "$CHOICE" "$TYPE"
+elif command -v notify-send > /dev/null; then
+    notify-send --icon=dialog-password "$CHOICE" "$TYPE"
 fi

@@ -1,9 +1,6 @@
 #!/bin/sh
 
-unclutter -idle 1 &
-trap "kill $!" EXIT
-
-/usr/bin/feh --scale-down --image-bg=black --auto-zoom \
+exec feh --scale-down --image-bg=black --auto-zoom \
     --action='l $(l | dmenu -p "$(dirname "%f")") + "$(dirname "%f")"' \
     --action1='l $(l | dmenu -p "%f") + "%f"' \
     "$@"

@@ -1,5 +1,7 @@
-#!/bin/sh
-set -o errexit -o xtrace
-activeWinLine=$(xprop -root | grep "_NET_ACTIVE_WINDOW(WINDOW)")
-activeWinId=${activeWinLine:40}
-import -quality 05 -window "$activeWinId" ~/tmp/$(date +%F_%H%M%S_%N).png
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+OUT=${1-$(date -Is).png}
+
+exec maim -u -s "$OUT"

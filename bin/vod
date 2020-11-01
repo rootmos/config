@@ -2,7 +2,7 @@
 
 set -o nounset -o pipefail -o errexit
 
-VOD_DIR=/home/gustav/vods # TOOD: fix this
+VOD_DIR=${VOD_DIR-/stash/Vods}
 ACTION=$1
 shift
 
@@ -27,10 +27,13 @@ fetch() {
     trap 'pkill -P $$' EXIT
 
     cd "$DOWNLOAD_DIR"
+    OPTS=()
+
     youtube-dl --write-info-json \
         --retries=infinite --fragment-retries=infinite \
         --socket-timeout=30 \
         --newline --verbose \
+        --limit-rate=1.5M \
         "$URL" &
     PID=$!
 

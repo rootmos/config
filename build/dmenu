@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+APP=dmenu
+GIT_URL=git@github.com:rootmos/dmenu.git
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+m -C "$SRC" clean
+m -C "$SRC" install PREFIX="$ROOT"

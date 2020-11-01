@@ -75,6 +75,7 @@ EOF
         completions)
             $SHELL -r -c ". \"$K\" && declare -F | cut -f3 -d' '" "$K" \
                 | grep -vf <($SHELL -r -c 'declare -F | cut -f3 -d" "') \
+                | grep -v "^_" \
                 | grep "^${2-}"
             ;;
     esac

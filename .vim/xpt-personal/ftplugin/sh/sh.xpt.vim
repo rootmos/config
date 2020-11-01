@@ -44,3 +44,14 @@ set -o xtrace
 
 XPT script_dir
 SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+
+XPT usage
+usage() {
+    cat <<EOF 1>&2
+Usage: $(basename "$0")
+Options:
+    -h      show this message
+    `cursor^
+EOF
+    exit "${1-0}"
+}

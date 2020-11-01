@@ -5,13 +5,28 @@ set -o nounset -o pipefail -o errexit
 TMP=$(mktemp -d)
 trap 'rm -rf $TMP' EXIT
 
+usage() {
+    cat <<EOF 1>&2
+Usage: $(basename "$0") [options] -- ...
+Options:
+    -h        show this message
+    -f FILE   track changes in FILE
+    -D DELAY  delay execution by DELAY seconds
+EOF
+    exit "${1-0}"
+}
+
 ACTION=run
-while getopts "t:c-" OPT; do
+TARGETS=()
+DELAY=0.1s
+while getopts "f:cD:h-" OPT; do
     case $OPT in
-        t) echo -ne "$OPTARG\0" >> "$TMP/targets";;
-        c) ACTION=completion-script; COMPLETE_NAME=$(basename "$0");;
-        -) break;;
-        \?) echo "Invalid option: -$OPTARG" >&2; exit 2;;
+        f) TARGETS+=("$OPTARG") ;;
+        c) ACTION=completion-script; COMPLETE_NAME=$(basename "$0") ;;
+        D) DELAY=$OPTARG ;;
+        h) usage ;;
+        -) break ;;
+        ?) usage 2 ;;
     esac
 done
 shift $((OPTIND-1))
@@ -31,17 +46,26 @@ manual_waiter() {
 }
 
 files() {
-    xargs -0 -a "$TMP/targets" -L1 sh -c '(cd "$0" && git ls-files -z 2>/dev/null | xargs -0 readlink -zf) || echo -ne "$0\0"'
+    for f in "${TARGETS[@]}"; do
+        if [ -d "$f" ]; then
+            (
+                cd "$f" && git ls-files -z 2>/dev/null | xargs -0 readlink -f
+            ) || find "$f" -type f -exec readlink -f {} \;
+        else
+            readlink -f "$f"
+        fi
+    done
 }
 
 file_waiter() {
-    files | tr '\0' '\n' | inotifywait --fromfile=- -e close_write,moved_to,move_self --format="%f" --quiet
+    files | inotifywait --fromfile=- --format="%f" --quiet \
+        -e close_write,moved_to,move_self
     kill "$(<"$TMP/manual.pid")"
     echo 1>&2 "[file trigger]"
 }
 
-if [ ! -f "$TMP/targets" ]; then
-    echo -ne ".\0" > "$TMP/targets"
+if [ "${#TARGETS[@]}" -eq 0 ]; then
+    TARGETS+=(".")
 fi
 
 trap 'find "$TMP" -name "*.pid" -exec killall -q {} \; ; echo' INT
@@ -54,7 +78,7 @@ while true; do
 
     wait
 
-    sleep 0.1
+    sleep "$DELAY"
     ( "$@" ) &
     echo "$!" > "$TMP/child.pid"
     set +o errexit

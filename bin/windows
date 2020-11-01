@@ -2,5 +2,8 @@
 
 set -o nounset -o pipefail -o errexit
 
-grub-reboot 2
-reboot
+if [ "$(id -u)" -ne 0 ]; then
+   SUDO=${SUDO-sudo}
+fi
+${SUDO-} grub-reboot "Windows"
+systemctl reboot

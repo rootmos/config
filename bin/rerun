@@ -7,10 +7,10 @@ ACTION=play
 SHUF=yes
 TYPE=video
 RAR=
-while getopts "P:mpelf:F:M:-zZt:T:v:R" opt; do
+while getopts "P:mpelf:F:M:-zZt:T:v:RD:" opt; do
     case "$opt" in
         P) PLAYER_OPTS+=("$OPTARG") ;;
-        m) PLAYER_OPTS+=(-mute) ;;
+        m) PLAYER_OPTS+=(-m) ;;
         l) ACTION=list ;;
         e) ACTION=edit ;;
         p) ACTION=play ;;
@@ -23,6 +23,7 @@ while getopts "P:mpelf:F:M:-zZt:T:v:R" opt; do
         Z) SHUF=no ;;
         T) TYPE=$OPTARG ;;
         R) RAR=yes ;;
+        D) PLAYER_OPTS+=("-D" "$OPTARG") ;;
         -) break ;;
         \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
     esac
@@ -83,24 +84,20 @@ shuf() {
     fi
 }
 
-play() {
+go() {
     if [ "$TYPE" = "video" ]; then
-        $PLAYER "${PLAYER_OPTS[@]}" --playlist=-
+        $PLAYER "${PLAYER_OPTS[@]}" -f-
     elif [ "$TYPE" = "image" ]; then
-        tr '\n' '\0' | xargs -I{} -0 feh "${PLAYER_OPTS[@]}" {}
+        tr '\n' '\0' | xargs -L1 -0 $VIEWER "${PLAYER_OPTS[@]}"
     fi
 }
 
-go() {
-    filter | filter_not | map
-}
-
 if [ "$ACTION" = "play" ]; then
-    files "$@" | shuf | go | play
+    files "$@" | shuf | filter | filter_not | map | go
 elif [ "$ACTION" = "list" ]; then
-    files "$@" | shuf | go
+    files "$@" | shuf | filter | filter_not | map
 elif [ "$ACTION" = "edit" ]; then
     while $EDITOR "$FILENAME"; do
-        files "$@" | grep '^[^#]' | go | head -n1 | play
+        files "$@" | grep '^[^#]' | filter | filter_not | map | head -n1 | go
     done
 fi

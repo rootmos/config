@@ -12,7 +12,7 @@ set record = "+/Sent"
 set postponed = "+/Drafts"
 set spoolfile = "+/INBOX"
 
-mailboxes "+/INBOX" "+/Berlin" "+/Berlin.apt-get" "+/arXiv" "+/Games"
+mailboxes "+/INBOX" "+/Berlin" "+/Berlin.apt-get" "+/arXiv" "+/Games" "+/Work"
 
 macro index,pager d "<save-message>+/Archive<enter><enter>" "Archive"
 macro index,pager N "<sidebar-next><sidebar-open>"

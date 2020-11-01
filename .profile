@@ -20,6 +20,7 @@ PATH=$HOME/.cargo/bin:$PATH
 
 PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
-export PLAYER=mpv
+export PLAYER=play
+export VIEWER=view
 export EDITOR=vim
-export VOD_DIR=$HOME/vods
+export VOD_DIR=/stash/Vods

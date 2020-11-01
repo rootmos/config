@@ -1,0 +1,87 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+MEMCARD_SUFFIX=
+JOYSTICK_TYPE=dualshock
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
+export MEDNAFEN_HOME=${MEDNAFEN_HOME-$TMP}
+USER_BASE_DIR="$HOME/.mednafen"
+SAVESTATES="$USER_BASE_DIR/mcs"
+MEMORYCARDS="$USER_BASE_DIR/sav"
+FIRMWARES="$USER_BASE_DIR/firmware"
+
+OPTS=()
+while getopts "m:s:M:A-" OPT; do
+    case $OPT in
+        m) MEMCARD_SUFFIX="-$OPTARG" ;;
+        A) JOYSTICK_TYPE=gamepad ;;
+        s) SAVESTATES=$OPTARG ;;
+        M) MEMORYCARDS=$OPTARG ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+OPTS+=("-sound.device" "sexyal-literal-default")
+OPTS+=("-sound.rate" "192000")
+
+OPTS+=("-filesys.state_comp_level" "9")
+OPTS+=("-filesys.path_state" "$SAVESTATES")
+OPTS+=("-filesys.path_sav" "$MEMORYCARDS")
+OPTS+=("-filesys.path_firmware" "$FIRMWARES")
+
+#OPTS+=("-psx.shader" "goat")
+#OPTS+=("-psx.shader" "ipsharper")
+#OPTS+=("-psx.shader" "autoipsharper")
+OPTS+=("-psx.shader" "none")
+OPTS+=("-psx.stretch" "aspect_mult2")
+OPTS+=("-psx.special" "nn4x")
+OPTS+=("-psx.xscale" "4.000000")
+OPTS+=("-psx.yscale" "4.000000")
+
+OPTS+=("-video.fs" "0")
+OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
+OPTS+=("-command.pause" "keyboard 0x0 44")
+OPTS+=("-command.fast_forward" "keyboard 0x0 40")
+OPTS+=("-cd.image_memcache" "1")
+
+OPTS+=("-filesys.fname_sav" "%s%p$MEMCARD_SUFFIX.%X")
+
+map_joystick() {
+    OPTS+=("-psx.input.$1" "$JOYSTICK_TYPE")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.up" "joystick $2 button_13")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.left" "joystick $2 button_15")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.right" "joystick $2 button_16")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.down" "joystick $2 button_14")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.select" "joystick $2 button_8")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.start" "joystick $2 button_9")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.circle" "joystick $2 button_1")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.cross" "joystick $2 button_0")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.square" "joystick $2 button_3")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.triangle" "joystick $2 button_2")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.l1" "joystick $2 button_4")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.l2" "joystick $2 button_6")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.r1" "joystick $2 button_5")
+    OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.r2" "joystick $2 button_7")
+
+    if [ "$JOYSTICK_TYPE" = "dualshock" ]; then
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.analog" "joystick $2 button_10")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.lstick_down" "joystick $2 abs_1+")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.lstick_left" "joystick $2 abs_0-")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.lstick_right" "joystick $2 abs_0+")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.lstick_up" "joystick $2 abs_1-")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.rstick_down" "joystick $2 abs_4+")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.rstick_left" "joystick $2 abs_3-")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.rstick_right" "joystick $2 abs_3+")
+        OPTS+=("-psx.input.$1.$JOYSTICK_TYPE.rstick_up" "joystick $2 abs_4-")
+    fi
+}
+
+map_joystick port1 0x0003054c026881110006001100000000
+
+exec mednafen "${OPTS[@]}" "$@"

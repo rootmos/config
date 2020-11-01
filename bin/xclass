@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+while getopts "i-" OPT; do
+    case $OPT in
+        i) ID=$OPTARG ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z "${ID-}" ]; then
+    ID=$(xdotool getwindowfocus)
+fi
+
+xprop -id "$ID" 8s '\t$0\n' WM_CLASS | cut -f2 | sed 's/^"\(.*\)"$/\1/'

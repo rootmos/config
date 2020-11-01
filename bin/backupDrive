@@ -7,7 +7,7 @@ get="crudini --get $config"
 copy() {
     echo "Copying $1 to $2 ..."
 
-    sudo nice rsync --progress $1 $2
+    nice rsync --progress $1 $2
 
     if [ $? -eq 0 ]; then
         echo "... copied $1 to $2"
@@ -19,7 +19,7 @@ copy() {
 dump() {
     echo "Dumping $1 to $2 ..."
 
-    sudo nice pv -tpreb $1 > $2
+    sudo nice pv -tpreb "$1" > "$2"
 
     if [ $? -eq 0 ]; then
         echo "... dumped $1 to $2"
@@ -31,7 +31,7 @@ dump() {
 }
 
 findDevice() {
-    sudo blkid -U $uuid
+    blkid -U $uuid
 }
 
 target_dirs=$($get DEFAULT target | tr ':' '\n')

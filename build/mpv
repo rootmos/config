@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -o nounset -o errexit
+
+APP=mpv
+GIT_URL=https://github.com/mpv-player/mpv
+GIT_BRANCH=master
+DEPS=("ffnvcodec-headers")
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+cd "$SRC"
+
+./bootstrap.py
+./waf configure --prefix="$ROOT"
+./waf
+./waf install

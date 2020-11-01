@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+usage() {
+    cat <<EOF 1>&2
+Usage: $(basename "$0") [options] TARGET...
+Options:
+    -h            show this message
+    -t            interpret TARGET as a Twitch channel
+    -m            mute
+    -c            play current clipboard selection
+    -L            loop playlist
+    -f PLAYLIST   play PLAYLIST (may be used multiple times)
+    -z            shuffle playlist
+    -D SECONDS    display images for the given amount of SECONDS
+    -s START      start playback at START
+EOF
+    exit "${1-0}"
+}
+
+OPTS=("--cursor-autohide=1000")
+PREFIX=
+REQUIRE_TARGETS=1
+while getopts "ztmcLf:D:s:h-" OPT; do
+    case $OPT in
+        t) PREFIX=https://twitch.tv/ ;;
+        m) OPTS+=("--mute") ;;
+        c) CLIPBOARD=1 ;;
+        L) OPTS+=("--loop-playlist=inf") ;;
+        f) OPTS+=("--playlist=$OPTARG"); REQUIRE_TARGETS= ;;
+        z) OPTS+=("--shuffle") ;;
+        D) OPTS+=("--image-display-duration=$OPTARG") ;;
+        s) OPTS+=("--start=$OPTARG") ;;
+        h) usage ;;
+        -) break ;;
+        ?) usage 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+TARGETS=()
+if [ -n "${CLIPBOARD-}" ]; then
+    TARGETS+=("$PREFIX$(xclip -o | tr '\n' '\0')")
+fi
+
+while [ "$#" -gt 0 ]; do
+    TARGETS+=("$PREFIX$1")
+    shift
+done
+
+if [ "${#TARGETS[@]}" -eq 0 ] && [ -n "$REQUIRE_TARGETS" ]; then
+    echo "no targets specified" 1>&2
+    exit 2
+fi
+
+exec mpv "${OPTS[@]}" "${TARGETS[@]}"

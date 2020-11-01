@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+TMP=$(mktemp -d)
+trap "rm -rf $TMP" EXIT
+
+X=1280
+VIEW=
+OUTPUT=
+while getopts "vo:x:-" OPT; do
+    case $OPT in
+        x) X=$OPTARG ;;
+        o) OUTPUT=$OPTARG ;;
+        v) VIEW=1 ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ -z "$VIEW" ] && [ -z "$OUTPUT" ]; then
+    echo "neither -v nor -o specified" >&2
+    exit 1
+fi
+
+if [ -z "$OUTPUT" ]; then
+    OUTPUT=$TMP/out.png
+fi
+
+LIST=$TMP/playlist
+cat "$@" > "$LIST"
+
+N=$(wc -l "$LIST" | cut -f1 -d' ')
+echo "making montage of $N images: $OUTPUT" >&2
+
+L=1
+while [ "$((L*L))" -lt "$N" ]; do
+    L=$((L+1))
+done
+
+feh --montage -W "$((X*L))" -E "$X" -y "$X" -s -z -f "$LIST" \
+    --output-only "$OUTPUT"
+
+if [ -n "$VIEW" ]; then
+    view "$OUTPUT"
+fi

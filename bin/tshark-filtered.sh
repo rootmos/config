@@ -20,4 +20,5 @@ shift $((OPTIND-1))
 
 R=$(dig +short ip.rootmos.io)
 FILTERS=${FILTERS--Y "!(ip.addr == $R) and !(tcp.flags.ack && tcp.len <= 1) $EXTRA_FILTERS"}
+echo "exec: tshark $INTERFACE_OPT $FILTERS"
 exec tshark $INTERFACE_OPT "$FILTERS"

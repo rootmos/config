@@ -1,0 +1,111 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+PROMPT=
+CHOICES_FROM=()
+MULTIPLE=
+DIALOG=1
+while getopts "f:p:m-" OPT; do
+    case $OPT in
+        f) CHOICES_FROM+=("$OPTARG") ;;
+        p) PROMPT=$OPTARG ;;
+        m) MULTIPLE=1 ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ "${#CHOICES_FROM[@]}" -eq 0 ]; then
+    CHOICES_FROM+=("/dev/stdin")
+fi
+
+CHOICES=()
+for f in "${CHOICES_FROM[@]}"; do
+    mapfile -t -O "${#CHOICES[@]}" CHOICES < "$f"
+done
+
+if [ -t 2 ]; then
+    if [ -z "$DIALOG" ]; then
+        declare -A STATES
+        for i in $(seq ${#CHOICES[@]}); do
+            STATES["$i"]=0
+        done
+
+        while true; do
+            for i in $(seq "${#CHOICES[@]}"); do
+                if [ "${STATES[$i]}" -eq 1 ]; then
+                    echo -n " * " >&2
+                else
+                    echo -n "   " >&2
+                fi
+                echo "$i) ${CHOICES[$((i-1))]}" >&2
+            done
+
+            read -rp "${PROMPT:-?} " L < /dev/tty
+
+            if [[ $L =~ ^-?[0-9]+$ ]]; then
+                if [[ $L =~ ^- ]]; then
+                    STATES["$((-L))"]=0
+                else
+                    STATES["$L"]=1
+                    if [ -z "$MULTIPLE" ]; then
+                        break
+                    fi
+                fi
+            else 
+                case "$L" in
+                    q|Q|x|X|quit|exit) break ;;
+                    *) ;;
+                esac
+
+                if [ -z "$L" ]; then
+                    if [ -n "$MULTIPLE" ]; then
+                        break
+                    else
+                        continue
+                    fi
+                fi
+
+                echo "nah: $L" >&2
+            fi
+        done
+
+        for i in $(seq ${#CHOICES[@]}); do
+            if [ "${STATES[$i]}" -eq 1 ]; then
+                echo "${CHOICES[$((i-1))]}"
+            fi
+        done
+    else
+        ARGS=()
+        
+        if [ -z "$PROMPT" ]; then
+            PROMPT="Choose:"
+        fi
+        
+        if [ -n "$MULTIPLE" ]; then
+            for c in "${CHOICES[@]}"; do
+                ARGS+=("$c" "$c" off)
+            done
+            dialog --stdout --separate-output --no-tags \
+                --checklist "$PROMPT" 0 0 0 "${ARGS[@]}"
+        else
+            for c in "${CHOICES[@]}"; do
+                ARGS+=("$c" "$c")
+            done
+            dialog --keep-window --stdout --no-tags \
+                --menu "$PROMPT" 0 0 0 "${ARGS[@]}"
+        fi
+
+        clear >&2
+    fi
+else
+    ARGS=(-l 25)
+
+    if [ -n "$PROMPT" ]; then
+        ARGS+=(-p "$PROMPT")
+    fi
+
+    printf "%s\n" "${CHOICES[@]}" | dmenu "${ARGS[@]}" 
+fi

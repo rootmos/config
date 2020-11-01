@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec /usr/bin/dmenu -fn "Inconsolata:pixelsize=30" "$@"

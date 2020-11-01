@@ -6,4 +6,3 @@ SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
 cd "$SCRIPT_DIR"
 
 stack install --pedantic
-ln -sf "$HOME/.local/bin/xmonad" "$HOME/.xmonad/xmonad-x86_64-linux"
