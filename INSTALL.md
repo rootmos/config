@@ -219,7 +219,15 @@ autologin-session=custom
 TODO
 
 ### DNS over TLS
-* stubby
+* `sudo pacman -S stubby dnsmasq`
+* `sudo cp sensitive/root/etc/stubby/stubby.yml /etc/stubby/stubby.yml`
+* `sudo cp root/etc/{resolv.conf,dnsmasq.conf} /etc`
+* `sudo chattr +i /etc/resolv.conf`
+* `sudo systemctl enable stubby dnsmasq`
+* `sudo systemctl start stubby dnsmasq`
+
+Use `tshark -Y dns` to verify that queries are not sent in plaintext.
+
 ### USB Guard
 TODO
 
