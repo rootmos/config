@@ -15,6 +15,7 @@ Options:
     -z            shuffle playlist
     -D SECONDS    display images for the given amount of SECONDS
     -s START      start playback at START
+    -S SUB        read subtites from SUB
 EOF
     exit "${1-0}"
 }
@@ -22,7 +23,7 @@ EOF
 OPTS=("--cursor-autohide=1000")
 PREFIX=
 REQUIRE_TARGETS=1
-while getopts "ztmcLf:D:s:h-" OPT; do
+while getopts "ztmcLf:D:s:S:h-" OPT; do
     case $OPT in
         t) PREFIX=https://twitch.tv/ ;;
         m) OPTS+=("--mute") ;;
@@ -32,6 +33,7 @@ while getopts "ztmcLf:D:s:h-" OPT; do
         z) OPTS+=("--shuffle") ;;
         D) OPTS+=("--image-display-duration=$OPTARG") ;;
         s) OPTS+=("--start=$OPTARG") ;;
+        S) OPTS+=("--sub-file=$OPTARG") ;;
         h) usage ;;
         -) break ;;
         ?) usage 2 ;;

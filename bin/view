@@ -1,6 +1,16 @@
-#!/bin/sh
+#!/bin/bash
+# shellcheck disable=SC2016
 
-exec feh --scale-down --image-bg=black --auto-zoom \
+set -m
+
+feh --scale-down --image-bg=black --auto-zoom \
     --action='l $(l | dmenu -p "$(dirname "%f")") + "$(dirname "%f")"' \
     --action1='l $(l | dmenu -p "%f") + "%f"' \
-    "$@"
+    --action9='kill %V' \
+    "$@" &
+PID=$!
+
+sleep 0.1s
+xdotool key --window="$(xdotool search --pid="$PID")" w
+
+fg

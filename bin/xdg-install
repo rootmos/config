@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+SRC=$(readlink -f "$1")
+TARGET=$(basename "$SRC")
+BASE=$HOME/.local/share/applications
+
+if [ ! -L "$BASE/$TARGET" ]; then
+    echo "installing desktop file $TARGET: $SRC -> $BASE/$TARGET" >&2
+    ln -s "$SRC" "$BASE/$TARGET"
+fi
+
+grep '^MimeType=' "$SRC" | sed 's/^MimeType=//' | sed 's/;$//' | tr ';' '\n' \
+    | while read -r TYPE; do
+    echo "setting default: $TYPE" >&2
+    xdg-mime default "$TARGET" "$TYPE"
+done

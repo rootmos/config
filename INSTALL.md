@@ -216,7 +216,12 @@ autologin-session=custom
 * `systemctl --user start offlineimap@work.service`
 
 ### Firewall
-TODO
+* 'sudo pacman -S ufw'
+* 'sudo ufw default deny'
+* 'sudo ufw enable'
+* 'sudo systemctl enable ufw.service'
+
+Check logs for blocked traffic: `dmesg -w | grep UFW`.
 
 ### DNS over TLS
 * `sudo pacman -S stubby dnsmasq`
@@ -240,3 +245,11 @@ TODO
 * `pacman -S cups foomatic-db-ppds`
 * `systemctl enable org.cups.cupsd.service`
 * `systemctl start org.cups.cupsd.service`
+
+### PDF (zathura)
+* `xdg-mime default org.pwmt.zathura-pdf-mupdf.desktop application/pdf`
+* `./install.sh -h .config/zathura/zathurarc`
+
+### Default applications
+* `bin/xdg-install .local/share/applications/view.desktop`
+* `bin/xdg-install .local/share/applications/play.desktop`
