@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+APP=chezscheme
+VERSION=9.5.4
+TARBALL_URL=https://github.com/cisco/ChezScheme/releases/download/v$VERSION/csv$VERSION.tar.gz
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+cd "$SRC"
+./configure --installprefix="$ROOT"
+m install
