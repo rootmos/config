@@ -1,0 +1,66 @@
+#!/bin/bash
+# based on: https://wiki.archlinux.org/index.php/udisks#udevadm_monitor
+
+set -o nounset -o pipefail -o errexit
+
+path_to_field() {
+    udevadm info -p "$2" | awk -v FS== '/'"$1"'/ {print $2}'
+}
+
+APP=$(basename "$0")
+WHITELIST=${AUTOMOUNT_WHITELIST-$HOME/.$APP.whitelist}
+UNAUTHORIZED_DEVICES=/run/user/$(id -u)/$APP.unauthorized_devices
+
+is_whitelisted() {
+    if [ -f "$WHITELIST" ]; then
+        grep -cq "$1" "$WHITELIST"
+    else
+        false
+    fi
+}
+
+ACTION=${1-service}
+
+do_mount() {
+    UUID=$(path_to_field ID_PART_ENTRY_UUID "$DEVPATH")
+    if [ -z "$UUID" ]; then
+        return
+    fi
+
+    DEVNAME=$(path_to_field ID_PART_ENTRY_NAME "$DEVPATH")
+    NAME=$(path_to_field ID_PART_ENTRY_NAME "$DEVPATH")
+    DEVNAME=$(path_to_field DEVNAME "$DEVPATH")
+
+    if is_whitelisted "$UUID"; then
+        udisksctl mount --block-device "$DEVNAME" --no-user-interaction \
+            | xargs -I{} dunstify --appname="$APP" --icon=media-eject "" '{}'
+    else
+        echo "$DEVPATH" >> "$UNAUTHORIZED_DEVICES"
+        dunstify --appname="$APP" --icon=media-eject "" \
+            "Unauthorized device: $UUID"
+    fi
+}
+
+if [ "$ACTION" = "service" ]; then
+    stdbuf -oL -- udevadm monitor --udev -s block \
+        | while read -r -- _ _ EVENT DEVPATH _; do
+
+        if [ "$EVENT" != "add" ] && [ "$EVENT" != "remove" ]; then
+            continue
+        fi
+
+        if [ "$EVENT" = "add" ]; then
+            do_mount "$DEVPATH"
+        elif [ "$EVENT" = "remove" ]; then
+            if [ -f "$UNAUTHORIZED_DEVICES" ]; then
+                sed -i '\|'"$DEVPATH"'|d' "$UNAUTHORIZED_DEVICES"
+            fi
+        fi
+    done
+elif [ "$ACTION" = "whitelist" ]; then
+    DEVPATH=$(choose -p "whitelist device:" -Pf<(sort -u "$UNAUTHORIZED_DEVICES"))
+    UUID=$(path_to_field ID_PART_ENTRY_UUID "$DEVPATH")
+    echo "$UUID" >> "$WHITELIST"
+    sed -i '\|'"$DEVPATH"'|d' "$UNAUTHORIZED_DEVICES"
+    do_mount "$DEVPATH"
+fi

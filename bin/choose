@@ -6,11 +6,12 @@ PROMPT=
 CHOICES_FROM=()
 MULTIPLE=
 DIALOG=1
-while getopts "f:p:m-" OPT; do
+while getopts "f:p:mP-" OPT; do
     case $OPT in
         f) CHOICES_FROM+=("$OPTARG") ;;
         p) PROMPT=$OPTARG ;;
         m) MULTIPLE=1 ;;
+        P) DIALOG= ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -26,57 +27,79 @@ for f in "${CHOICES_FROM[@]}"; do
     mapfile -t -O "${#CHOICES[@]}" CHOICES < "$f"
 done
 
-if [ -t 2 ]; then
-    if [ -z "$DIALOG" ]; then
-        declare -A STATES
-        for i in $(seq ${#CHOICES[@]}); do
-            STATES["$i"]=0
+plain_choices() {
+    declare -A STATES
+    for i in $(seq ${#CHOICES[@]}); do
+        STATES["$i"]=0
+    done
+
+    while true; do
+        for i in $(seq "${#CHOICES[@]}"); do
+            if [ "${STATES[$i]}" -eq 1 ]; then
+                echo -n " * " >&2
+            else
+                echo -n "   " >&2
+            fi
+            echo "$i) ${CHOICES[$((i-1))]}" >&2
         done
 
-        while true; do
-            for i in $(seq "${#CHOICES[@]}"); do
-                if [ "${STATES[$i]}" -eq 1 ]; then
-                    echo -n " * " >&2
-                else
-                    echo -n "   " >&2
-                fi
-                echo "$i) ${CHOICES[$((i-1))]}" >&2
-            done
+        read -rp "${PROMPT:-?} " L < /dev/tty
 
-            read -rp "${PROMPT:-?} " L < /dev/tty
+        I=1
+        MATCHED=
+        for c in "${CHOICES[@]}"; do
+            if grep -cqx "$c" <<< "$L"; then
+                STATES["$I"]=1
+                MATCHED=1
+            fi
+            I=$((I+1))
+        done
 
-            if [[ $L =~ ^-?[0-9]+$ ]]; then
-                if [[ $L =~ ^- ]]; then
+        if [ -z "$MATCHED" ]; then
+            if [[ "$L" =~ ^-?[0-9]+$ ]]; then
+                if [[ "$L" =~ ^- ]]; then
                     STATES["$((-L))"]=0
+                    MATCHED=1
                 else
                     STATES["$L"]=1
+                    MATCHED=1
                     if [ -z "$MULTIPLE" ]; then
                         break
                     fi
                 fi
-            else 
-                case "$L" in
-                    q|Q|x|X|quit|exit) break ;;
-                    *) ;;
-                esac
+            fi
+        fi
 
-                if [ -z "$L" ]; then
-                    if [ -n "$MULTIPLE" ]; then
-                        break
-                    else
-                        continue
-                    fi
-                fi
+        if [ -z "$MATCHED" ]; then
+            case "$L" in
+                q|Q|x|X|quit|exit) break ;;
+                *) ;;
+            esac
+        fi
 
+        if [ -n "$MULTIPLE" ]; then
+            if [ -z "$L" ]; then
+                break
+            elif [ -z "$MATCHED" ]; then
                 echo "nah: $L" >&2
             fi
-        done
-
-        for i in $(seq ${#CHOICES[@]}); do
-            if [ "${STATES[$i]}" -eq 1 ]; then
-                echo "${CHOICES[$((i-1))]}"
+        else
+            if [ -n "$MATCHED" ]; then
+                break
             fi
-        done
+        fi
+    done
+
+    for i in $(seq ${#CHOICES[@]}); do
+        if [ "${STATES[$i]}" -eq 1 ]; then
+            echo "${CHOICES[$((i-1))]}"
+        fi
+    done
+}
+
+if [ -t 2 ]; then
+    if [ -z "$DIALOG" ]; then
+        plain_choices
     else
         ARGS=()
         
