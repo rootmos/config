@@ -18,6 +18,7 @@ EOF
 
 ACTION=run
 TARGETS=()
+AUX_TARGETS=(".k")
 DELAY=0.1s
 while getopts "f:cD:h-" OPT; do
     case $OPT in
@@ -49,8 +50,15 @@ files() {
     for f in "${TARGETS[@]}"; do
         if [ -d "$f" ]; then
             (
-                cd "$f" && git ls-files -z 2>/dev/null | xargs -0 readlink -f
+                cd "$f"
+                git ls-files -z \
+                    --cached --others --exclude-standard 2>/dev/null \
+                    | xargs -0 readlink -f
             ) || find "$f" -type f -exec readlink -f {} \;
+
+            for t in "${AUX_TARGETS[@]}"; do
+                find "$f" -name "$t"
+            done
         else
             readlink -f "$f"
         fi
@@ -82,7 +90,7 @@ while true; do
     ( "$@" ) &
     echo "$!" > "$TMP/child.pid"
     set +o errexit
-    wait
+    wait -n
     EC=$?
     set -o errexit
     if [ "$EC" -ne 0 ]; then
