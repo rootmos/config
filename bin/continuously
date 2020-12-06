@@ -1,99 +1,387 @@
-#!/bin/bash
+#!/usr/bin/tcc -run -lgit2 -Wall
 
-set -o nounset -o pipefail -o errexit
+#include <errno.h>
+#include <fcntl.h>
+#include <git2.h>
+#include <poll.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/inotify.h>
+#include <sys/signalfd.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <termios.h>
 
-TMP=$(mktemp -d)
-trap 'rm -rf $TMP' EXIT
+#define MAX_PATH 1024
 
-usage() {
-    cat <<EOF 1>&2
-Usage: $(basename "$0") [options] -- ...
-Options:
-    -h        show this message
-    -f FILE   track changes in FILE
-    -D DELAY  delay execution by DELAY seconds
-EOF
-    exit "${1-0}"
+#define failwith(fmt, ...) do { \
+    dprintf(2, "%s:%s:%d " fmt "\n", \
+            __FUNCTION__, __FILE__, __LINE__, ##__VA_ARGS__); \
+    exit(1); \
+} while(0)
+
+#define CHECK(r, fmt, ...) do { \
+    if(!(r)) { \
+        failwith(fmt " (%s)", ##__VA_ARGS__, strerror(errno)); \
+    } \
+} while(0)
+
+#define CHECK_MALLOC(r) do { if(r == NULL) { failwith("OOM"); } } while(0)
+
+#define CHECK_GIT2(r, fmt, ...) do { \
+    if(r != 0) { \
+        const git_error* e = git_error_last(); \
+        if(e) { \
+            failwith(fmt " (%d: %s)", ##__VA_ARGS__, e->klass, e->message); \
+        } else { \
+            failwith(fmt, ##__VA_ARGS__); \
+        } \
+    } \
+} while(0)
+
+struct {
+    pid_t child;
+    sigset_t sm;
+
+    int input_fd;
+    struct termios ttyprev;
+    int output_fd;
+
+    int quiet;
+    int log_debug;
+    int log_info;
+    int log_warn;
+
+    int action_argc;
+    const char** action_argv;
+} state;
+
+#define WARN(fmt, ...) do { \
+    if(state.log_warn) { dprintf(2, fmt "\n", ##__VA_ARGS__); } \
+} while(0)
+
+#define INFO(fmt, ...) do { \
+    if(state.log_info) { dprintf(2, fmt "\n", ##__VA_ARGS__); } \
+} while(0)
+
+#define DEBUG(fmt, ...) do { \
+    if(state.log_debug) { dprintf(2, fmt "\n", ##__VA_ARGS__); } \
+} while(0)
+
+struct watch {
+    int wd;
+    char* fn;
+    struct watch* next;
+};
+
+struct watch* ws = NULL;
+
+int watch(int fd, const char* path) {
+    int r = inotify_add_watch(fd, path, IN_MODIFY);
+    if(r < 0 && errno == ENOENT) {
+        WARN("ignoring missing file: %s", path);
+        return;
+    }
+    CHECK(r >= 0, "inotify_add_watch(%s)", path);
 }
 
-ACTION=run
-TARGETS=()
-AUX_TARGETS=(".k")
-DELAY=0.1s
-while getopts "f:cD:h-" OPT; do
-    case $OPT in
-        f) TARGETS+=("$OPTARG") ;;
-        c) ACTION=completion-script; COMPLETE_NAME=$(basename "$0") ;;
-        D) DELAY=$OPTARG ;;
-        h) usage ;;
-        -) break ;;
-        ?) usage 2 ;;
-    esac
-done
-shift $((OPTIND-1))
+void add_file(int fd, const char* path) {
+    int wd = watch(fd, path);
 
-if [ "$ACTION" = "completion-script" ]; then
-    cat <<EOF
-_continuously_completion() {
-}
-complete -F _continuously_completion "$COMPLETE_NAME"
-EOF
-fi
+    struct watch** w = &ws;
+    while(*w != NULL) w = &(*w)->next;
+    *w = calloc(1, sizeof(struct watch)); CHECK_MALLOC(w);
+    (*w)->wd = wd;
+    (*w)->fn = strndup(path, MAX_PATH); CHECK_MALLOC((*w)->fn);
 
-manual_waiter() {
-    read -rsp "[wait] " < /dev/tty
-    kill "$(<"$TMP/file.pid")"
-    echo 1>&2 "[manual trigger]"
+    DEBUG("watching file: %s", path);
 }
 
-files() {
-    for f in "${TARGETS[@]}"; do
-        if [ -d "$f" ]; then
-            (
-                cd "$f"
-                git ls-files -z \
-                    --cached --others --exclude-standard 2>/dev/null \
-                    | xargs -0 readlink -f
-            ) || find "$f" -type f -exec readlink -f {} \;
+void git_files(int fd, const char* path) {
+    int r = git_libgit2_init();
+    CHECK_GIT2(r < 0, "git_libgit2_init");
 
-            for t in "${AUX_TARGETS[@]}"; do
-                find "$f" -name "$t"
-            done
-        else
-            readlink -f "$f"
-        fi
-    done
+    git_buf p = {0};
+    r = git_repository_discover(&p, path, 0, NULL);
+    CHECK_GIT2(r, "git_repository_discover(%s)", path);
+
+    git_repository* gr;
+    git_repository_open(&gr, p.ptr);
+    CHECK_GIT2(r, "git_repository_open(%s)", p.ptr);
+
+    const char* wd = git_repository_workdir(gr);
+
+    git_index* idx;
+    r = git_repository_index(&idx, gr);
+    CHECK_GIT2(r, "git_repository_index");
+
+    for(int i = 0; i < git_index_entrycount(idx); i++) {
+        const git_index_entry* e = git_index_get_byindex(idx, i);
+
+        char fn[MAX_PATH];
+        r = snprintf(fn, sizeof(fn), "%s%s", wd, e->path);
+        if(r >= sizeof(fn)) {
+            failwith("truncated path (%d): %s%s", sizeof(fn), wd, e->path);
+        }
+
+        add_file(fd, fn);
+    }
 }
 
-file_waiter() {
-    files | inotifywait --fromfile=- --format="%f" --quiet \
-        -e close_write,moved_to,move_self
-    kill "$(<"$TMP/manual.pid")"
-    echo 1>&2 "[file trigger]"
+void trigger_action(const char* type) {
+    if(state.child != 0) {
+        INFO("action triggered while child is still running");
+        return;
+    }
+
+    state.child = fork(); CHECK(state.child >= 0, "fork");
+    if(state.child == 0) {
+        if(state.input_fd >= 0) {
+            int r = close(state.input_fd);
+            CHECK(r == 0, "close");
+        }
+
+        int r = sigprocmask(SIG_UNBLOCK, &state.sm, NULL);
+        CHECK(r == 0, "sigprocmask");
+
+        const char** argv = calloc(1 + state.action_argc, sizeof(const char*));
+        CHECK_MALLOC(argv);
+        for(size_t i = 0; i < state.action_argc; i++) {
+            argv[i] = state.action_argv[i];
+        }
+
+        r = execvp(argv[0], argv);
+        CHECK(r != -1, "execv");
+    }
+
+    INFO("spawed action: %d", state.child);
+
+    if(!state.quiet && state.output_fd >= 0) {
+        dprintf(state.output_fd, "[%s trigger]\n", type);
+    }
 }
 
-if [ "${#TARGETS[@]}" -eq 0 ]; then
-    TARGETS+=(".")
-fi
+void setup_term(int in, int out) {
+    int r = tcgetattr(in, &state.ttyprev);
+    if(r == -1 && errno == ENOTTY) {
+        state.input_fd = -1;
+    } else {
+        CHECK(r == 0, "tcgetattr");
 
-trap 'find "$TMP" -name "*.pid" -exec killall -q {} \; ; echo' INT
+        state.input_fd = in;
 
-while true; do
-    manual_waiter &
-    echo "$!" > "$TMP/manual.pid"
-    file_waiter &
-    echo "$!" > "$TMP/file.pid"
+        struct termios ta;
+        memcpy(&ta, &state.ttyprev, sizeof(ta));
+        ta.c_lflag &= ~(ECHO | ICANON);
+        r = tcsetattr(in, TCSANOW, &ta);
+        CHECK(r == 0, "tcsetattr");
+    }
 
-    wait
+    struct termios ta;
+    r = tcgetattr(out, &ta);
+    if(r == -1 && errno == ENOTTY) {
+        state.output_fd = -1;
+        state.quiet = 1;
+    } else {
+        CHECK(r == 0, "tcgetattr");
 
-    sleep "$DELAY"
-    ( "$@" ) &
-    echo "$!" > "$TMP/child.pid"
-    set +o errexit
-    wait -n
-    EC=$?
-    set -o errexit
-    if [ "$EC" -ne 0 ]; then
-        echo "non-zero exit code: $EC" 1>&2
-    fi
-done
+        state.output_fd = out;
+    }
+}
+
+void restore_term(void) {
+    if(state.input_fd < 0) return;
+
+    int r = tcsetattr(state.input_fd, TCSANOW, &state.ttyprev);
+    CHECK(r == 0, "tcsetattr");
+}
+
+void quit(const char* reason, int ec, int child_sig) {
+    if(!state.quiet && state.output_fd >= 0) {
+        dprintf(state.output_fd, "[quit]\n");
+    }
+
+    if(state.child != 0) {
+        INFO("signalling running action (%d): %s",
+             state.child, strsignal(child_sig));
+        int r = kill(state.child, child_sig);
+        CHECK(r == 0, "kill(%d, %s)", state.child, child_sig);
+    }
+
+    restore_term();
+
+    if(reason) {
+        INFO("exiting (%s): %d", reason, ec);
+    } else {
+        INFO("exiting: %d", reason, ec);
+    }
+
+    exit(ec);
+}
+
+void handle_inotify(int fd) {
+    struct inotify_event e;
+
+    ssize_t s = read(fd, &e, sizeof(e));
+    CHECK(s >= 0, "read");
+    if(s != sizeof(e)) failwith("unexpected partial read");
+
+    struct watch* w = ws;
+    while(w != NULL) {
+        if(w->wd == e.wd) {
+            INFO("file trigger: %s", w->fn);
+            trigger_action("file");
+            w->wd = watch(fd, w->fn);
+            return;
+        }
+        w = w->next;
+    }
+
+    failwith("unexpected watch descriptor");
+}
+
+void handle_signalfd(int fd) {
+    struct signalfd_siginfo si;
+    ssize_t s = read(fd, &si, sizeof(si));
+    CHECK(s >= 0, "read");
+    if(s != sizeof(si)) {
+        failwith("unexpected partial read");
+    }
+
+    if(si.ssi_signo == SIGCHLD) {
+        if(state.child == 0) {
+            failwith("unexpected SIGCHLD signal");
+        }
+
+        int ws;
+        pid_t r = waitpid(state.child, &ws, WNOHANG);
+        CHECK(r == state.child, "waitpid(%d)", state.child);
+
+        if(WIFEXITED(ws)) {
+            INFO("action (%d) exited: %d", state.child, WEXITSTATUS(ws));
+
+            if(!state.quiet && state.output_fd >= 0) {
+                if(WEXITSTATUS(ws) == 0) {
+                    dprintf(state.output_fd, "[wait] ");
+                } else {
+                    dprintf(state.output_fd, "[%d, wait] ", WEXITSTATUS(ws));
+                }
+                tcdrain(state.output_fd);
+            }
+        } else if(WIFSIGNALED(ws)) {
+            INFO("action (%d) signaled: %d", state.child, WTERMSIG(ws));
+
+            if(!state.quiet && state.output_fd >= 0) {
+                dprintf(state.output_fd, "[%s, wait] ",
+                        strsignal(WTERMSIG(ws)));
+                tcdrain(state.output_fd);
+            }
+        } else {
+            failwith("unexpected waitpid (%d) status: %d", state.child, ws);
+        }
+
+        state.child = 0;
+    } else if(si.ssi_signo == SIGINT
+              || si.ssi_signo == SIGQUIT
+              || si.ssi_signo == SIGTERM) {
+        quit(strsignal(si.ssi_signo), 0, si.ssi_signo);
+    }
+}
+
+void handle_stdin(int fd) {
+    char buf[128];
+    ssize_t r = read(fd, buf, sizeof(buf));
+    if(r == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
+        return;
+    }
+    CHECK(r >= 0, "read");
+
+    for(size_t i = 0; i < r; i++) {
+        if(buf[i] == '\n') {
+            trigger_action("manual");
+        } else if(buf[i] == 'q' || buf[i] == 'Q'
+                  || buf[i] == 'x' || buf[i] == 'X'
+                  || buf[i] == 27) {
+            quit(NULL, 0, SIGINT);
+        }
+    }
+
+    handle_stdin(fd);
+}
+
+void set_non_blocking(int fd) {
+    int fs = fcntl(fd, F_GETFL, 0);
+    int r = fcntl(fd, F_SETFL, fs | O_NONBLOCK);
+    CHECK(r != -1, "fcntl");
+}
+
+int main(int argc, const char* argv[])
+{
+    state.child = 0;
+
+    state.quiet = 0;
+    state.log_debug = 0;
+    state.log_info = 0;
+    state.log_warn = 1;
+
+    state.action_argc = argc - 1;
+    state.action_argv = &argv[1];
+
+    int ifd = inotify_init1(IN_NONBLOCK | IN_CLOEXEC);
+    CHECK(ifd >= 0, "inotify_init1");
+    git_files(ifd, ".");
+
+    sigemptyset(&state.sm);
+    sigaddset(&state.sm, SIGINT);
+    sigaddset(&state.sm, SIGQUIT);
+    sigaddset(&state.sm, SIGTERM);
+    sigaddset(&state.sm, SIGCHLD);
+    int sfd = signalfd(-1, &state.sm, SFD_NONBLOCK | SFD_CLOEXEC);
+    CHECK(sfd >= 0, "signalfd");
+
+    set_non_blocking(0);
+    setup_term(0, 1);
+
+    int r = sigprocmask(SIG_BLOCK, &state.sm, NULL);
+    CHECK(r == 0, "sigprocmask");
+
+    struct pollfd fds[3];
+    nfds_t nfds = 2;
+    fds[0].fd = ifd;
+    fds[0].events = POLLIN;
+    fds[1].fd = sfd;
+    fds[1].events = POLLIN;
+
+    if(state.input_fd >= 0) {
+        nfds += 1;
+        fds[2].fd = state.input_fd;
+        fds[2].events = POLLIN;
+    }
+
+    if(!state.quiet) {
+        dprintf(state.output_fd, "[wait] ");
+        tcdrain(state.output_fd);
+    }
+
+    while(1) {
+        int r = poll(fds, nfds, -1);
+        CHECK(r > 0, "poll");
+
+        if(fds[0].revents & POLLIN) {
+            handle_inotify(fds[0].fd);
+        }
+
+        if(fds[1].revents & POLLIN) {
+            handle_signalfd(fds[1].fd);
+        }
+
+        if(state.input_fd >= 0) {
+            if(fds[2].revents & POLLIN) {
+                handle_stdin(fds[2].fd);
+            }
+        }
+    }
+
+    return 0;
+}
