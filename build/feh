@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -o nounset -o errexit
+
+APP=feh
+GIT_URL=https://github.com/derf/feh
+GIT_REV=3.6.1
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+cd "$SRC"
+
+m clean
+m curl=0 xinerama=0
+m PREFIX="$ROOT" install

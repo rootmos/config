@@ -8,7 +8,7 @@ hsetroot -solid black
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
-chromium &
+(sleep 15 && chromium) &
 unclutter &
 redshift &
 

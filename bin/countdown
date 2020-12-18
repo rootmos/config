@@ -4,14 +4,29 @@ set -o nounset -o pipefail -o errexit
 
 MARK_FILE=$HOME/.mark
 
+usage() {
+    cat <<EOF 1>&2
+Usage: $(basename "$0") [options]
+Options:
+    -h      show this message
+    -m DATE set DATE as the mark
+    -s      stop
+    -g      launch a graphical timer
+    -f FONT use the specified font in the graphical timer
+EOF
+    exit "${1-0}"
+}
+
 FONT=Inconsolata:pixelsize=70
 ACTION=output
-while getopts "m:sgf:" OPT; do
+while getopts "m:sf:gh" OPT; do
     case $OPT in
         m) date --date="$OPTARG" > "$MARK_FILE" ;;
         s) rm -f "$MARK_FILE" ;;
         f) FONT=$OPTARG ;;
         g) ACTION=graphical ;;
+        h) usage 0 ;;
+        ?) usage 2 ;;
     esac
 done
 shift $((OPTIND-1))

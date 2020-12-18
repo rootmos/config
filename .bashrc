@@ -13,5 +13,9 @@ if command -v k > /dev/null; then
     . <(k -c)
 fi
 
+if command -v zones > /dev/null; then
+    . <(zones completion-script)
+fi
+
 NPM_PACKAGES="$HOME/.npm-packages"
 PATH="$NPM_PACKAGES/bin:$PATH"

@@ -1,32 +1,27 @@
 unmapAll
- 
-map r reload
-map e removeTab
-map E restoreTab
+
 map t scrollDown
 map n scrollUp
 map h scrollLeft
 map s scrollRight
-map <c-t> scrollPageDown
-map <c-n> scrollPageUp
-map <c-c> scrollFullPageDown
 map H goBack
 map S goForward
 map N nextTab
 map T previousTab
-map a createTab
+
 map gg scrollToTop
 map G scrollToBottom
-map gf toggleViewSource
-map zi zoomIn
-map zo zoomOut
+
 map yy copyCurrentUrl
-map i enterInsertMode
+
+# map i enterInsertMode
+# map gf toggleViewSource
+# map zi zoomIn
+# map zo zoomOut
+
 map u LinkHints.activateMode
 map U LinkHints.activateModeToOpenInNewTab
+
 map / enterFindMode
 map . performFind
 map , performBackwardsFind
- 
-map o Vomnibar.activate
-map O Vomnibar.activateInNewTab

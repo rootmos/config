@@ -9,6 +9,7 @@ Options:
     -h            show this message
     -t            interpret TARGET as a Twitch channel
     -m            mute
+    -a            audio only
     -c            play current clipboard selection
     -L            loop playlist
     -f PLAYLIST   play PLAYLIST (may be used multiple times)
@@ -20,13 +21,14 @@ EOF
     exit "${1-0}"
 }
 
-OPTS=("--cursor-autohide=1000")
+OPTS=("--cursor-autohide=1000" "--no-audio-display")
 PREFIX=
 REQUIRE_TARGETS=1
-while getopts "ztmcLf:D:s:S:h-" OPT; do
+while getopts "ztmcLf:D:s:S:ha-" OPT; do
     case $OPT in
         t) PREFIX=https://twitch.tv/ ;;
         m) OPTS+=("--mute") ;;
+        a) OPTS+=("--vo=null") ;;
         c) CLIPBOARD=1 ;;
         L) OPTS+=("--loop-playlist=inf") ;;
         f) OPTS+=("--playlist=$OPTARG"); REQUIRE_TARGETS= ;;

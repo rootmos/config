@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -o nounset -o errexit
+
+if [ -n "${TMUX-}" ]; then
+    echo "refusing to nest sessions" >&2
+    exit 1
+fi
+
+CONFIG_BASE=${TMX_CONFIG_BASE-$HOME/.tmux.d}
+SESSION=$1
+
+session_exists() {
+    tmux list-sessions -F '#S' | grep -cqx "$1"
+}
+
+if session_exists "$SESSION"; then
+    CHILD="$SESSION-$(tr -cd 'a-zA-Z0-9' < /dev/urandom | head -c4)"
+    echo "attaching to session: $CHILD -> $SESSION" >&2
+
+    tmux new-session -t "$SESSION" -s "$CHILD"
+    session_exists "$CHILD" && tmux kill-session -t "$CHILD"
+else
+    echo "spawning new session: $SESSION" >&2
+    if [ -x "$CONFIG_BASE/$SESSION.sh" ]; then
+        tmux new-session -s "$SESSION" "$CONFIG_BASE/$SESSION.sh"
+    else
+        tmux new-session -s "$SESSION"
+    fi
+fi

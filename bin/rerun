@@ -3,54 +3,26 @@
 set -o nounset -o pipefail -o errexit
 
 PLAYER_OPTS=()
-ACTION=play
-SHUF=yes
-TYPE=video
+SHUF=1
 RAR=
-while getopts "P:mpelf:F:M:-zZt:T:v:RD:" opt; do
+while getopts "P:mf:v:zZR-" opt; do
     case "$opt" in
         P) PLAYER_OPTS+=("$OPTARG") ;;
         m) PLAYER_OPTS+=(-m) ;;
-        l) ACTION=list ;;
-        e) ACTION=edit ;;
-        p) ACTION=play ;;
-        F) FILTER=$OPTARG ;;
+        f) FILTER=$OPTARG ;;
         v) FILTER_NOT=$OPTARG ;;
-        f) FILENAME=$OPTARG ;;
-        M) MAP=$OPTARG ;;
-        t) FILTER='^#\s+['"$OPTARG"']+\s+'; MAP='s/#\s\+\w\+\s\+//' ;;
-        z) SHUF=yes ;;
-        Z) SHUF=no ;;
-        T) TYPE=$OPTARG ;;
+        z) SHUF=1 ;;
+        Z) SHUF= ;;
         R) RAR=yes ;;
-        D) PLAYER_OPTS+=("-D" "$OPTARG") ;;
         -) break ;;
-        \?) echo "Invalid option: -$OPTARG" >&2; exit 2 ;;
+        ?) exit 2 ;;
     esac
 done
 shift $((OPTIND-1))
 
-files() {
-    if [[ -v FILENAME ]]; then
-        cat "$FILENAME"
-    else
-        if [ "$TYPE" = "video" ]; then
-            if [ "$RAR" = "yes" ]; then
-                find "$@" \
-                    -iname '*.avi' -or -iname '*.mkv' -or -iname '*.webm' -or \
-                    -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv' \
-                    -or -iname '*.rar'
-            else
-                find "$@" \
-                    -iname '*.avi' -or -iname '*.mkv' -or -iname '*.webm' -or \
-                    -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv'
-            fi
-        elif [ "$TYPE" = "image" ]; then
-            find "$@" \( -iname '*.jpg' -or -iname '*.jpeg' -or -iname '*.png' \) -exec dirname {} \; \
-                | sort -u
-        fi
-    fi
-}
+if [ -n "$SHUF" ]; then
+    PLAYER_OPTS+=(-z)
+fi
 
 filter() {
     if [[ -v FILTER ]]; then
@@ -68,36 +40,4 @@ filter_not() {
     fi
 }
 
-map() {
-    if [[ -v MAP ]]; then
-        sed "$MAP"
-    else
-        cat
-    fi
-}
-
-shuf() {
-    if [ "$SHUF" = "yes" ]; then
-        shufflin
-    else
-        sort
-    fi
-}
-
-go() {
-    if [ "$TYPE" = "video" ]; then
-        $PLAYER "${PLAYER_OPTS[@]}" -f-
-    elif [ "$TYPE" = "image" ]; then
-        tr '\n' '\0' | xargs -L1 -0 $VIEWER "${PLAYER_OPTS[@]}"
-    fi
-}
-
-if [ "$ACTION" = "play" ]; then
-    files "$@" | shuf | filter | filter_not | map | go
-elif [ "$ACTION" = "list" ]; then
-    files "$@" | shuf | filter | filter_not | map
-elif [ "$ACTION" = "edit" ]; then
-    while $EDITOR "$FILENAME"; do
-        files "$@" | grep '^[^#]' | filter | filter_not | map | head -n1 | go
-    done
-fi
+media -v "$@" | filter | filter_not | play "${PLAYER_OPTS[@]}" -f-

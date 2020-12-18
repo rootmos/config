@@ -84,4 +84,4 @@ map_joystick() {
 
 map_joystick port1 0x0003054c026881110006001100000000
 
-exec mednafen "${OPTS[@]}" "$@"
+mednafen "${OPTS[@]}" "$@"

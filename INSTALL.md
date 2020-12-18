@@ -253,3 +253,9 @@ TODO
 ### Default applications
 * `bin/xdg-install .local/share/applications/view.desktop`
 * `bin/xdg-install .local/share/applications/play.desktop`
+
+### Automounter
+* `./install.sh -b bin/automount`
+* `./install.sh -h .config/systemd/user/automount.service`
+* `systemctl --user enable automount.service`
+* `systemctl --user start automount.service`

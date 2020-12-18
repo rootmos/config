@@ -1,0 +1,55 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
+export MEDNAFEN_HOME=${MEDNAFEN_HOME-$TMP}
+USER_BASE_DIR="$HOME/.mednafen"
+SAVESTATES="$USER_BASE_DIR/mcs"
+MEMORYCARDS="$USER_BASE_DIR/sav"
+FIRMWARES="$USER_BASE_DIR/firmware"
+
+OPTS=()
+while getopts "-" OPT; do
+    case $OPT in
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+OPTS+=("-sound.device" "sexyal-literal-default")
+OPTS+=("-sound.rate" "192000")
+
+OPTS+=("-snes.correct_aspect" "1")
+
+OPTS+=("-filesys.state_comp_level" "9")
+OPTS+=("-filesys.path_state" "$SAVESTATES")
+OPTS+=("-filesys.path_sav" "$MEMORYCARDS")
+
+OPTS+=("-video.fs" "0")
+OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
+OPTS+=("-command.pause" "keyboard 0x0 44")
+OPTS+=("-command.fast_forward" "keyboard 0x0 40")
+
+map_joystick() {
+    OPTS+=("-snes.input.$1" "gamepad")
+    OPTS+=("-snes.input.$1.gamepad.up" "joystick $2 button_13")
+    OPTS+=("-snes.input.$1.gamepad.left" "joystick $2 button_15")
+    OPTS+=("-snes.input.$1.gamepad.right" "joystick $2 button_16")
+    OPTS+=("-snes.input.$1.gamepad.down" "joystick $2 button_14")
+    OPTS+=("-snes.input.$1.gamepad.l" "joystick $2 button_4")
+    OPTS+=("-snes.input.$1.gamepad.r" "joystick $2 button_5")
+    OPTS+=("-snes.input.$1.gamepad.select" "joystick $2 button_8")
+    OPTS+=("-snes.input.$1.gamepad.start" "joystick $2 button_9")
+    OPTS+=("-snes.input.$1.gamepad.a" "joystick $2 button_1")
+    OPTS+=("-snes.input.$1.gamepad.b" "joystick $2 button_0")
+    OPTS+=("-snes.input.$1.gamepad.x" "joystick $2 button_2")
+    OPTS+=("-snes.input.$1.gamepad.y" "joystick $2 button_3")
+}
+
+map_joystick port1 0x0003054c026881110006001100000000
+
+mednafen "${OPTS[@]}" "$@"

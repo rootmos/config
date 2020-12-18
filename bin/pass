@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+zones open sensitive
+exec /usr/bin/pass "$@"

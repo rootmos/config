@@ -35,23 +35,20 @@ Bundle 'vim-airline/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
 Bundle 'tpope/vim-fugitive'
 Bundle 'Valloric/YouCompleteMe'
-Bundle 'derekwyatt/vim-fswitch'
-Bundle 'jlanzarotta/bufexplorer'
 Bundle 'L9'
 Bundle 'FuzzyFinder'
-Plugin 'rootmos/ack.vim'
 Bundle 'wincent/command-t'
 Bundle 'drmingdrmer/xptemplate'
 Plugin 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-abolish'
 Bundle 'godlygeek/tabular'
+"Plugin 'let-def/vimbufsync'
+Plugin 'rootmos/ack.vim'
 Plugin 'rootmos/vim-slime'
-Plugin 'let-def/vimbufsync'
 Plugin 'rootmos/tabs-vs-spaces'
 
 Plugin 'rust-lang/rust.vim'
 Plugin 'whonore/Coqtail'
-"Plugin 'bluelightning32/coquille'
 Plugin 'neovimhaskell/haskell-vim.git'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'hashivim/vim-terraform.git'
@@ -121,6 +118,8 @@ nmap <c-c><c-d> :SlimeSendCurrentLine<cr>
 
 command! FixTrailing execute ':%s/\s\+$//c'
 
+au BufRead,BufNewFile .k set filetype=sh
+
 " plugin configs
 let g:bufExplorerDisableDefaultKeyMapping = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
@@ -131,6 +130,11 @@ let g:ycm_autoclose_preview_window_after_completion = 1
 let g:CommandTFileScanner = 'git'
 let g:ackprg = 'ag --nogroup --nocolor --column --ignore=META-INF'
 let g:slime_target = "tmux"
+
+function! g:CoqtailHighlight()
+  hi def CoqtailChecked ctermbg=0
+  hi def CoqtailSent ctermbg=15
+endfunction
 
 " Notes command
 function! Note(offset)

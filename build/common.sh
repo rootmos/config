@@ -1,3 +1,6 @@
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
 GIT_ROOT=$HOME/git
 INSTALL_ROOT=$HOME/root
 
@@ -18,6 +21,19 @@ if [ -n "${APP-}" ]; then
         if [ -n "${GIT_BRANCH-}" ]; then
             (cd "$SRC" && git fetch && git checkout "origin/$GIT_BRANCH")
         fi
+    fi
+
+    if [ -n "${TARBALL_URL-}" ]; then
+        TARBALL=$TMP/$(basename "${TARBALL_URL}")
+        wget -O "$TARBALL" "$TARBALL_URL"
+    fi
+
+    if [ "${TARBALL-}" ]; then
+        SRC=$TMP/src
+        mkdir "$SRC"
+        tar -xvf "$TARBALL" \
+            --strip-components="${TARBALL_STRIP_COMPONENTS-1}" \
+             -C "$SRC"
     fi
 fi
 

@@ -3,9 +3,10 @@
 set -o nounset -o pipefail -o errexit
 
 K=.k
-SHELL_OPTS=
+SHELL_OPTS=()
 ACTION=
-while getopts "k:eg-cCmhd:x" OPT; do
+INTERACT_AFTER_EXIT=
+while getopts "k:eg-cCmhd:xi-" OPT; do
     case "$OPT" in
         k) K=$OPTARG ;;
         d) cd "$OPTARG" ;;
@@ -15,7 +16,8 @@ while getopts "k:eg-cCmhd:x" OPT; do
         c) ACTION=completion-script; COMPLETE_NAME=$(basename "$0") ;;
         C) ACTION=completions ;;
         m) ACTION=menu ;;
-        x) SHELL_OPTS="$SHELL_OPTS -x" ;;
+        x) SHELL_OPTS+=("-x") ;;
+        i) INTERACT_AFTER_EXIT=1 ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -35,7 +37,6 @@ if [ -z "$ACTION" ]; then
         ACTION=go
     fi
 fi
-
 
 if [ "$ACTION" = "usage" ]; then
     cat <<EOF 1>&2
@@ -63,20 +64,29 @@ EOF
 elif [ "$ACTION" = "menu" ]; then
     "$0" -C | dmenu -l 27 -p "k ($K_DIR):" | exec env xargs "$0" -g
 else
-    if [ ! -x "$K" ]; then
+    if [ ! -e "$K" ]; then
         cat <<EOF > "$K"
 # a function f defined here can be called from the command line as: k f
 EOF
-        chmod +x "$K"
     fi
-    case "$ACTION" in
-        edit) $EDITOR +"set ft=sh" "$K" < /dev/tty ;;
-        go) exec $SHELL $SHELL_OPTS -c ". \"$K\" && \$@" "$K" "$@" ;;
-        completions)
-            $SHELL -r -c ". \"$K\" && declare -F | cut -f3 -d' '" "$K" \
-                | grep -vf <($SHELL -r -c 'declare -F | cut -f3 -d" "') \
-                | grep -v "^_" \
-                | grep "^${2-}"
-            ;;
-    esac
+    if [ "$ACTION" = "edit" ]; then
+        $EDITOR +"au BufRead,BufNewFile $K set filetype=sh" "$K" < /dev/tty
+    elif [ "$ACTION" = "go" ]; then
+        if [ -z "$INTERACT_AFTER_EXIT" ]; then
+            exec $SHELL "${SHELL_OPTS[@]}" -c ". \"$K\" && \$@" "$K" "$@"
+        else
+            set +o errexit
+            $SHELL "${SHELL_OPTS[@]}" -c ". \"$K\" && \$@" "$K" "$@"
+            set -o errexit
+            $SHELL -i < /dev/tty
+        fi
+    elif [ "$ACTION" = "completions" ]; then
+        $SHELL -r -c ". \"$K\" && declare -F | cut -f3 -d' '" "$K" \
+            | grep -vf <($SHELL -r -c 'declare -F | cut -f3 -d" "') \
+            | grep -v "^_" \
+            | grep "^${2-}"
+    else
+        echo "unknown action: $ACTION" >&2
+        exit 1
+    fi
 fi

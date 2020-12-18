@@ -1,3 +1,6 @@
+GOPATH=$HOME/go
+PATH=$HOME/go/bin:$PATH
+PATH=$HOME/.cargo/bin:$PATH
 PATH=$HOME/.gem/ruby/2.5.0/bin:$PATH
 
 for p in /home/gustav/root/*; do
@@ -14,13 +17,10 @@ for p in /home/gustav/root/*; do
     fi
 done
 
-GOPATH=$HOME/upvest/go:$HOME/go
-PATH=$HOME/upvest/go/bin:$HOME/go/bin:$PATH
-PATH=$HOME/.cargo/bin:$PATH
-
 PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
 export PLAYER=play
 export VIEWER=view
 export EDITOR=vim
+
 export VOD_DIR=/stash/Vods
