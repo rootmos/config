@@ -14,4 +14,4 @@ redshift &
 
 (sleep 15 && xcompmgr) &
 
-exec "$HOME/bin/xmonad"
+exec "$HOME/.local/bin/xmonad"

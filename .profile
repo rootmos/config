@@ -24,3 +24,8 @@ export VIEWER=view
 export EDITOR=vim
 
 export VOD_DIR=/stash/Vods
+
+if [ -e "/usr/local/bin/sudo-pass.askpass" ]; then
+    export SUDO_ASKPASS=/usr/local/bin/sudo-pass.askpass
+    alias sudo="/usr/bin/sudo -A"
+fi

@@ -1,9 +1,3 @@
-Cmnd_Alias PM_CMNDS = /home/gustav/bin/halt, /home/gustav/bin/reboot, /home/gustav/bin/windows, /home/gustav/bin/suspend
-Cmnd_Alias MOUNTS = /bin/mount, /bin/umount
-Cmnd_Alias CRYPTSETUP = /sbin/cryptsetup
+Defaults rootpw
 
 gustav ALL=(ALL) ALL
-gustav ALL=(ALL) NOPASSWD: PM_CMNDS
-gustav ALL=(ALL) NOPASSWD: MOUNTS
-gustav ALL=(ALL) NOPASSWD: CRYPTSETUP
-

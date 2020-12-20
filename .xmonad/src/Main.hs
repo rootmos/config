@@ -118,7 +118,7 @@ main = do
   let (bin, localBin) = (home </> "bin", home </> ".local" </> "bin")
   bw <- getAppUserDataDirectory "xmonad" <&> (\x -> x </> "border-width") >>= \fn ->
     doesFileExist fn >>= \case
-      False -> return 4
+      False -> return 2
       True -> read <$> readFile fn
   xmonad <=< bars $
     def { terminal = "st"
