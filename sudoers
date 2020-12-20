@@ -1,3 +1,5 @@
 Defaults rootpw
 
 gustav ALL=(ALL) ALL
+gustav ALL = NOPASSWD: /usr/bin/cryptsetup
+gustav ALL = NOPASSWD: /usr/bin/mount /usr/bin/umount

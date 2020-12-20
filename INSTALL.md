@@ -225,7 +225,10 @@ Check logs for blocked traffic: `dmesg -w | grep UFW`.
 Use `tshark -Y dns` to verify that queries are not sent in plaintext.
 
 ### USB Guard
-TODO
+* `sudo pacman -S usbguard`
+* `sudo usbguard generate-policy | sudo tee /etc/usbguard/rules.conf`
+* `sudo systemctl enable usbguard.service`
+* `sudo systemctl start usbguard.service`
 
 ### Printer
 * `pacman -S avahi nss-mdns`
