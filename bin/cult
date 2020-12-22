@@ -1,0 +1,70 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+TARGET=.
+ONLINE=
+while getopts "ot:-" OPT; do
+    case $OPT in
+        o) ONLINE=1 ;;
+        t) TARGET=$OPTARG ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+run_cargo() {
+    if [ "${1-}" = "fmt" ]; then
+        CHANNEL=nightly
+    else
+        CHANNEL=stable
+    fi
+
+    OPTS=()
+    if [ -z "$ONLINE" ]; then
+        OPTS+=("--offline" "--frozen")
+    fi
+
+    ( cd "$TARGET" && cargo +"$CHANNEL" "${OPTS[@]}" "$@" )
+}
+
+if [ $# -eq 0 ]; then
+    ACTION=test
+else
+    ACTION=$1
+    shift 1
+fi
+
+if [ "$ACTION" = "test" ]; then
+    run_cargo test "$@"
+elif [ "$ACTION" = "build" ]; then
+    run_cargo build "$@"
+elif [ "$ACTION" = "lint" ]; then
+    run_cargo clippy
+elif [ "$ACTION" = "fmt" ]; then
+    run_cargo fmt
+elif [ "$ACTION" = "doc" ]; then
+    ARGS=()
+    PRINT_URL=
+    OPTIND=1
+    while getopts "iu-" OPT; do
+        case $OPT in
+            i) ARGS+=(--document-private-items) ;;
+            u) PRINT_URL=1 ;;
+            -) break ;;
+            ?) exit 2 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    run_cargo doc "${ARGS[@]}"
+    if [ -n "${PRINT_URL-}" ]; then
+        find target -name "index.html" | grep "$TARGET" \
+            | sed 's,^,file://'"$(pwd)"'/,' || true
+    fi
+elif [ "$ACTION" = "flint" ]; then
+    run_cargo test
+    run_cargo fmt
+    run_cargo clippy
+fi
