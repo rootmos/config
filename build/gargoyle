@@ -16,10 +16,18 @@ j() {
 }
 
 j clean
+
 j install DESTDIR="$ROOT/lib" LDFLAGS="-Wl,-rpath,$ROOT/lib"
+
 mkdir -p "$ROOT/bin"
 cat <<EOF > "$ROOT/bin/gargoyle"
 #!/bin/sh
 PATH="$ROOT/lib" exec "$ROOT/lib/gargoyle"
 EOF
 chmod +x "$ROOT/bin/gargoyle"
+
+install -D -t "$ROOT/include" \
+    "$SRC/garglk/glk.h" \
+    "$SRC/garglk/garglk.h" \
+    "$SRC/garglk/gi_dispa.h" \
+    "$SRC/garglk/gi_blorb.h"
