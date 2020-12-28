@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+APP=gargoyle
+GIT_URL=https://github.com/garglk/garglk
+GIT_REV=86605a6d4626d1177cfc188a725c72ea42b9bd9d
+
+DEPS=("ftjam" "gtk2" "sdl" "sdl_mixer" "sdl_sound")
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+j() {
+    (cd "$SRC" && jam -j"${J-$((2*$(nproc)))}" "$@")
+}
+
+j clean
+j install DESTDIR="$ROOT/lib" LDFLAGS="-Wl,-rpath,$ROOT/lib"
+mkdir -p "$ROOT/bin"
+cat <<EOF > "$ROOT/bin/gargoyle"
+#!/bin/sh
+PATH="$ROOT/lib" exec "$ROOT/lib/gargoyle"
+EOF
+chmod +x "$ROOT/bin/gargoyle"
