@@ -17,7 +17,9 @@ j() {
 
 j clean
 
-j install DESTDIR="$ROOT/lib" LDFLAGS="-Wl,-rpath,$ROOT/lib"
+j install \
+    CFLAGS="-g" LDFLAGS="-Wl,-rpath,$ROOT/lib" \
+    DESTDIR="$ROOT/lib" GARGLKINI="$ROOT/etc/garglk.ini"
 
 mkdir -p "$ROOT/bin"
 cat <<EOF > "$ROOT/bin/gargoyle"
@@ -26,8 +28,25 @@ PATH="$ROOT/lib" exec "$ROOT/lib/gargoyle"
 EOF
 chmod +x "$ROOT/bin/gargoyle"
 
+install -D -t "$ROOT/etc" \
+    "$SRC/garglk/garglk.ini"
+
 install -D -t "$ROOT/include" \
     "$SRC/garglk/glk.h" \
     "$SRC/garglk/garglk.h" \
     "$SRC/garglk/gi_dispa.h" \
     "$SRC/garglk/gi_blorb.h"
+
+mkdir -p "$ROOT/lib/pkgconfig"
+cat <<EOF > "$ROOT/lib/pkgconfig/garglk.pc"
+prefix=$ROOT
+exec_prefix=\${prefix}
+includedir=\${prefix}/include
+libdir=\${exec_prefix}/lib
+
+Name: garglk
+Description: GTK implementation of the GLK interface
+Cflags: -I\${includedir}
+Version: 0.7.5
+Libs: -L\${libdir} -lgarglk -Wl,-rpath,\${libdir}
+EOF

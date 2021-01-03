@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+APP=glkterm
+GIT_URL=https://github.com/erkyrath/glkterm
+GIT_REV=0f0cccab3e9e028552bf2f1b8dbd36e794326b70
+
+DEPS=("ncurses")
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+m -C "$SRC" clean
+m -C "$SRC"
+
+install -D -t "$ROOT/lib" "$SRC/libglkterm.a"
+install -D -t "$ROOT/include" "$SRC/glk.h" "$SRC/glkstart.h"
+
+mkdir -p "$ROOT/lib/pkgconfig"
+cat <<EOF > "$ROOT/lib/pkgconfig/glkterm.pc"
+prefix=$ROOT
+exec_prefix=\${prefix}
+includedir=\${prefix}/include
+libdir=\${exec_prefix}/lib
+
+Name: glkterm
+Description: ncurses implementation of the GLK interface
+Cflags: -I\${includedir}
+Version: 0.7.4
+Requires: ncurses
+Libs: -L\${libdir} -lglkterm
+EOF
