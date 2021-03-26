@@ -23,7 +23,8 @@ function launch_twitch_chat()
     msg.info(("fetching comments for content: %s"):format(content))
     msg.debug(("saving comments to file: %s"):format(srt))
     local start = os.date("!%FT%T+00:00")
-    local start_offset = -1 * mp.get_property("time-pos")
+    local preroll_seconds = 15.0
+    local start_offset = -1 * mp.get_property("time-pos") + preroll_seconds
     msg.info(("offsetting comments with respect to: %s (wall clock) %s (content offset)"):format(start, start_offset))
 
     local done = false
@@ -77,7 +78,7 @@ end
 mp.add_hook("on_load", 50, function()
     local p = mp.get_property("path")
     if p:find("https://twitch.tv") or p:find("https://www.twitch.tv") then
-        mp.add_timeout(20, launch_twitch_chat)
+        mp.add_timeout(30, launch_twitch_chat)
         mp.add_key_binding("t", "twitch_chat_tmux", launch_twitch_chat_tmux)
     end
 end)

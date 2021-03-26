@@ -39,7 +39,7 @@ while [ "$((L*L))" -lt "$N" ]; do
     L=$((L+1))
 done
 
-feh --montage -W "$((X*L))" -E "$X" -y "$X" -s -z -f "$LIST" \
+feh --montage -W "$((X*L))" -E "$X" -y "$X" -s -f "$LIST" \
     --output-only "$OUTPUT"
 
 if [ -n "$VIEW" ]; then

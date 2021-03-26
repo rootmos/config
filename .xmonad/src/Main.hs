@@ -58,8 +58,8 @@ myKeys _ bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys 
   , ((mod1Mask, xK_h), sendMessage Shrink)
   , ((mod1Mask, xK_l), sendMessage Expand)
   , ((mod1Mask, xK_t), withFocused $ windows . W.sink)
-  , ((mod1Mask, xK_period), spawn $ bin </> "pass-pick")
-  , ((mod1Mask .|. shiftMask, xK_period), spawn $ bin </> "pass-pick -m")
+  , ((mod1Mask, xK_period), spawn $ "pass-pick")
+  , ((mod1Mask .|. shiftMask, xK_period), spawn $ "pass-pick -m")
   , ((mod4Mask, xK_b), sendMessage ToggleStruts)
   , ((mod4Mask, xK_comma), sendMessage (IncMasterN 1))
   , ((mod4Mask, xK_period), sendMessage (IncMasterN (-1)))
@@ -118,7 +118,7 @@ main = do
   let (bin, localBin) = (home </> "bin", home </> ".local" </> "bin")
   bw <- getAppUserDataDirectory "xmonad" <&> (\x -> x </> "border-width") >>= \fn ->
     doesFileExist fn >>= \case
-      False -> return 4
+      False -> return 2
       True -> read <$> readFile fn
   xmonad <=< bars $
     def { terminal = "st"

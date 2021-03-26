@@ -39,7 +39,7 @@ fi
 
 if [ -n "${DEPS-}" ]; then
     echo "installing dependencies: $DEPS"
-    sudo pacman -S "${DEPS[@]}"
+    sudo -A pacman -S --needed "${DEPS[@]}"
 fi
 
 m() {

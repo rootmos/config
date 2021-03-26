@@ -1,0 +1,53 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+APP=gargoyle
+GIT_URL=https://github.com/garglk/garglk
+GIT_REV=86605a6d4626d1177cfc188a725c72ea42b9bd9d
+
+DEPS=("ftjam" "gtk2" "sdl" "sdl_mixer" "sdl_sound")
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+j() {
+    (cd "$SRC" && jam -j"${J-$((2*$(nproc)))}" "$@")
+}
+
+j clean
+
+j install \
+    CFLAGS="-g" LDFLAGS="-Wl,-rpath,$ROOT/lib" \
+    DESTDIR="$ROOT/lib" GARGLKINI="$ROOT/etc/garglk.ini"
+
+mkdir -p "$ROOT/bin"
+cat <<EOF > "$ROOT/bin/gargoyle"
+#!/bin/sh
+PATH="$ROOT/lib" exec "$ROOT/lib/gargoyle"
+EOF
+chmod +x "$ROOT/bin/gargoyle"
+
+install -D -t "$ROOT/etc" \
+    "$SRC/garglk/garglk.ini"
+
+install -D -t "$ROOT/include" \
+    "$SRC/garglk/glk.h" \
+    "$SRC/garglk/glkstart.h" \
+    "$SRC/garglk/garglk.h" \
+    "$SRC/garglk/gi_dispa.h" \
+    "$SRC/garglk/gi_blorb.h"
+
+mkdir -p "$ROOT/lib/pkgconfig"
+cat <<EOF > "$ROOT/lib/pkgconfig/garglk.pc"
+prefix=$ROOT
+exec_prefix=\${prefix}
+includedir=\${prefix}/include
+libdir=\${exec_prefix}/lib
+
+Name: garglk
+Description: GTK implementation of the GLK interface
+Cflags: -I\${includedir}
+Version: 0.7.5
+Libs: -L\${libdir} -lgarglk -Wl,-rpath,\${libdir}
+EOF

@@ -15,6 +15,14 @@ for p in /home/gustav/root/*; do
     if [ -d "$p/share/man" ]; then
         MANPATH="$p/share/man:$MANPATH"
     fi
+
+    if [ -d "$p/lib/pkgconfig" ]; then
+        if [ -z "${PKG_CONFIG_PATH-}" ]; then
+            export PKG_CONFIG_PATH="$p/lib/pkgconfig"
+        else
+            export PKG_CONFIG_PATH="$p/lib/pkgconfig:$PKG_CONFIG_PATH"
+        fi
+    fi
 done
 
 PATH=$HOME/bin:$HOME/.local/bin:$PATH
@@ -24,3 +32,8 @@ export VIEWER=view
 export EDITOR=vim
 
 export VOD_DIR=/stash/Vods
+
+if [ -e "/usr/local/bin/sudo-pass.askpass" ]; then
+    export SUDO_ASKPASS=/usr/local/bin/sudo-pass.askpass
+    alias sudo="/usr/bin/sudo -A"
+fi

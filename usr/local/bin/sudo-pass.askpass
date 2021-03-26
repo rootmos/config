@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec pass hosts/$(hostname)/root

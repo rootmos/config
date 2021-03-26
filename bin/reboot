@@ -1,7 +1,0 @@
-#!/bin/sh
-set -e
-if [ -z ${GRACEFUL_SHUTDOWN_DAEMON+x} ]; then
-    graceful_shutdown $0
-else
-    systemctl reboot
-fi

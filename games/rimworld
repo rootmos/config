@@ -1,0 +1,99 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+FETCH_CACHE=${FETCH_CACHE-$(pwd)/.cache}
+FORCE=
+while getopts "f-" OPT; do
+    case $OPT in
+        f) FORCE=1 ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+find_game_location() {
+    echo "$HOME/GOG Games/RimWorld/game"
+}
+
+GAME_LOCATION=${1-$(find_game_location)}
+MODS=$GAME_LOCATION/Mods
+LAUNCHER=$GAME_LOCATION/start_RimWorld.sh
+
+mod() {
+    URL=$1
+    SHA256=$2
+    CACHE=$FETCH_CACHE/$SHA256
+
+    if [ ! -f "$CACHE" ]; then
+        UNVERIFIED=$FETCH_CACHE/unverified/$SHA256
+        mkdir -p "$(dirname "$UNVERIFIED")"
+        wget --progress=dot --output-document="$UNVERIFIED" "$URL"
+
+        SHA256_UNVERIFIED=$(sha256sum "$UNVERIFIED" | cut -f1 -d' ')
+        if [ "$SHA256_UNVERIFIED" = "$SHA256" ]; then
+            mkdir -p "$(dirname "$CACHE")"
+            mv "$UNVERIFIED" "$CACHE"
+        else
+            echo "sha256 checksum failed ($SHA256_UNVERIFIED != $SHA256): $URL" >&2
+            return 1
+        fi
+    fi
+
+    unzip "$CACHE" -d "$MODS"
+}
+
+check_if_mods_are_installed() {
+    if ! [ -d "$MODS" ]; then
+        return 1
+    fi
+
+    N=$(find "$MODS" -type f | grep -v "Place mods here.txt" | wc -l)
+    [ "$N" -gt 0 ]
+}
+
+work-tab() {
+    mod "https://github.com/fluffy-mods/WorkTab/releases/download/v3.21.303/Work.Tab.zip" \
+        "917e1aa83f720d7e277f503724e852bfd642c929b66b68cdab505c1ad6b81656"
+}
+
+harmony() {
+    mod "https://github.com/pardeike/HarmonyRimWorld/releases/download/v1.0.4.0/Harmony.zip" \
+        "3a0f193501398b747b9f8253bbdb7f6fab70344a548e07a34882256e68024258"
+}
+
+show-hair() {
+    mod "https://github.com/KiameV/rimworld-showhair/releases/download/current/ShowHair.zip" \
+        "4940458be8c851dd5c00d5d86be1f891436bf32d2c0fc9367d14319f9bfa712a"
+}
+
+prepare-carefully() {
+    mod "https://github.com/edbmods/EdBPrepareCarefully/releases/download/v1.2.1/EdBPrepareCarefully-1.2.1.zip" \
+        "b3ed4b7404436e15dbaf1bc164fb9e81dfbb4ac934591b5fe212b5010fe03d1b"
+}
+
+hugs() {
+    mod "https://github.com/UnlimitedHugs/RimworldHugsLib/releases/download/v8.0.1/HugsLib_8.0.1.zip" \
+        "e8a700e0ba68e6df270dd580795983a49c5a2cba8c953fedf48a35c8f7dc0d59"
+}
+
+map-reroll() {
+    mod "https://github.com/UnlimitedHugs/RimworldMapReroll/releases/download/v2.6.0/MapReroll_2.6.0.zip" \
+        "37fc6edba1782ca46eb68798dd84b2c305929f1cbd35bf1728006ff7fa4efaed"
+}
+
+if [ -n "$FORCE" ]; then
+    rm -rf "$MODS"
+fi
+
+if ! check_if_mods_are_installed; then
+    harmony
+    work-tab
+    show-hair
+    prepare-carefully
+    hugs
+    map-reroll
+fi
+
+"$LAUNCHER"

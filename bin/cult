@@ -1,0 +1,102 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+TARGET=${TARGET-.}
+ONLINE=${ONLINE-}
+FEATURES=${FEATURES-}
+TIMEOUT=${TIMEOUT-}
+while getopts "ot:T:f:-" OPT; do
+    case $OPT in
+        o) ONLINE=1 ;;
+        t) TARGET=$OPTARG ;;
+        T) TIMEOUT=$OPTARG ;;
+        f)
+            if [ -n "$FEATURES" ]; then
+                FEATURES=$OPTARG
+            else
+                FEATURES="$FEATURES,$OPTARG"
+            fi ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+run_cargo() {
+    ACTION=$1
+    shift 1
+
+    FEATURES_ARGS=()
+    if [ "$ACTION" = "fmt" ]; then
+        CHANNEL=nightly
+    elif [ "$ACTION" = "clippy" ]; then
+        CHANNEL=stable
+    else
+        CHANNEL=stable
+        FEATURES_ARGS+=("--features" "$FEATURES")
+    fi
+
+    OPTS=()
+    if [ -z "$ONLINE" ]; then
+        OPTS+=("--offline" "--frozen")
+    fi
+
+    if [ -n "$TIMEOUT" ]; then
+        TIMEOUT_CMD=("timeout" "$TIMEOUT")
+    else
+        TIMEOUT_CMD=()
+    fi
+
+    (
+        cd "$TARGET"
+        "${TIMEOUT_CMD[@]}" \
+            cargo +"$CHANNEL" "${OPTS[@]}" \
+            "$ACTION" "${FEATURES_ARGS[@]}" \
+            "$@"
+    )
+}
+
+if [ $# -eq 0 ]; then
+    ACTION=test
+else
+    ACTION=$1
+    shift 1
+fi
+
+clippy() {
+    run_cargo clippy --all-targets --all-features -- -D warnings
+}
+
+if [ "$ACTION" = "test" ]; then
+    run_cargo test "$@"
+elif [ "$ACTION" = "build" ]; then
+    run_cargo build "$@"
+elif [ "$ACTION" = "lint" ]; then
+    clippy "$@"
+elif [ "$ACTION" = "fmt" ]; then
+    run_cargo fmt "$@"
+elif [ "$ACTION" = "doc" ]; then
+    ARGS=()
+    PRINT_URL=
+    OPTIND=1
+    while getopts "iu-" OPT; do
+        case $OPT in
+            i) ARGS+=(--document-private-items) ;;
+            u) PRINT_URL=1 ;;
+            -) break ;;
+            ?) exit 2 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    run_cargo doc "${ARGS[@]}"
+    if [ -n "${PRINT_URL-}" ]; then
+        find target -name "index.html" | grep "$TARGET" \
+            | sed 's,^,file://'"$(pwd)"'/,' || true
+    fi
+elif [ "$ACTION" = "flint" ]; then
+    run_cargo test "$@"
+    run_cargo fmt
+    clippy
+fi

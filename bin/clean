@@ -2,8 +2,16 @@
 
 set -o nounset -o pipefail -o errexit
 
-sudo paccache -rk1 -ruk0
+echo "removing orphaned packages (pacman -D --asexplicit <package...>)" >&2
+pacman -Qtdq | sudo pacman -Rns - || echo "no orphaned packages found" >&2
 
-sudo docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
-sudo docker rm $(docker ps -qa --no-trunc --filter "status=exited")
-sudo docker rmi $(docker images | grep "none" | awk '/ / { print $3 }')
+echo "cleaning pacman cache" >&2
+sudo -A paccache -rk1
+sudo -A paccache -ruk0
+
+if command -v docker >/dev/null; then
+    echo "removing docker images" >&2
+    sudo -A docker rmi $(docker images --filter "dangling=true" -q --no-trunc)
+    sudo -A docker rm $(docker ps -qa --no-trunc --filter "status=exited")
+    sudo -A docker rmi $(docker images | grep "none" | awk '/ / { print $3 }')
+fi

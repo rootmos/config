@@ -105,9 +105,9 @@ DHCPClient=dhclient
 * `build/YouCompleteMe`
 * `build/command-t`
 
-* `pacman -S chromium autocutsel`
+* `pacman -S chromium autocutsel hsetroot`
 
-* `pacman -S stack dzen2 conky dmenu ttf-dejavu`
+* `pacman -S stack dzen2 conky dmenu ttf-dejavu libxrandr libxss`
 * `./install.sh -h .xmonad`
 * `~/.xmonad/build`
 
@@ -119,7 +119,7 @@ DHCPClient=dhclient
 
 * `pacman -S lightdm xorg-server`
 * as root: `mkdir /usr/share/xsessions/`
-* as root: `cp root/usr/share/xsessions/custom.desktop /usr/share/xsessions/`
+* as root: `cp usr/share/xsessions/custom.desktop /usr/share/xsessions/`
 * `./install.sh -h .xsession`
 * `groupadd -r autologin`
 * `gpasswd -a username autologin`
@@ -134,16 +134,12 @@ autologin-session=custom
 
 ## Second boot
 
-* `wget -Obin/tmx https://raw.githubusercontent.com/brandur/tmux-extra/master/tmx`
-* `chmod +x bin/tmx`
+* `./install.sh -b bin/tmx`
 
 * `./install.sh -h .gitconfig`
 * `./install.sh -h .gitignore_global`
 * `pacman -S dunst libnotify`
 * `./install.sh -h .config/dunst/dunstrc`
-
-* `pacman -S httping`
-* `./install.sh -b bin/drop-ping`
 
 * `./install.sh -b bin/border-width`
 
@@ -152,8 +148,12 @@ autologin-session=custom
 * `gpasswd -a username video`
 * `./install.sh -b bin/brightness`
 
-* `pacman -S pacman-contrib`
+* `pacman -S pacman-contrib curl`
 * `bin/refresh-mirrorlist`
+
+### OCaml
+* `pacman -S opam`
+* `opam init`
 
 ### AUR
 * `git clone https://aur.archlinux.org/yay.git ~/git/yay`
@@ -166,37 +166,28 @@ autologin-session=custom
 * `pacman -S pulseaudio-alsa pavucontrol alsa-utils`
 
 ### Credentials
-* `pacman -S pass encfs gnupg gtk2 git-crypt`
+* `pacman -S pass encfs gnupg gtk2 git-crypt openssh inetutils udisks2`
 * `sudo cryptsetup open /dev/sda1 keys`
 * `mkdir -p mnt/keys`
 * `sudo mount /dev/mapper/keys mnt/keys`
-* `encfs ~/.sensitive ~/sensitive`
-* `git clone ~/mnt/keys/password-store-private ~/sensitive/password-store/`
-* `ln -s ~/sensitive/password-store/ ~/.password-store`
 * `gpg --import ~/mnt/keys/gpg/...`
-* `mv .gnupg/private-keys-v1.d ~/sensitive/*`
-* `ln -s ~/sensitive/private-keys-v1.d ~/.gnupg/private-keys-v1.d`
+* `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
+  - generate secret key at `~/sensitive/id_rsa`
+* `git-crypt unlock`
+* `sudo cp sensitive/root/etc/polkit-1/rules.d/90-udisks2.rules /etc/polkit-1/rules.d/`
+* `./install.sh -b sensitive/bin/zones`
 * remove primary keys
   - `gpg --list-secret-keys --with-keygrip`
   - `rm ~/.gnupg/private-keys-v1.d/...`
-* `./install.sh -h .gnupg/gpg-agent.conf`
-* remove passphrases and add trust
-  - `gpg --edit-key ...`: `passwd` and `trust`
-* `./install.sh -b bin/pass-pick`
-* `git-crypt unlock`
-* `pacman -S usbutils`
-* `./install.sh -b sensitive/bin/open*`
-* `./install.sh -b sensitive/bin/close*`
-* `./install.sh -b sensitive/bin/private`
-* `./install.sh -b sensitive/bin/lock-status`
+* add trust
 
-* `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
-  - generate secret key at `~/sensitive/id_rsa`
-* `ln -s ~/sensitive/id_rsa ~/.ssh/id_rsa`
-* `cp ~/.ssh/id_rsa ~/mnt/keys/keys/id_rsa_ar1`
+* `./install.sh -b sensitive/bin/open_keys`
+* `./install.sh -b sensitive/bin/close_keys`
 
-* `pass generate -n laptop/hostname/root 32`
+* `pass generate -n hosts/$(hostname)/root 32`
 * `sudo passwd`
+
+* `sudo cp bin/pass bin/pass-pick /usr/local/bin`
 
 ### Displays
 * `pacman -S xorg-xrandr`
@@ -234,7 +225,10 @@ Check logs for blocked traffic: `dmesg -w | grep UFW`.
 Use `tshark -Y dns` to verify that queries are not sent in plaintext.
 
 ### USB Guard
-TODO
+* `sudo pacman -S usbguard`
+* `sudo usbguard generate-policy | sudo tee /etc/usbguard/rules.conf`
+* `sudo systemctl enable usbguard.service`
+* `sudo systemctl start usbguard.service`
 
 ### Printer
 * `pacman -S avahi nss-mdns`
@@ -247,6 +241,7 @@ TODO
 * `systemctl start org.cups.cupsd.service`
 
 ### PDF (zathura)
+* `sudo pacman -S zathura-pdf-mupdf`
 * `xdg-mime default org.pwmt.zathura-pdf-mupdf.desktop application/pdf`
 * `./install.sh -h .config/zathura/zathurarc`
 
