@@ -88,8 +88,8 @@ nnoremap <F3> :AckWord<CR>
 command! -bang AckWord call ack#Ack('grep<bang>', "'\\b" . expand("<cword>") . "\\b'")
 nmap ^[[19^ :wqall<CR>
 imap ^[[19^ <Esc>:wqall<CR>
-nmap <F8> :w<CR>
-imap <F8> <Esc>:w<CR>
+nmap <F8> :wall<CR>
+imap <F8> <Esc>:wall<CR>
 
 let mapleader = ","
 let maplocalleader = '-'
