@@ -33,6 +33,7 @@ install -D -t "$ROOT/etc" \
 
 install -D -t "$ROOT/include" \
     "$SRC/garglk/glk.h" \
+    "$SRC/garglk/glkstart.h" \
     "$SRC/garglk/garglk.h" \
     "$SRC/garglk/gi_dispa.h" \
     "$SRC/garglk/gi_blorb.h"

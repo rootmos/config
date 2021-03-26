@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+if ! findmnt --noheadings "$1" &> /dev/null; then
+    sudo -A mount "$1"
+fi

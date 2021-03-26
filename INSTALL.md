@@ -241,6 +241,7 @@ Use `tshark -Y dns` to verify that queries are not sent in plaintext.
 * `systemctl start org.cups.cupsd.service`
 
 ### PDF (zathura)
+* `sudo pacman -S zathura-pdf-mupdf`
 * `xdg-mime default org.pwmt.zathura-pdf-mupdf.desktop application/pdf`
 * `./install.sh -h .config/zathura/zathurarc`
 

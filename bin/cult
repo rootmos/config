@@ -2,12 +2,21 @@
 
 set -o nounset -o pipefail -o errexit
 
-TARGET=.
-ONLINE=
-while getopts "ot:-" OPT; do
+TARGET=${TARGET-.}
+ONLINE=${ONLINE-}
+FEATURES=${FEATURES-}
+TIMEOUT=${TIMEOUT-}
+while getopts "ot:T:f:-" OPT; do
     case $OPT in
         o) ONLINE=1 ;;
         t) TARGET=$OPTARG ;;
+        T) TIMEOUT=$OPTARG ;;
+        f)
+            if [ -n "$FEATURES" ]; then
+                FEATURES=$OPTARG
+            else
+                FEATURES="$FEATURES,$OPTARG"
+            fi ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -15,10 +24,17 @@ done
 shift $((OPTIND-1))
 
 run_cargo() {
-    if [ "${1-}" = "fmt" ]; then
+    ACTION=$1
+    shift 1
+
+    FEATURES_ARGS=()
+    if [ "$ACTION" = "fmt" ]; then
         CHANNEL=nightly
+    elif [ "$ACTION" = "clippy" ]; then
+        CHANNEL=stable
     else
         CHANNEL=stable
+        FEATURES_ARGS+=("--features" "$FEATURES")
     fi
 
     OPTS=()
@@ -26,7 +42,19 @@ run_cargo() {
         OPTS+=("--offline" "--frozen")
     fi
 
-    ( cd "$TARGET" && cargo +"$CHANNEL" "${OPTS[@]}" "$@" )
+    if [ -n "$TIMEOUT" ]; then
+        TIMEOUT_CMD=("timeout" "$TIMEOUT")
+    else
+        TIMEOUT_CMD=()
+    fi
+
+    (
+        cd "$TARGET"
+        "${TIMEOUT_CMD[@]}" \
+            cargo +"$CHANNEL" "${OPTS[@]}" \
+            "$ACTION" "${FEATURES_ARGS[@]}" \
+            "$@"
+    )
 }
 
 if [ $# -eq 0 ]; then
@@ -36,14 +64,18 @@ else
     shift 1
 fi
 
+clippy() {
+    run_cargo clippy --all-targets --all-features -- -D warnings
+}
+
 if [ "$ACTION" = "test" ]; then
     run_cargo test "$@"
 elif [ "$ACTION" = "build" ]; then
     run_cargo build "$@"
 elif [ "$ACTION" = "lint" ]; then
-    run_cargo clippy
+    clippy "$@"
 elif [ "$ACTION" = "fmt" ]; then
-    run_cargo fmt
+    run_cargo fmt "$@"
 elif [ "$ACTION" = "doc" ]; then
     ARGS=()
     PRINT_URL=
@@ -64,7 +96,7 @@ elif [ "$ACTION" = "doc" ]; then
             | sed 's,^,file://'"$(pwd)"'/,' || true
     fi
 elif [ "$ACTION" = "flint" ]; then
-    run_cargo test
+    run_cargo test "$@"
     run_cargo fmt
-    run_cargo clippy
+    clippy
 fi

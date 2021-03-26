@@ -26,12 +26,13 @@
 (require 'projectile)
 (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
 (projectile-mode +1)
-(setq projectile-project-search-path '("~/git" "~/arweave"))
+(setq projectile-project-search-path '("~/git"))
 
 (unless (package-installed-p 'solarized-theme)
   (package-install 'solarized-theme))
 (load-theme 'solarized-dark t)
-(set-default-font "Inconsolata:pixelsize=22")
+;(set-default-font "CascadiaCode:pixelsize=16")
+(set-frame-font "CascadiaCode:pixelsize=16")
 
 (require 'ido)
 (setq ido-enable-flex-matching t)

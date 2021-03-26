@@ -8,10 +8,9 @@ hsetroot -solid black
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
-(sleep 15 && chromium) &
+(sleep 3 && chromium) &
 unclutter &
 redshift &
-
-(sleep 15 && xcompmgr) &
+(sleep 3 && xcompmgr) &
 
 exec "$HOME/.local/bin/xmonad"
