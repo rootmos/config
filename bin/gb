@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
+export MEDNAFEN_HOME=${MEDNAFEN_HOME-$TMP}
+USER_BASE_DIR="$HOME/.mednafen"
+SAVESTATES="$USER_BASE_DIR/mcs"
+MEMORYCARDS="$USER_BASE_DIR/sav"
+FIRMWARES="$USER_BASE_DIR/firmware"
+
+OPTS=()
+while getopts "-" OPT; do
+    case $OPT in
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+OPTS+=("-sound.device" "sexyal-literal-default")
+OPTS+=("-sound.rate" "192000")
+
+OPTS+=("-filesys.state_comp_level" "9")
+OPTS+=("-filesys.path_state" "$SAVESTATES")
+OPTS+=("-filesys.path_sav" "$MEMORYCARDS")
+
+OPTS+=("-video.fs" "0")
+OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
+OPTS+=("-command.pause" "keyboard 0x0 44")
+OPTS+=("-command.fast_forward" "keyboard 0x0 40")
+
+map_joystick() {
+    OPTS+=("-gb.input.builtin.gamepad.up" "joystick $1 button_12")
+    OPTS+=("-gb.input.builtin.gamepad.left" "joystick $1 button_15")
+    OPTS+=("-gb.input.builtin.gamepad.right" "joystick $1 button_13")
+    OPTS+=("-gb.input.builtin.gamepad.down" "joystick $1 button_14")
+    OPTS+=("-gb.input.builtin.gamepad.select" "joystick $1 button_8")
+    OPTS+=("-gb.input.builtin.gamepad.start" "joystick $1 button_9")
+    OPTS+=("-gb.input.builtin.gamepad.a" "joystick $1 button_1")
+    OPTS+=("-gb.input.builtin.gamepad.b" "joystick $1 button_2")
+}
+
+map_joystick 0x00031d79030101100007001000000000
+
+mednafen "${OPTS[@]}" "$@"

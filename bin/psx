@@ -15,12 +15,14 @@ MEMORYCARDS="$USER_BASE_DIR/sav"
 FIRMWARES="$USER_BASE_DIR/firmware"
 
 OPTS=()
-while getopts "m:s:M:A-" OPT; do
+MEDNAFEN=mednafen
+while getopts "m:As:M:S:-" OPT; do
     case $OPT in
         m) MEMCARD_SUFFIX="-$OPTARG" ;;
         A) JOYSTICK_TYPE=gamepad ;;
         s) SAVESTATES=$OPTARG ;;
         M) MEMORYCARDS=$OPTARG ;;
+        S) MEDNAFEN=${MEDNAFEN}-psx-${OPTARG}x ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -35,9 +37,6 @@ OPTS+=("-filesys.path_state" "$SAVESTATES")
 OPTS+=("-filesys.path_sav" "$MEMORYCARDS")
 OPTS+=("-filesys.path_firmware" "$FIRMWARES")
 
-#OPTS+=("-psx.shader" "goat")
-#OPTS+=("-psx.shader" "ipsharper")
-#OPTS+=("-psx.shader" "autoipsharper")
 OPTS+=("-psx.shader" "none")
 OPTS+=("-psx.stretch" "aspect_mult2")
 OPTS+=("-psx.special" "nn4x")
@@ -51,6 +50,7 @@ OPTS+=("-command.fast_forward" "keyboard 0x0 40")
 OPTS+=("-cd.image_memcache" "1")
 
 OPTS+=("-filesys.fname_sav" "%s%p$MEMCARD_SUFFIX.%X")
+OPTS+=("-filesys.untrusted_fip_check" "0")
 
 map_joystick() {
     OPTS+=("-psx.input.$1" "$JOYSTICK_TYPE")
@@ -84,4 +84,4 @@ map_joystick() {
 
 map_joystick port1 0x0003054c026881110006001100000000
 
-mednafen "${OPTS[@]}" "$@"
+$MEDNAFEN "${OPTS[@]}" "$@"
