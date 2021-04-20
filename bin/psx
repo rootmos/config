@@ -37,6 +37,7 @@ OPTS+=("-filesys.path_state" "$SAVESTATES")
 OPTS+=("-filesys.path_sav" "$MEMORYCARDS")
 OPTS+=("-filesys.path_firmware" "$FIRMWARES")
 
+OPTS+=("-psx.h_overscan" "0")
 OPTS+=("-psx.shader" "none")
 OPTS+=("-psx.stretch" "aspect_mult2")
 OPTS+=("-psx.special" "nn4x")
@@ -44,10 +45,14 @@ OPTS+=("-psx.xscale" "4.000000")
 OPTS+=("-psx.yscale" "4.000000")
 
 OPTS+=("-video.fs" "0")
+OPTS+=("-cd.image_memcache" "1")
+
 OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
 OPTS+=("-command.pause" "keyboard 0x0 44")
 OPTS+=("-command.fast_forward" "keyboard 0x0 40")
-OPTS+=("-cd.image_memcache" "1")
+OPTS+=("-command.insert_eject_disk" "keyboard 0x0 22")
+OPTS+=("-command.select_disk" "keyboard 0x0 15")
+OPTS+=("-command.power" "keyboard 0x0 18")
 
 OPTS+=("-filesys.fname_sav" "%s%p$MEMCARD_SUFFIX.%X")
 OPTS+=("-filesys.untrusted_fip_check" "0")

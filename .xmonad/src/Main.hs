@@ -74,6 +74,7 @@ myKeys _ bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys 
   , ((shiftMask, xF86XK_AudioLowerVolume), spawn $ bin </> "volume -5")
   , ((0, xF86XK_AudioMute), spawn $ bin </> "volume m")
   , ((0, xF86XK_Display), spawn $ localBin </> "displayswitcheroo")
+  , ((0, xK_F9), spawn $ localBin </> "turnc split")
   , ((0, xK_F11), spawn $ bin </> "screenshot")
   , ((0, xF86XK_WLAN), spawn $ bin </> "wifi-fix")
   ]
