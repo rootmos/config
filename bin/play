@@ -16,6 +16,8 @@ Options:
     -z            shuffle playlist
     -D SECONDS    display images for the given amount of SECONDS
     -s START      start playback at START
+    -e END        end playback at END
+    -l START-END  loop from START to END
     -S SUB        read subtites from SUB
 EOF
     exit "${1-0}"
@@ -24,7 +26,7 @@ EOF
 OPTS=("--cursor-autohide=1000" "--no-audio-display")
 PREFIX=
 REQUIRE_TARGETS=1
-while getopts "ztmcLf:D:s:S:ha-" OPT; do
+while getopts "ztmcLf:D:s:e:l:S:ha-" OPT; do
     case $OPT in
         t) PREFIX=https://twitch.tv/ ;;
         m) OPTS+=("--mute") ;;
@@ -35,6 +37,11 @@ while getopts "ztmcLf:D:s:S:ha-" OPT; do
         z) OPTS+=("--shuffle") ;;
         D) OPTS+=("--image-display-duration=$OPTARG") ;;
         s) OPTS+=("--start=$OPTARG") ;;
+        e) OPTS+=("--end=$OPTARG") ;;
+        l) OPTS+=("--start=$(sed 's/\([^-]*\)-\([^-]*\)/\1/' <<< "$OPTARG")")
+           OPTS+=("--ab-loop-a=$(sed 's/\([^-]*\)-\([^-]*\)/\1/' <<< "$OPTARG")")
+           OPTS+=("--ab-loop-b=$(sed 's/\([^-]*\)-\([^-]*\)/\2/' <<< "$OPTARG")")
+           ;;
         S) OPTS+=("--sub-file=$OPTARG") ;;
         h) usage ;;
         -) break ;;
