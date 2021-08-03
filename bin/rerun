@@ -5,10 +5,11 @@ set -o nounset -o pipefail -o errexit
 PLAYER_OPTS=()
 SHUF=1
 RAR=
-while getopts "P:mf:v:zZR-" opt; do
+while getopts "P:mLf:v:zZR-" opt; do
     case "$opt" in
         P) PLAYER_OPTS+=("$OPTARG") ;;
         m) PLAYER_OPTS+=(-m) ;;
+        L) PLAYER_OPTS+=(-L) ;;
         f) FILTER=$OPTARG ;;
         v) FILTER_NOT=$OPTARG ;;
         z) SHUF=1 ;;

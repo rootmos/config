@@ -102,11 +102,11 @@ if [ -t 2 ]; then
         plain_choices
     else
         ARGS=()
-        
+
         if [ -z "$PROMPT" ]; then
             PROMPT="Choose:"
         fi
-        
+
         if [ -n "$MULTIPLE" ]; then
             for c in "${CHOICES[@]}"; do
                 ARGS+=("$c" "$c" off)
@@ -130,5 +130,5 @@ else
         ARGS+=(-p "$PROMPT")
     fi
 
-    printf "%s\n" "${CHOICES[@]}" | dmenu "${ARGS[@]}" 
+    printf "%s\n" "${CHOICES[@]}" | dmenu "${ARGS[@]}"
 fi

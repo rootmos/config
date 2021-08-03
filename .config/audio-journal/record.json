@@ -1,0 +1,4 @@
+{
+    "devices": [ "PCM2902" ],
+    "post_connect_cooloff": 1.0
+}

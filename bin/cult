@@ -70,6 +70,18 @@ clippy() {
 
 if [ "$ACTION" = "test" ]; then
     run_cargo test "$@"
+elif [ "$ACTION" = "run" ]; then
+    OPTIND=1
+    while getopts "b:-" OPT; do
+        case $OPT in
+            b) ARGS+=(--bin=$OPTARG) ;;
+            -) break ;;
+            ?) exit 2 ;;
+        esac
+    done
+    shift $((OPTIND-1))
+
+    run_cargo run "${ARGS[@]}" -- "$@"
 elif [ "$ACTION" = "build" ]; then
     run_cargo build "$@"
 elif [ "$ACTION" = "lint" ]; then

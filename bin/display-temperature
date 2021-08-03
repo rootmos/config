@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+location() {
+    curl -s -H "Accept: application/json" https://ip.rootmos.io \
+        | jq -r '"\(.latitude):\(.longitude)"'
+}
+
+pkill redshift || true
+if [ "$#" -eq 0 ]; then
+    redshift -P -l "$(location)"
+elif [ "$#" -eq 1 ]; then
+    redshift -P -O "$1"
+fi

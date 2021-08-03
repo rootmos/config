@@ -6,13 +6,21 @@ TMP=$(mktemp -d)
 trap "rm -rf $TMP" EXIT
 
 X=1280
+Y=1280
 VIEW=
 OUTPUT=
-while getopts "vo:x:-" OPT; do
+QUIET=
+SHAPE=square
+while getopts "vo:x:y:qV:H:S-" OPT; do
     case $OPT in
         x) X=$OPTARG ;;
+        y) Y=$OPTARG ;;
         o) OUTPUT=$OPTARG ;;
         v) VIEW=1 ;;
+        q) QUIET=1 ;;
+        V) SHAPE=vertical; SIDE=$OPTARG ;;
+        H) SHAPE=horizontal; SIDE=$OPTARG ;;
+        S) SHAPE=square ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -32,15 +40,30 @@ LIST=$TMP/playlist
 cat "$@" > "$LIST"
 
 N=$(wc -l "$LIST" | cut -f1 -d' ')
-echo "making montage of $N images: $OUTPUT" >&2
+if [ -z "$QUIET" ]; then
+    echo "making montage of $N images: $OUTPUT" >&2
+fi
 
-L=1
-while [ "$((L*L))" -lt "$N" ]; do
-    L=$((L+1))
-done
+if [ "$SHAPE" = "square" ]; then
+    L=1
+    while [ "$((L*L))" -lt "$N" ]; do
+        L=$((L+1))
+    done
+    W=$((X*L))
+elif [ "$SHAPE" = "vertical" ]; then
+    W=0
+    L=0
+    while [ "$L" -lt "$N" ]; do
+        L=$((L+SIDE))
+        W=$((W+X))
+    done
+elif [ "$SHAPE" = "horizontal" ]; then
+    W=$((SIDE*X))
+fi
 
-feh --montage -W "$((X*L))" -E "$X" -y "$X" -s -f "$LIST" \
-    --output-only "$OUTPUT"
+feh --montage --limit-width "$W" \
+    --thumb-height "$Y" --thumb-width "$X" --stretch \
+    -f "$LIST" --output-only "$OUTPUT"
 
 if [ -n "$VIEW" ]; then
     view "$OUTPUT"

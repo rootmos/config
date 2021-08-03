@@ -1,0 +1,13 @@
+{
+    "title": "Test @ %Y-%m-%dT%H:%M:%S%z",
+    "filename": "%Y-%m-%dT%H:%M:%S%z.mp3",
+    "prefix": "test",
+    "bucket": null,
+    "local": "~/audio-journal",
+    "artist": "rootmos",
+    "composer": "Gustav Behm",
+    "record": {
+        "devices": [ "Webcam" ],
+        "channels": 1
+    }
+}

@@ -2,48 +2,43 @@
 # shellcheck disable=SC2016
 
 set -o nounset -o pipefail -o errexit
-#set -o xtrace
-
-#set -m
 
 ARGS=(--auto-reload)
-while getopts "zf:D:rR:-" OPT; do
+LIST_ACTIONS=${LIST_ACTIONS-}
+DURATION=${DURATION-}
+while getopts "zf:D:rR:lt:-" OPT; do
     case $OPT in
         f) ARGS+=("--filelist=$OPTARG") ;;
         z) ARGS+=("--randomize") ;;
-        D) ARGS+=("--slideshow-delay=$OPTARG") ;;
+        D) DURATION=$OPTARG ;;
         r) ARGS+=("--recursive") ;;
         R) ARGS+=("--reload=$OPTARG") ;;
+        l) LIST_ACTIONS=1 ;;
+        t) ARGS+=("--title=$OPTARG") ;;
         -) break ;;
         ?) exit 2 ;;
     esac
 done
 shift $((OPTIND-1))
 
-exec feh --scale-down --image-bg=black --auto-zoom \
-    --action='echo "$(dirname "%f")"' \
-    --action1='echo "%f"' \
-    "${ARGS[@]}" "$@"
-
-exec feh --scale-down --image-bg=black --auto-zoom \
-    --action='l $(l | dmenu -p "$(dirname "%f")") + "$(dirname "%f")"' \
-    --action1='l $(l | dmenu -p "%f") + "%f"' \
-    --action9='kill %V' \
-    "${ARGS[@]}" "$@"
-
-(
-    feh --scale-down --image-bg=black --auto-zoom \
-        --action='l $(l | dmenu -p "$(dirname "%f")") + "$(dirname "%f")"' \
-        --action1='l $(l | dmenu -p "%f") + "%f"' \
-        --action9='kill %V' \
-        "${ARGS[@]}" "$@"
-) &
-PID=$!
-
-sleep 0.1s
-WID=$(xdotool search --pid="$PID")
-if [ -n "$WID" ]; then
-    xdotool key --window="$WID" w
+if [ -n "$DURATION" ]; then
+    ARGS+=("--slideshow-delay=$DURATION")
 fi
 
-wait "$PID"
+export DURATION LIST_ACTIONS
+
+if [ -z "$LIST_ACTIONS" ]; then
+    exec feh --scale-down --image-bg=black --auto-zoom \
+        --action=';echo "$(dirname "%f")"' \
+        --action1=';echo "%f"' \
+        --action2=';view "$(dirname "%f")" &' \
+        --action9='kill %V' \
+        "${ARGS[@]}" "$@"
+else
+    exec feh --scale-down --image-bg=black --auto-zoom \
+        --action=';l $(l | dmenu -p "$(dirname "%f")") + "$(dirname "%f")"' \
+        --action1=';l $(l | dmenu -p "%f") + "%f"' \
+        --action2=';view "$(dirname "%f")" &' \
+        --action9='kill %V' \
+        "${ARGS[@]}" "$@"
+fi

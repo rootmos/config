@@ -1,0 +1,8 @@
+{
+    "title": "Practice @ %Y-%m-%dT%H:%M:%S%z",
+    "filename": "%Y-%m-%dT%H:%M:%S%z.mp3",
+    "prefix": "practice",
+    "local": "~/audio-journal",
+    "artist": "rootmos",
+    "composer": "Gustav Behm"
+}

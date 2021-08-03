@@ -2,20 +2,38 @@
 
 set -o nounset -o pipefail -o errexit
 
+RUST=
+HASKELL=
+OCAML=
+while getopts "rRhHoO-" OPT; do
+    case $OPT in
+        r) RUST=1 ;;
+        R) RUST= ;;
+        h) HASKELL=1 ;;
+        H) HASKELL= ;;
+        o) OCAML=1 ;;
+        O) OCAML= ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
 echo "updating pacman and aur packages" >&2
 yay --sudoflags -A -Suy
+sudo -A fix-inconsolata
 
-if command -v rustup >/dev/null; then
+if [ -n "$RUST" ] && command -v rustup >/dev/null; then
     echo "updating rust" >&2
     rustup update
 fi
 
-if command -v stack >/dev/null; then
+if [ -n "$HASKELL" ] && command -v stack >/dev/null; then
     echo "updating haskell" >&2
     stack update
 fi
 
-if command -v opam >/dev/null; then
+if [ -n "$OCAML" ] && command -v opam >/dev/null; then
     echo "updating ocaml" >&2
     opam update
 fi

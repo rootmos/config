@@ -26,7 +26,7 @@ EOF
 OPTS=("--cursor-autohide=1000" "--no-audio-display")
 PREFIX=
 REQUIRE_TARGETS=1
-while getopts "ztmcLf:D:s:e:l:S:ha-" OPT; do
+while getopts "ztmcLf:D:s:e:l:S:hV:a-" OPT; do
     case $OPT in
         t) PREFIX=https://twitch.tv/ ;;
         m) OPTS+=("--mute") ;;
@@ -43,12 +43,17 @@ while getopts "ztmcLf:D:s:e:l:S:ha-" OPT; do
            OPTS+=("--ab-loop-b=$(sed 's/\([^-]*\)-\([^-]*\)/\2/' <<< "$OPTARG")")
            ;;
         S) OPTS+=("--sub-file=$OPTARG") ;;
+        V) VO=$OPTARG ;;
         h) usage ;;
         -) break ;;
         ?) usage 2 ;;
     esac
 done
 shift $((OPTIND-1))
+
+if [ -n "${VO-}" ]; then
+    OPTS+=("--vo=$VO")
+fi
 
 TARGETS=()
 if [ -n "${CLIPBOARD-}" ]; then

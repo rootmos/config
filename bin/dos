@@ -6,17 +6,20 @@ TMP=$(mktemp -d)
 trap 'rm -rf $TMP' EXIT
 
 C=$TMP
-D=$(pwd)
+D=
 TYPE=
 NOHANG=exit
 MNTCMD=MOUNT
-while getopts "H:c:f:i:h-" OPT; do
+FULLSCREEN=false
+while getopts "H:c:f:i:hWF-" OPT; do
     case $OPT in
         H) C=$(readlink -f "$OPTARG") ;;
         c) D=$(readlink -f "$OPTARG"); TYPE="-t cdrom" ;;
         f) D=$(readlink -f "$OPTARG"); TYPE="-t floppy" ;;
         i) D=$(readlink -f "$OPTARG"); MNTCMD=IMGMOUNT; TYPE="-t iso" ;;
         h) NOHANG= ;;
+        W) FULLSCREEN=false ;;
+        F) FULLSCREEN=true ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -28,60 +31,73 @@ echo "D: $D" >&2
 
 cat <<EOF > "$TMP/dosbox.conf"
 [sdl]
-fullscreen = false
+fullscreen = $FULLSCREEN
 autolock = true
+fullresolution=desktop
+output=openglnb
 
 [render]
 aspect = true
-scaler = hq3x
+#scaler = hq3x
 
 [dosbox]
 machine = svga_s3
 
 [mixer]
-nosound=false
 rate=44100
 blocksize=1024
 prebuffer=25
 
-[midi]
-mpu401=intelligent
-mididevice=default
-midiconfig=
+#[midi]
+#mpu401=intelligent
+#mididevice=default
+#midiconfig=
 
-[sblaster]
-sbtype=sb16
-sbbase=220
-irq=7
-dma=1
-hdma=5
-sbmixer=false
-oplmode=auto
-oplemu=default
-oplrate=49716
+#[sblaster]
+#sbtype=sb16
+#sbbase=220
+#irq=7
+#dma=1
+#hdma=5
+#sbmixer=false
+#oplmode=auto
+#oplemu=default
+#oplrate=49716
 
-[gus]
-gus=false
-gusrate=44100
-gusbase=240
-gusirq=5
-gusdma=3
-ultradir=C:\\ULTRASND
+#[gus]
+#gus=false
+#gusrate=44100
+#gusbase=240
+#gusirq=5
+#gusdma=3
+#ultradir=C:\\ULTRASND
 
-[speaker]
-pcspeaker=true
-pcrate=44100
-tandy=auto
-tandyrate=44100
-disney=true
+#[speaker]
+#pcspeaker=true
+#pcrate=44100
+#tandy=auto
+#tandyrate=44100
+#disney=true
 
 [cpu]
 cycles = auto
 
 [autoexec]
 MOUNT C "$C"
+EOF
+
+if [ -n "$D" ]; then
+    cat <<EOF >> "$TMP/dosbox.conf"
 $MNTCMD D "$D" $TYPE
 D:
+EOF
+else
+    cat <<EOF >> "$TMP/dosbox.conf"
+C:
+EOF
+fi
+
+cat <<EOF >> "$TMP/dosbox.conf"
 $@
 $NOHANG
 EOF

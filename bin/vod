@@ -33,7 +33,7 @@ fetch() {
         --retries=infinite --fragment-retries=infinite \
         --socket-timeout=30 \
         --newline --verbose \
-        --limit-rate=1.5M \
+        --limit-rate=5.0M \
         "$URL" &
     PID=$!
 

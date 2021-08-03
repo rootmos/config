@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+N=$1
+shift
+
+TMP=$(mktemp -d)
+trap 'rm -rf $TMP' EXIT
+
+cat "$@" > "$TMP/input"
+
+tail -n+$N "$TMP/input"
+if [ "$N" -gt 0 ]; then
+    head -n$((N-1)) "$TMP/input"
+fi
