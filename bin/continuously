@@ -212,6 +212,16 @@ void trigger_action(const char* type) {
         if(state.input_fd >= 0) {
             int r = close(state.input_fd);
             CHECK(r == 0, "close");
+
+            // Hack for applications that don't like having fd 0 unallocated
+            // (*cough* adb *cough*)
+            if(state.input_fd == 0) {
+                r = open("/dev/null", O_RDONLY);
+                CHECK(r >= 0, "open(/dev/null)");
+                if(r != 0) {
+                    failwith("unable to fill fd 0 with dummy fd");
+                }
+            }
         }
 
         int r = sigprocmask(SIG_UNBLOCK, &state.sm, NULL);
