@@ -11,8 +11,6 @@ alias e="$EDITOR"
 
 alias cal="/usr/bin/cal -m"
 
-alias twitch="twitch-cli"
-
 d() {
     date -Id
 }

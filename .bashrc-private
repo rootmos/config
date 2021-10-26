@@ -16,4 +16,4 @@ if command -v k > /dev/null; then
     . <(k -c)
 fi
 
-PS1='p$(is_mounted ~/private) r$(is_mounted ~/mnt/rp) \h:\w\$ '
+PS1='p$(is_mounted ~/private) \h:\w\$ '

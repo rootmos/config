@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+APP=cheapglk
+GIT_URL=https://github.com/erkyrath/cheapglk
+GIT_REV=807b92846f9b5fe90c149e1a7c7637d36ab8ac34
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+m -C "$SRC" clean
+m -C "$SRC"
+
+install -D -t "$ROOT/lib" "$SRC/libcheapglk.a"
+install -D -t "$ROOT/include" "$SRC/glk.h" "$SRC/glkstart.h"
+
+mkdir -p "$ROOT/lib/pkgconfig"
+cat <<EOF > "$ROOT/lib/pkgconfig/cheapglk.pc"
+prefix=$ROOT
+exec_prefix=\${prefix}
+includedir=\${prefix}/include
+libdir=\${exec_prefix}/lib
+
+Name: cheapglk
+Description: Cheapass Implementation of the Glk API
+Cflags: -I\${includedir}
+Version: 1.0.6
+Libs: -L\${libdir} -lcheapglk
+EOF

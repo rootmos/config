@@ -64,9 +64,16 @@ loop() {
     done
 }
 
+finalize() {
+    if [ -n "$ZERO" ]; then
+        sort -zu
+    else
+        sort -zu | tr '\0' '\n'
+    fi
+}
 
 if [ -z "$DIR" ]; then
     loop "$@"
 else
     loop "$@" | tr '\n' '\0' | xargs -0n1 dirname -z
-fi | if [ -n "$ZERO" ]; then sort -zu; else sort -zu | tr '\0' '\n'; fi
+fi | finalize

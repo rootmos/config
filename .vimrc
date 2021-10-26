@@ -67,6 +67,8 @@ set runtimepath+=~/.vim/xpt-personal
 let g:xptemplate_key = '<C-t>'
 let g:xptemplate_nav_next = '<C-t>'
 
+set runtimepath+=$HOME/git/silly-if/vim
+
 " colors
 colorscheme solarized
 set t_Co=256

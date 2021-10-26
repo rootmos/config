@@ -54,13 +54,13 @@ lcd           1               # 0=grayscale 1=subpixel
 # Omit to use the builtin fonts, or specify a font family.
 
 monofont      Liberation Mono
-monosize      14.5
+monosize      13.5
 
 propfont      Linux Libertine O
-propsize      24.5
+propsize      18.5
 
-wmarginx      20              # space around the window frame
-wmarginy      20
+wmarginx      10              # space around the window frame
+wmarginy      10
 wpaddingx     0               # space between windows
 wpaddingy     0
 wborderx      0               # border line width between windows
@@ -117,31 +117,31 @@ gfont 10      monor           # User2
 
 gamma         1.0             # this affects text rendering, not other colors
 
-caretshape    2               # 0=smalldot 1=fatdot 2=thinline 3=fatline 4=block
+caretshape    0               # 0=smalldot 1=fatdot 2=thinline 3=fatline 4=block
 linkstyle     1               # 1=show hyperlinks 0=hide hyperlinks
 
 # moreprompt  ( more )
 # morealign   0               # 0=left 1=center 2=right
 # morefont    propb
 
-windowcolor   ffffff          # overall window background color
-bordercolor   000000          # border line color
-caretcolor    000000          # input caret color
-linkcolor     000060          # hyperlink color
-morecolor     006000          # more prompt color
+windowcolor   000000          # overall window background color
+bordercolor   ffffff          # border line color
+caretcolor    ffffff          # input caret color
+linkcolor     ffff6f          # hyperlink color
+morecolor     ffffff          # more prompt color
 
 # Colors for text buffer windows
-tcolor  0     000000  ffffff  # Normal
-tcolor  1     000000  ffffff  # Emphasized
-tcolor  2     000000  ffffff  # Preformatted
-tcolor  3     000000  ffffff  # Header
-tcolor  4     000000  ffffff  # Subheader
-tcolor  5     000000  ffffff  # Alert
-tcolor  6     000000  ffffff  # Note
-tcolor  7     000000  ffffff  # BlockQuote
-tcolor  8     006000  ffffff  # Input
-tcolor  9     000000  ffffff  # User1
-tcolor 10     000000  ffffff  # User2
+tcolor  0     f9f9f9  000000  # Normal
+tcolor  1     ffffff  000000  # Emphasized
+tcolor  2     ffffff  000000  # Preformatted
+tcolor  3     ffffff  000000  # Header
+tcolor  4     ffffff  000000  # Subheader
+tcolor  5     ffffff  000000  # Alert
+tcolor  6     ffffff  000000  # Note
+tcolor  7     ffffff  000000  # BlockQuote
+tcolor  8     ffffff  000000  # Input
+tcolor  9     ffffff  000000  # User1
+tcolor 10     ffffff  000000  # User2
 
 # Colors for text grid windows
 gcolor  0     606060  ffffff  # Normal

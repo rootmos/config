@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+GARGOYLE_ROOT=$HOME/root/gargoyle
+INTERPRETER=$GARGOYLE_ROOT/lib/bocfel
+
+GAME=$(readlink -f "$1")
+GAMEID=$(sha256sum "$GAME" | cut -d' ' -f1)
+
+PLAYTHROUGH=$HOME/g/if/.playthrough/$GAMEID
+mkdir -p "$PLAYTHROUGH"
+
+NOW=$(date -Is)
+CMDS=$PLAYTHROUGH/$NOW.cmds.txt
+TRANSCRIPT=$PLAYTHROUGH/$NOW.transcript.txt
+
+ln -fs "$GAME" "$PLAYTHROUGH/$(basename "$GAME")"
+
+env GAMES="$PLAYTHROUGH" $INTERPRETER \
+    -s -S "$CMDS" -t -T "$TRANSCRIPT" \
+    "$GAME"

@@ -1,2 +1,16 @@
-#!/bin/sh
-usbguard list-devices | dmenu -l 10 | cut -f1 -d: | xargs usbguard allow-device
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+OPTS=()
+while getopts "p-" OPT; do
+    case $OPT in
+        p) OPTS+=("--permanent") ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+usbguard list-devices | dmenu -l 10 | cut -f1 -d: \
+    | xargs usbguard allow-device "${OPTS[@]}"
