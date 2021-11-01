@@ -10,7 +10,3 @@ alias gp="gist -p -c"
 alias e="$EDITOR"
 
 alias cal="/usr/bin/cal -m"
-
-d() {
-    date -Id
-}

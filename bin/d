@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+PRECISION=date
+TZ=local
+
+while getopts "dsz-" OPT; do
+    case $OPT in
+        d) PRECISION=date ;;
+        s) PRECISION=seconds ;;
+        z) TZ=utc ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+ARGS=()
+
+if [ "$PRECISION" = "date" ]; then
+    date +%F
+else [ "$PRECISION" = "seconds" ];
+    if [ "$TZ" = "local" ]; then
+        date +%FT%H%M%S%z
+    elif [ "$TZ" = "utc" ]; then
+        date --utc +%FT%H%M%SZ
+    fi
+fi

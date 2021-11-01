@@ -2,6 +2,6 @@
 
 set -o nounset -o pipefail -o errexit
 
-OUT=${1-$(date -Is).png}
+OUT=${1-$HOME/$(date -Is).png}
 
 exec maim -u -s "$OUT"
