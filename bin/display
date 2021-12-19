@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+if [ "$1" = "bedroom" ]; then
+    ln -sf "$HOME/git/config/.config/displayswitcheroo.bedroom.json" "$HOME/.config/displayswitcheroo.json"
+    systemctl --user restart displayswitcheroo
+elif [ "$1" = "desk" ]; then
+    ln -sf "$HOME/git/config/.config/displayswitcheroo.desktop.json" "$HOME/.config/displayswitcheroo.json"
+    systemctl --user restart displayswitcheroo
+
+    TMP=$(mktemp -d)
+    trap 'rm -rf $TMP' EXIT
+    cat <<EOF >"$TMP/switch.sh"
+#!/bin/sh
+echo "HDMI-0 off"
+xrandr --output HDMI-0 --off
+echo "HDMI-1 auto"
+xrandr --output HDMI-1 --auto
+EOF
+    chmod +x "$TMP/switch.sh"
+    st -t "display -> desk" loop 10 "$TMP/switch.sh"
+fi

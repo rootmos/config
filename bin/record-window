@@ -56,6 +56,10 @@ ffmpeg -video_size "${W}x${H}" -framerate 30000/1001 \
     -f x11grab -draw_mouse 0 -i "$DISPLAY+$X,$Y" \
     -c:v h264_nvenc \
     "$TMP/out.mkv"
+    #-rc vbr_hq -cq 25 -qmin 20 -qmax 30 \
+    #-level 4.1 -profile:v high -pix_fmt yuv420p \
+    #-2pass 1 -spatial-aq 1 -aq-strength 15 -rc-lookahead 32 \
+    #"$TMP/out.mkv"
 
 mv "$TMP/out.mkv" "$OUTPUT"
 

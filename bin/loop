@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+TIMEOUT=$1
+shift 1
+
+while true; do
+    T0=$TIMEOUT
+    echo -n "sleeping..." 1>&2
+    while [ "$T0" -gt 0 ]; do
+        T1=$((T0/2))
+        if [ "$T1" -eq 0 ]; then
+            T1=1
+        fi
+        echo -n " ${T0}s" 1>&2
+        sleep "${T1}s"
+        T0=$((T0-T1))
+    done
+    echo "." 1>&2
+    "$@" || true
+done
+

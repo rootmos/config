@@ -4,14 +4,19 @@ set -o errexit
 
 USBGUARD=usbguard
 
-ID="04f2:b604"
-RULE=$("$USBGUARD" list-devices | grep "$ID")
-USBGUARD_DEVICE=$(echo "$RULE" | cut -d':' -f1)
+if command -v "$USBGUARD" > /dev/null; then
+    ID="04f2:b604"
+    RULE=$("$USBGUARD" list-devices | grep "$ID")
+    USBGUARD_DEVICE=$(echo "$RULE" | cut -d':' -f1)
+fi
 
 if [ "$1" = "disable" ]; then
     "$USBGUARD" block-device "$USBGUARD_DEVICE"
 elif [ "$1" = "enable" ]; then
     "$USBGUARD" allow-device "$USBGUARD_DEVICE"
-else
+elif [ "$1" = "rule" ]; then
     echo "$RULE" | cut -d' ' -f2
+else
+    mpv av://v4l2:/dev/video0 --profile=low-latency --untimed --vf=hflip
 fi
+

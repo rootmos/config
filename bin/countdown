@@ -17,14 +17,16 @@ EOF
     exit "${1-0}"
 }
 
-FONT=Inconsolata:pixelsize=70
-ACTION=output
-while getopts "m:sf:gh" OPT; do
+FONT=
+ACTION=show
+FORMAT=human
+while getopts "m:sf:gSh" OPT; do
     case $OPT in
         m) date --date="$OPTARG" > "$MARK_FILE" ;;
         s) rm -f "$MARK_FILE" ;;
         f) FONT=$OPTARG ;;
         g) ACTION=graphical ;;
+        S) FORMAT=seconds ;;
         h) usage 0 ;;
         ?) usage 2 ;;
     esac
@@ -34,17 +36,6 @@ shift $((OPTIND-1))
 if [ ! -f "$MARK_FILE" ]; then
     exit 1
 fi
-
-if [ "$ACTION" = "graphical" ]; then
-    conky --quiet --text="\${exec \"$0\"}" \
-        -x 0 -y 0 \
-        --interval=1 \
-        --alignment=bottom_left \
-        --font="$FONT"
-    exit 0
-fi
-
-NOW=$(date +%s)
 
 seconds_to_duration() {
     S=$1
@@ -57,5 +48,18 @@ seconds_to_duration() {
     echo "$SIGN$(date -d@"$S" -u +%H:%M:%S)"
 }
 
-MARK=$(date +%s --date="$(cat "$MARK_FILE")")
-seconds_to_duration "$((NOW-MARK))"
+show() {
+    NOW=$(date +%s)
+    MARK=$(date +%s --date="$(cat "$MARK_FILE")")
+    DIFF=$((NOW-MARK))
+    case "$FORMAT" in
+        human) seconds_to_duration "$DIFF" ;;
+        seconds) echo "$DIFF" ;;
+    esac
+}
+
+if [ "$ACTION" = "graphical" ]; then
+    (show; while sleep 1; do show; done) | xpanel -a SE
+elif [ "$ACTION" = "show" ]; then
+    show
+fi

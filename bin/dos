@@ -38,7 +38,7 @@ output=openglnb
 
 [render]
 aspect = true
-#scaler = hq3x
+scaler = hq3x
 
 [dosbox]
 machine = svga_s3
