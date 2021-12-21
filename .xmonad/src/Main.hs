@@ -122,7 +122,7 @@ main = do
       False -> return 2
       True -> read <$> readFile fn
   xmonad <=< bars $
-    def { terminal = "st"
+    def { terminal = "xterm"
         , workspaces = fst <$> myWorkspaces
         , layoutHook = avoidStruts $ smartBorders (Tall 1 (2/100) (1/2)) ||| noBorders Full ||| simpleFloat
         , startupHook = composeAll [ setWMName "LG3D" ] <+> startupHook def

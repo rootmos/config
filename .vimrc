@@ -56,7 +56,7 @@ Plugin 'idris-hackers/idris-vim.git'
 Plugin 'guersam/vim-j'
 Plugin 'tomlion/vim-solidity'
 Plugin 'GEverding/vim-hocon'
-Plugin 'ngn/vim-apl'
+"Plugin 'ngn/vim-apl'
 Plugin 'tikhomirov/vim-glsl'
 Plugin 'derekelkins/agda-vim'
 call vundle#end()
