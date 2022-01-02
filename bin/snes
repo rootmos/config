@@ -34,7 +34,7 @@ OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
 OPTS+=("-command.pause" "keyboard 0x0 44")
 OPTS+=("-command.fast_forward" "keyboard 0x0 40")
 
-map_joystick() {
+map_ds3_gamepad() {
     OPTS+=("-snes.input.$1" "gamepad")
     OPTS+=("-snes.input.$1.gamepad.up" "joystick $2 button_13")
     OPTS+=("-snes.input.$1.gamepad.left" "joystick $2 button_15")
@@ -50,6 +50,23 @@ map_joystick() {
     OPTS+=("-snes.input.$1.gamepad.y" "joystick $2 button_3")
 }
 
-map_joystick port1 0x0003054c026881110006001100000000
+map_SN30_gamepad() {
+    OPTS+=("-snes.input.$1" "gamepad")
+    OPTS+=("-snes.input.$1.gamepad.up" "joystick $2 abs_7-")
+    OPTS+=("-snes.input.$1.gamepad.left" "joystick $2 abs_6-")
+    OPTS+=("-snes.input.$1.gamepad.right" "joystick $2 abs_6+")
+    OPTS+=("-snes.input.$1.gamepad.down" "joystick $2 abs_7+")
+    OPTS+=("-snes.input.$1.gamepad.l" "joystick $2 button_4")
+    OPTS+=("-snes.input.$1.gamepad.r" "joystick $2 button_5")
+    OPTS+=("-snes.input.$1.gamepad.select" "joystick $2 button_6")
+    OPTS+=("-snes.input.$1.gamepad.start" "joystick $2 button_7")
+    OPTS+=("-snes.input.$1.gamepad.a" "joystick $2 button_1")
+    OPTS+=("-snes.input.$1.gamepad.b" "joystick $2 button_0")
+    OPTS+=("-snes.input.$1.gamepad.x" "joystick $2 button_3")
+    OPTS+=("-snes.input.$1.gamepad.y" "joystick $2 button_2")
+}
+
+#map_ds3_joystick port1 0x0003054c026881110006001100000000
+map_SN30_gamepad port1 0x0003045e028e01140008000b00000000
 
 mednafen "${OPTS[@]}" "$@"

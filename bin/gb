@@ -32,7 +32,7 @@ OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
 OPTS+=("-command.pause" "keyboard 0x0 44")
 OPTS+=("-command.fast_forward" "keyboard 0x0 40")
 
-map_joystick() {
+map_ds3_gamepad() {
     OPTS+=("-gb.input.builtin.gamepad.up" "joystick $1 button_12")
     OPTS+=("-gb.input.builtin.gamepad.left" "joystick $1 button_15")
     OPTS+=("-gb.input.builtin.gamepad.right" "joystick $1 button_13")
@@ -43,6 +43,20 @@ map_joystick() {
     OPTS+=("-gb.input.builtin.gamepad.b" "joystick $1 button_2")
 }
 
-map_joystick 0x00031d79030101100007001000000000
+map_SN30_gamepad() {
+    OPTS+=("-gb.input.builtin.gamepad.up" "joystick $1 abs_7-")
+    OPTS+=("-gb.input.builtin.gamepad.left" "joystick $1 abs_6-")
+    OPTS+=("-gb.input.builtin.gamepad.right" "joystick $1 abs_6+")
+    OPTS+=("-gb.input.builtin.gamepad.down" "joystick $1 abs_7+")
+    OPTS+=("-gb.input.builtin.gamepad.select" "joystick $1 button_6")
+    OPTS+=("-gb.input.builtin.gamepad.start" "joystick $1 button_7")
+    OPTS+=("-gb.input.builtin.gamepad.a" "joystick $1 button_1")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_a" "joystick $1 button_3")
+    OPTS+=("-gb.input.builtin.gamepad.b" "joystick $1 button_0")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_b" "joystick $1 button_2")
+}
+
+#map_ds3_gamepad 0x00031d79030101100007001000000000
+map_SN30_gamepad 0x0003045e028e01140008000b00000000
 
 mednafen "${OPTS[@]}" "$@"
