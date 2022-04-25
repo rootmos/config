@@ -233,12 +233,13 @@ Use `tshark -Y dns` to verify that queries are not sent in plaintext.
 ### Printer
 * `pacman -S avahi nss-mdns`
 * `vim /etc/nsswitch.conf`
-  - `hosts: ... mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] dns ...`
+  - `hosts: ... mdns_minimal [NOTFOUND=return] resolve [!UNAVAIL=return] ...`
 * `systemctl enable avahi-daemon.service`
 * `systemctl start avahi-daemon.service`
 * `pacman -S cups foomatic-db-ppds`
-* `systemctl enable org.cups.cupsd.service`
-* `systemctl start org.cups.cupsd.service`
+* `systemctl enable cups.service`
+* `systemctl start cups.service`
+* http://localhost:631/
 
 ### PDF (zathura)
 * `sudo pacman -S zathura-pdf-mupdf`
@@ -254,3 +255,7 @@ Use `tshark -Y dns` to verify that queries are not sent in plaintext.
 * `./install.sh -h .config/systemd/user/automount.service`
 * `systemctl --user enable automount.service`
 * `systemctl --user start automount.service`
+
+### neovim
+* `build/neovim`
+* `git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim`

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -o nounset -o errexit
+
+APP=neovim
+GIT_URL=https://github.com/neovim/neovim
+GIT_REV=${1-v0.7.0}
+
+SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
+. "$SCRIPT_DIR/common.sh"
+
+cd "$SRC"
+
+m CMAKE_BUILD_TYPE=Release \
+    CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$ROOT"
+m install
