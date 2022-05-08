@@ -22,7 +22,7 @@ MSG="$(calc -dp "round($NEXT/$MAX*100)")%"
 
 if command -v redshift > /dev/null; then
     A=1500
-    B=6000
+    B=5000
     T=$(calc -dp "round($A+($B-$A)*($NEXT/$MAX))")
 
     redshift -P -O "$T" >/dev/null

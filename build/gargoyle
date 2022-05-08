@@ -19,7 +19,8 @@ j clean
 
 j install \
     CFLAGS="-g" LDFLAGS="-Wl,-rpath,$ROOT/lib" \
-    DESTDIR="$ROOT/lib" GARGLKINI="$ROOT/etc/garglk.ini"
+    DESTDIR="$ROOT/lib" GARGLKINI="$ROOT/etc/garglk.ini" \
+    STATIC=yes USESDL=no
 
 mkdir -p "$ROOT/bin"
 cat <<EOF > "$ROOT/bin/gargoyle"

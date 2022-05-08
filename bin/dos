@@ -14,7 +14,9 @@ MOUNT_TYPE[C]=dir
 NOHANG="exit"
 FULLSCREEN=false
 GAMEPAD=
-while getopts "c:d:a:i:z:hgWF-" OPT; do
+CPU=auto
+SCALER=hq3x
+while getopts "c:d:a:i:z:hgWFC:S:-" OPT; do
     case $OPT in
         a) MOUNT[A]=$(readlink -f "$OPTARG"); MOUNT_TYPE[A]=floppy ;;
         c) MOUNT[C]=$(readlink -f "$OPTARG"); MOUNT_TYPE[C]=dir ;;
@@ -25,6 +27,8 @@ while getopts "c:d:a:i:z:hgWF-" OPT; do
         g) GAMEPAD=1 ;;
         W) FULLSCREEN=false ;;
         F) FULLSCREEN=true ;;
+        C) CPU=$OPTARG ;;
+        S) SCALER=$OPTARG ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -40,7 +44,7 @@ output=openglnb
 
 [render]
 aspect = true
-scaler = hq3x
+scaler = $SCALER
 
 [dosbox]
 machine = svga_s3
@@ -82,7 +86,8 @@ prebuffer=25
 #disney=true
 
 [cpu]
-cycles = auto
+cycles = $CPU
+#core = dynamic
 
 EOF
 

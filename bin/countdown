@@ -20,12 +20,15 @@ EOF
 FONT=
 ACTION=show
 FORMAT=human
-while getopts "m:sf:gSh" OPT; do
+INTERVAL=60s
+while getopts "m:sf:gnI:Sh" OPT; do
     case $OPT in
         m) date --date="$OPTARG" > "$MARK_FILE" ;;
         s) rm -f "$MARK_FILE" ;;
         f) FONT=$OPTARG ;;
         g) ACTION=graphical ;;
+        n) ACTION=notification ;;
+        I) INTERVAL=$OPTARG ;;
         S) FORMAT=seconds ;;
         h) usage 0 ;;
         ?) usage 2 ;;
@@ -60,6 +63,14 @@ show() {
 
 if [ "$ACTION" = "graphical" ]; then
     (show; while sleep 1; do show; done) | xpanel -a SE
+elif [ "$ACTION" = "notification" ]; then
+    NOTIFICATION_ID=$RANDOM
+    while true; do
+        dunstify --replace="$NOTIFICATION_ID" \
+            --appname=countdown --timeout=2000 \
+            -- "$(show)"
+        sleep "$INTERVAL"
+    done
 elif [ "$ACTION" = "show" ]; then
     show
 fi

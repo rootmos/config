@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+exec st -c nethack -e /usr/bin/nethack

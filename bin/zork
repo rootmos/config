@@ -2,13 +2,14 @@
 
 set -o nounset -o pipefail -o errexit
 
-GARGOYLE_ROOT=$HOME/root/gargoyle
-INTERPRETER=$GARGOYLE_ROOT/lib/bocfel
+GARGOYLE_ROOT=$(readlink -f "$(which gargoyle | xargs dirname)/..")
+INTERPRETERS=$GARGOYLE_ROOT/lib
 
 GAME=$(readlink -f "$1")
 GAMEID=$(sha256sum "$GAME" | cut -d' ' -f1)
 
-PLAYTHROUGH=$HOME/g/if/.playthrough/$GAMEID
+PLAYTHROUGH_ROOT=${PLAYTHROUGH_ROOT-$HOME/games/if/.playthrough}
+PLAYTHROUGH=$PLAYTHROUGH_ROOT/$GAMEID
 mkdir -p "$PLAYTHROUGH"
 
 NOW=$(date -Is)
@@ -17,6 +18,22 @@ TRANSCRIPT=$PLAYTHROUGH/$NOW.transcript.txt
 
 ln -fs "$GAME" "$PLAYTHROUGH/$(basename "$GAME")"
 
-env GAMES="$PLAYTHROUGH" $INTERPRETER \
-    -s -S "$CMDS" -t -T "$TRANSCRIPT" \
-    "$GAME"
+TYPE=$(file --brief --mime-type "$GAME")
+SUFFIX=$(sed 's/.*\.\(\w\+\)$/\1/' <<< "$GAME")
+
+export GAMES=$PLAYTHROUGH
+if [ "$TYPE" = "application/x-zmachine" ] || [ "$SUFFIX" = "zblorb" ]; then
+    "$INTERPRETERS/bocfel" \
+        -s -S "$CMDS" -t -T "$TRANSCRIPT" \
+        "$GAME"
+elif [ "$TYPE" = "application/x-tads" ] || [ "$SUFFIX" = "t3" ]; then
+    "$INTERPRETERS/tadsr" \
+        -o "$CMDS" -l "$TRANSCRIPT" \
+        "$GAME"
+elif [ "$SUFFIX" = "gblorb" ]; then
+    "$INTERPRETERS/git" "$GAME"
+elif [ "$SUFFIX" = "taf" ]; then
+    "$INTERPRETERS/scare" "$GAME"
+elif [ "$SUFFIX" = "d\$\$" ]; then
+    "$INTERPRETERS/scare" "$GAME"
+fi

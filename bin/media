@@ -28,7 +28,7 @@ fi
 if [ -n "$VIDEOS" ]; then
     OPTS+=(-or -iname '*.avi' -or -iname '*.mkv' -or -iname '*.webm')
     OPTS+=(-or -iname '*.mp4' -or -iname '*.mov' -or -iname '*.wmv')
-    OPTS+=(-or -iname '*.ogm')
+    OPTS+=(-or -iname '*.m4v' -or -iname '*.m4a' -or -iname '*.ogm')
 fi
 
 run_find() {

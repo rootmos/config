@@ -8,6 +8,7 @@ vim.opt.smartcase = true
 vim.opt.showmatch = true
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
+vim.opt.colorcolumn = "+1"
 
 vim.opt.termguicolors = true
 
@@ -27,5 +28,8 @@ require('nvim-treesitter.configs').setup {
     highlight = {
         enable = true,
         additional_vim_regex_highlighting = false,
+    },
+    indent = {
+        enable = true,
     },
 }

@@ -24,11 +24,11 @@ function cut(from, to)
     local cmd = nil
     if state.video then
         cmd = string.format(
-            [[ffmpeg -loglevel warning -ss "%s" -to "%s" -i "%s" -f matroska "%s"]],
+            [[ffmpeg -loglevel warning -ss "%s" -to "%s" -accurate_seek -i "%s" -f matroska "%s"]],
             timestamp(from), timestamp(to), i, o)
     else
         cmd = string.format(
-            [[ffmpeg -loglevel warning -ss "%s" -to "%s" -i "%s" -vn -f matroska "%s"]],
+            [[ffmpeg -loglevel warning -ss "%s" -to "%s" -accurate_seek -i "%s" -vn -f matroska "%s"]],
             timestamp(from), timestamp(to), i, o)
     end
     msg.info(cmd)

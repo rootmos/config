@@ -1,0 +1,36 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+FORMAT=human
+while getopts "s-" OPT; do
+    case $OPT in
+        s) FORMAT=seconds ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+seconds_to_duration() {
+    MS=$(bc <<< "$1*1000/1")
+    H=$((MS/3600000))
+    MS=$((MS-H*3600000))
+    M=$((MS/60000))
+    MS=$((MS-M*60000))
+    S=$((MS/1000))
+    MS=$((MS - S*1000))
+    printf "%02d:%02d:%02d.%03d\n" "$H" "$M" "$S" "$MS" 
+}
+
+S=$(media -vq "$@" | tr '\n' '\0' \
+    | xargs -0n1 \
+        ffprobe -v quiet \
+        -show_entries format=duration \
+        -of default=noprint_wrappers=1:nokey=1 \
+    | paste -sd+ | bc)
+
+case "$FORMAT" in
+    human) seconds_to_duration "$S" ;;
+    seconds) echo "$S" ;;
+esac
