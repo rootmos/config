@@ -6,14 +6,19 @@ import logging
 import random
 import re
 import subprocess
+import os
 
 class Entry:
-    def __init__(self, fn):
+    def __init__(self, fn, prefix=None):
         self.fn = fn
+        self.prefix = prefix
         self._duration = None
 
     def __str__(self):
-        return self.fn
+        if self.prefix is not None:
+            return os.path.join(self.prefix, self.fn)
+        else:
+            return self.fn
 
     @property
     def duration(self):
@@ -22,14 +27,22 @@ class Entry:
             self._duration = float(ls[0])
         return self._duration
 
+
 class List:
     def __init__(self, fn, offset=None, shuffle=None, roll=None):
-        logger.info(f"loading list: fn={fn} offset={offset} shuffle={shuffle}")
+        prefix = None
+        root_marker = os.path.join(os.path.dirname(fn), ".root")
+        if os.path.exists(root_marker):
+            with open(root_marker, "r") as f:
+                root = f.readlines()[0].rstrip("\n")
+                prefix = os.path.join(os.path.dirname(root_marker), root)
+
+        logger.info(f"loading list: fn={fn} offset={offset} shuffle={shuffle} prefix={prefix}")
 
         self.entries = []
         with open(fn, "r") as f:
             for e in f:
-                self.entries.append(Entry(e.rstrip("\n")))
+                self.entries.append(Entry(e.rstrip("\n"), prefix=prefix))
 
         if roll:
             i = random.randint(1, len(self.entries))
@@ -156,6 +169,6 @@ if __name__ == "__main__":
 
     try:
         for e in i:
-            print(e)
+            print(str(e))
     except BrokenPipeError:
         pass
