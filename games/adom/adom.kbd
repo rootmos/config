@@ -231,7 +231,7 @@ DKM::k
 #  Display level map without monsters or items
 #
 
-DLM:\Ml :l
+DLM::l
 
 #
 #  Display message buffer
@@ -357,13 +357,13 @@ GIV:g
 #  Go attack closest monster
 #
 
-WMM:wm
+WMM:wM
 
 #
 #  Go to closest item(s)
 #
 
-WMI:wi
+WMI:wI
 
 #
 #  Go to closest altar
@@ -405,7 +405,7 @@ HDL:h
 #  Inventory
 #
 
-INV:i
+INV:\Mi
 
 #
 #  Invoke mindcraft
@@ -423,13 +423,13 @@ ISO:\Co
 #  Kick
 #
 
-KCK:k
+KCK:\Ck
 
 #
 #  Look (Examine environment)
 #
 
-EXE:l
+EXE:\Cl
 
 #
 #  Manage configuration variables
@@ -441,55 +441,55 @@ CFG:=
 #  Move to the southwest
 #
 
-MSW:1
+MSW:1 n
 
 #
 #  Move to the south
 #
 
-MOS:2 \D
+MOS:2 \D k
 
 #
 #  Move to the southeast
 #
 
-MSE:3
+MSE:3 m
 
 #
 #  Move to the west
 #
 
-MOW:4 \L
+MOW:4 \L j
 
 #
 #  Move to the east
 #
 
-MOE:6 \R
+MOE:6 \R ;
 
 #
 #  Move to the northwest
 #
 
-MNW:7
+MNW:7 u
 
 #
 #  Move to the north
 #
 
-MON:8 \U
+MON:8 \U l
 
 #
 #  Move to the northeast
 #
 
-MNE:9
+MNE:9 i
 
 #
 #  Name monster/yourself
 #
 
-BAP:n
+BAP:\Mn
 
 #
 #  Act reasonably
@@ -687,19 +687,19 @@ STS::t
 #  Switch the required (more) & speech bubble key
 #
 
-CMK:\Ck
+CMK:\Mk
 
 #
 #  Lock/Unlock door
 #
 
-ULD:\Cl
+ULD:\Ml
 
 #
 #  Use item in inventory
 #
 
-USE:u
+USE:\Mu
 
 #
 #  Use class power
@@ -711,7 +711,7 @@ UMP:\Cx
 #  Use special ability
 #
 
-SPA:m
+SPA:\Cm
 
 #
 #  Use item in tool slot
@@ -741,25 +741,25 @@ WAT:. 5
 #  Walk to the southwest
 #
 
-WM1:w1
+WM1:w1 wn
 
 #
 #  Walk to the south
 #
 
-WM2:w2 w\D
+WM2:w2 w\D wk
 
 #
 #  Walk to the southeast
 #
 
-WM3:w3
+WM3:w3 wm
 
 #
 #  Walk to the west
 #
 
-WM4:w4 w\L
+WM4:w4 w\L wj
 
 #
 #  Extended wait
@@ -771,25 +771,25 @@ WM5:w5 w.
 #  Walk to the east
 #
 
-WM6:w6 w\R
+WM6:w6 w\R w;
 
 #
 #  Walk to the northwest
 #
 
-WM7:w7
+WM7:w7 wu
 
 #
 #  Walk to the north
 #
 
-WM8:w8 w\U
+WM8:w8 w\U wl
 
 #
 #  Walk to the northeast
 #
 
-WM9:w9
+WM9:w9 wi
 
 #
 #  Wipe face
