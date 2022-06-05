@@ -2,6 +2,7 @@ TMP=$(mktemp -d)
 trap 'rm -rf $TMP' EXIT
 
 GIT_ROOT=$HOME/git
+BUILD_ROOT=$HOME/build
 INSTALL_ROOT=$HOME/root
 
 fetch() {
@@ -45,6 +46,7 @@ fetch() {
 
 if [ -n "${APP-}" ]; then
     ROOT=$INSTALL_ROOT/$APP
+    BUILD=$BUILD_ROOT/$APP
 
     if [ -n "${GIT_URL-}" ]; then
         SRC=$GIT_ROOT/$APP
@@ -63,13 +65,13 @@ if [ -n "${APP-}" ]; then
     fi
 
     if [ -n "${TARBALL_URL-}" ]; then
-        TARBALL=$TMP/$(basename "${TARBALL_URL}")
+        mkdir -p "$BUILD"
+        TARBALL=$BUILD/$(basename "${TARBALL_URL}")
         fetch "$TARBALL_URL" "$TARBALL_SHA256" "$TARBALL"
     fi
 
     if [ "${TARBALL-}" ]; then
-        SRC=$TMP/src
-        mkdir "$SRC"
+        SRC=$BUILD
         tar -xvf "$TARBALL" \
             --strip-components="${TARBALL_STRIP_COMPONENTS-1}" \
              -C "$SRC"
