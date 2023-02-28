@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+DOWNLOADS=("$HOME/Downloads")
+
+readarray -t FILES < <(find "${DOWNLOADS[@]}" -type f -ctime -1)
+if [ "${1-ls}" = "ls" ]; then
+    for i in "${FILES[@]}"; do
+        echo "$i"
+    done
+elif [ "$1" = "mv" ]; then
+    TARGET=${2-.}
+    select i in "${FILES[@]}"; do
+        mv -v "$i" "$TARGET"
+    done
+fi
