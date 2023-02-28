@@ -16,9 +16,9 @@ sudo dd bs=4M if=archlinux-$VERSION-x86_64.iso of=/dev/null status=progress ofla
 ```
 
 ## Live boot
-* `wifi-menu`
+* `wifi-menu` (or [`iwctl`](https://wiki.archlinux.org/title/Iwd#iwctl))
 * `timedatectl set-ntp true`
-* `gdisk /dev/nvme0n1`, GPT, EFI + Linux
+* `gdisk /dev/nvme0n1`, GPT, [EFI (~300M)](https://wiki.archlinux.org/title/EFI_system_partition#Create_the_partition) + Linux
 * `cryptsetup luksFormat --type=luks1 /dev/nvme0n1p2`
   - https://savannah.gnu.org/bugs/?55093
 * `cryptsetup open /dev/nvme0n1p2 lvm`
@@ -38,7 +38,7 @@ sudo dd bs=4M if=archlinux-$VERSION-x86_64.iso of=/dev/null status=progress ofla
 * `dd bs=512 count=4 if=/dev/random of=/mnt/keyfile iflag=fullblock`
 * `chmod 0600 /mnt/keyfile`
 * `cryptsetup luksAddKey /dev/nvme0n1p2 /mnt/keyfile`
-* Edit mirror list (pick a few of a local/newly refreshed list)
+* [Edit mirror list](https://wiki.archlinux.org/title/Installation_guide#Select_the_mirrors) ([`reflector`](https://wiki.archlinux.org/title/Reflector))
 * `pacstrap /mnt base linux linux-firmware netctl wpa_supplicant dhclent vim lvm2 grub efibootmgr intel-ucode dialog`
 * `genfstab -U /mnt >> /mnt/etc/fstab`
 * `arch-chroot /mnt`
@@ -64,13 +64,13 @@ sudo dd bs=4M if=archlinux-$VERSION-x86_64.iso of=/dev/null status=progress ofla
 
 ## First boot
 ### Networking
-* `wifi-menu`
 * `vim /etc/netctl/hooks/dhcp`
 ```sh
 #!/bin/sh
 DHCPClient=dhclient
 ```
 * `chmod +x /etc/netctl/hooks/dhcp`
+* `wifi-menu`
 * `systemctl start netctl-auto@wlp0s20f3.service`
 * `systemctl enable netctl-auto@wlp0s20f3.service`
 
@@ -78,7 +78,7 @@ DHCPClient=dhclient
 * `pacman -S git tmux sudo bash-completion man`
 * `pacman -S make gcc pkgconfig patch autoconf automake cmake`
 
-* `useradd -m gustav`
+* `useradd -m username`
 * log in
 * `mkdir bin`
 
@@ -89,9 +89,9 @@ DHCPClient=dhclient
 * `ln -sf ~/git/config/.bashrc ~/.bashrc`
 * `./install.sh -h .profile`
 * `./install.sh -h .bash_aliases`
-* `./install.sh -h .tmux`
+* `./install.sh -h .tmux.conf`
 
-* `pacman -S ttf-inconsolata`
+* `pacman -S ttf-cascadia-code`
 * `pacman -S fontconfig freetype2 libxft` (to build st)
 * `build/st`
 

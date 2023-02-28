@@ -4,7 +4,8 @@ set -o nounset -o pipefail -o errexit
 
 APP=gargoyle
 GIT_URL=https://github.com/garglk/garglk
-GIT_REV=86605a6d4626d1177cfc188a725c72ea42b9bd9d
+#GIT_REV=86605a6d4626d1177cfc188a725c72ea42b9bd9d
+GIT_REV=2022.1
 
 DEPS=("ftjam" "gtk2" "sdl" "sdl_mixer" "sdl_sound")
 
@@ -20,7 +21,7 @@ j clean
 j install \
     CFLAGS="-g" LDFLAGS="-Wl,-rpath,$ROOT/lib" \
     DESTDIR="$ROOT/lib" GARGLKINI="$ROOT/etc/garglk.ini" \
-    STATIC=yes USESDL=no
+    STATIC=yes USESDL=yes
 
 mkdir -p "$ROOT/bin"
 cat <<EOF > "$ROOT/bin/gargoyle"

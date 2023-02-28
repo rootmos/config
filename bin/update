@@ -21,7 +21,7 @@ shift $((OPTIND-1))
 
 echo "updating pacman and aur packages" >&2
 yay --sudoflags -A -Suy
-sudo -A fix-inconsolata
+#sudo -A fix-inconsolata
 
 if [ -n "$RUST" ] && command -v rustup >/dev/null; then
     echo "updating rust" >&2

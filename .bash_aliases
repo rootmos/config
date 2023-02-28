@@ -10,3 +10,5 @@ alias gp="gist -p -c"
 alias e="$EDITOR"
 
 alias cal="/usr/bin/cal -m"
+
+alias pl="playlist"

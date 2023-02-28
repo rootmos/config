@@ -13,4 +13,6 @@ return require('packer').startup(function()
 
     --use 'https://git.sr.ht/~rootmos/tads.nvim'
     use '~/git/tads.nvim'
+
+    use 'neovimhaskell/haskell-vim'
 end)

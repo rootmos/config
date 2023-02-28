@@ -75,7 +75,7 @@ ASC:<
 #  Cast spell
 #
 
-CST:Z
+CST:z
 
 #
 #  Chat with monster
@@ -801,5 +801,5 @@ WIF:F
 #  Zap wand, staff or other item
 #
 
-ZAP:z
+ZAP:Z
 

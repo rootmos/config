@@ -24,6 +24,7 @@ OPTS+=("-sound.device" "sexyal-literal-default")
 OPTS+=("-sound.rate" "192000")
 
 OPTS+=("-snes.correct_aspect" "1")
+OPTS+=("-snes.stretch" "aspect")
 
 OPTS+=("-filesys.state_comp_level" "9")
 OPTS+=("-filesys.path_state" "$SAVESTATES")

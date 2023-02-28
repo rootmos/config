@@ -1,0 +1,87 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+SUDO="sudo -A"
+DOCKER=docker
+
+RUN_ARGS=()
+while getopts "iv:-" OPT; do
+    case $OPT in
+        i) RUN_ARGS+=("--interactive" "--tty") ;;
+        v) RUN_ARGS+=("--volume=$OPTARG") ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+ACTION=${1-run}
+
+DOCKERFILE=${DOCKERFILE-${2-$(pwd)/Dockerfile}}
+CONTEXT=${CONTEXT-$(dirname "$DOCKERFILE")}
+TAG=${TAG-$(basename "$DOCKERFILE")}
+CONTAINER=$(dirname "$DOCKERFILE")/.$TAG.container
+IMAGE=$(dirname "$DOCKERFILE")/.$TAG.image
+
+_d() {
+    $SUDO $DOCKER "$@"
+}
+
+build() {
+    MARKER=/tmp/build-$(uuidgen)
+    make -sf- <<EOF
+$IMAGE: $DOCKERFILE
+	touch "$MARKER"
+EOF
+    if [ -f "$MARKER" ]; then
+        rm "$MARKER"
+        _d build --iidfile="$IMAGE" --file="$DOCKERFILE" "$CONTEXT"
+    else
+        echo 1>&2 "image already built: $IMAGE"
+    fi
+}
+
+clean() {
+    if [ -f "$CONTAINER" ]; then
+        _d rm -f "$(cat "$CONTAINER")"
+        rm -f "$CONTAINER"
+    fi
+}
+
+run() {
+    trap 'clean' EXIT
+    _d run --cidfile="$CONTAINER" "${RUN_ARGS[@]}" "$(cat "$IMAGE")"
+}
+
+deepclean() {
+    mapfile -t EXITED < <(_d ps -qa --no-trunc --filter "status=exited")
+    for c in "${EXITED[@]}"; do
+        echo 1>&2 "removing exited container: $c"
+        _d rm "$c"
+    done
+
+    mapfile -t DANGLING < <(_d images --filter "dangling=true" -q --no-trunc)
+    for i in "${DANGLING[@]}"; do
+        echo 1>&2 "removing dangling image: $i"
+        _d rmi "$i"
+    done
+
+    mapfile -t UNTAGGED < <(_d images | grep '<none>' | awk '/ / { print $3 }')
+    for i in "${UNTAGGED[@]}"; do
+        echo 1>&2 "removing untagged image: $i"
+        _d rmi "$i"
+    done
+}
+
+
+if [ "$ACTION" = "build" ]; then
+    build
+elif [ "$ACTION" = "run" ]; then
+    build
+    run
+elif [ "$ACTION" = "clean" ]; then
+    clean
+elif [ "$ACTION" = "deepclean" ]; then
+    deepclean
+fi

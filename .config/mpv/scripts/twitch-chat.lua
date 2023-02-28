@@ -75,10 +75,10 @@ function set_chat_sub_style()
     mp.set_property("sub-back-color", "0/0/0/0.7")
 end
 
-mp.add_hook("on_load", 50, function()
-    local p = mp.get_property("path")
-    if p:find("https://twitch.tv") or p:find("https://www.twitch.tv") then
-        mp.add_timeout(30, launch_twitch_chat)
-        mp.add_key_binding("t", "twitch_chat_tmux", launch_twitch_chat_tmux)
-    end
-end)
+--mp.add_hook("on_load", 50, function()
+    --local p = mp.get_property("path")
+    --if p:find("https://twitch.tv") or p:find("https://www.twitch.tv") then
+        --mp.add_timeout(30, launch_twitch_chat)
+        --mp.add_key_binding("t", "twitch_chat_tmux", launch_twitch_chat_tmux)
+    --end
+--end)

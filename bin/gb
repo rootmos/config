@@ -32,6 +32,9 @@ OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
 OPTS+=("-command.pause" "keyboard 0x0 44")
 OPTS+=("-command.fast_forward" "keyboard 0x0 40")
 
+OPTS+=("-gb.xscale" "4")
+OPTS+=("-gb.yscale" "4")
+
 map_ds3_gamepad() {
     OPTS+=("-gb.input.builtin.gamepad.up" "joystick $1 button_12")
     OPTS+=("-gb.input.builtin.gamepad.left" "joystick $1 button_15")
@@ -56,7 +59,36 @@ map_SN30_gamepad() {
     OPTS+=("-gb.input.builtin.gamepad.rapid_b" "joystick $1 button_2")
 }
 
+map_keyboard() {
+    OPTS+=("-gb.input.builtin.gamepad.up" "keyboard 0x0 82")
+    OPTS+=("-gb.input.builtin.gamepad.left" "keyboard 0x0 80")
+    OPTS+=("-gb.input.builtin.gamepad.right" "keyboard 0x0 79")
+    OPTS+=("-gb.input.builtin.gamepad.down" "keyboard 0x0 81")
+    OPTS+=("-gb.input.builtin.gamepad.select" "keyboard 0x0 7")
+    OPTS+=("-gb.input.builtin.gamepad.start" "keyboard 0x0 6")
+    OPTS+=("-gb.input.builtin.gamepad.a" "keyboard 0x0 27")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_a" "keyboard 0x0 22")
+    OPTS+=("-gb.input.builtin.gamepad.b" "keyboard 0x0 29")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_b" "keyboard 0x0 4")
+}
+
+map_keyboard_wasd() {
+    OPTS+=("-gb.input.builtin.gamepad.up" "keyboard 0x0 26")
+    OPTS+=("-gb.input.builtin.gamepad.left" "keyboard 0x0 4")
+    OPTS+=("-gb.input.builtin.gamepad.right" "keyboard 0x0 7")
+    OPTS+=("-gb.input.builtin.gamepad.down" "keyboard 0x0 22")
+    OPTS+=("-gb.input.builtin.gamepad.select" "keyboard 0x0 28")
+    OPTS+=("-gb.input.builtin.gamepad.start" "keyboard 0x0 11")
+    OPTS+=("-gb.input.builtin.gamepad.a" "keyboard 0x0 13")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_a" "keyboard 0x0 24")
+    OPTS+=("-gb.input.builtin.gamepad.b" "keyboard 0x0 14")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_b" "keyboard 0x0 12")
+}
+
 #map_ds3_gamepad 0x00031d79030101100007001000000000
-map_SN30_gamepad 0x0003045e028e01140008000b00000000
+#map_SN30_gamepad 0x0003045e028e01140008000b00000000
+map_keyboard_wasd
 
 mednafen "${OPTS[@]}" "$@"
+
+#cat "$MEDNAFEN_HOME/mednafen.cfg"

@@ -23,10 +23,11 @@ EOF
     exit "${1-0}"
 }
 
+ACTION=play
 OPTS=("--cursor-autohide=1000" "--no-audio-display")
 PREFIX=
 REQUIRE_TARGETS=1
-while getopts "ztmcLf:D:s:e:l:S:hV:a-" OPT; do
+while getopts "ztmcLf:D:s:e:l:S:Y:hV:a-" OPT; do
     case $OPT in
         t) PREFIX=https://twitch.tv/ ;;
         m) OPTS+=("--mute") ;;
@@ -45,6 +46,13 @@ while getopts "ztmcLf:D:s:e:l:S:hV:a-" OPT; do
         S) OPTS+=("--sub-file=$OPTARG") ;;
         V) VO=$OPTARG ;;
         h) usage ;;
+        Y)
+            if [ "$OPTARG" = "?" ]; then
+                ACTION=formats
+            else
+                OPTS+=("--ytdl-format=$OPTARG")
+            fi
+            ;;
         -) break ;;
         ?) usage 2 ;;
     esac
@@ -70,4 +78,8 @@ if [ "${#TARGETS[@]}" -eq 0 ] && [ -n "$REQUIRE_TARGETS" ]; then
     exit 2
 fi
 
-exec mpv "${OPTS[@]}" "${TARGETS[@]}"
+if [ "$ACTION" = "play" ]; then
+    exec mpv "${OPTS[@]}" "${TARGETS[@]}"
+elif [ "$ACTION" = "formats" ]; then
+    exec youtube-dl --list-formats "${TARGETS[@]}"
+fi

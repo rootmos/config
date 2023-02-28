@@ -85,6 +85,7 @@ int watch(int fd, const char* path) {
         return;
     }
     CHECK(r >= 0, "inotify_add_watch(%s)", path);
+    return r;
 }
 
 void add_file(int fd, const char* path) {

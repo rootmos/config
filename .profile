@@ -27,6 +27,10 @@ done
 
 PATH=$HOME/bin:$HOME/.local/bin:$PATH
 
+export LUA_PATH='/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;/usr/lib/lua/5.4/?.lua;/usr/lib/lua/5.4/?/init.lua;./?.lua;./?/init.lua;/home/gustav/.luarocks/share/lua/5.4/?.lua;/home/gustav/.luarocks/share/lua/5.4/?/init.lua'
+export LUA_CPATH='/usr/lib/lua/5.4/?.so;/usr/lib/lua/5.4/loadall.so;./?.so;/home/gustav/.luarocks/lib/lua/5.4/?.so'
+PATH=$HOME/.luarocks/bin:$PATH
+
 export PLAYER=play
 export VIEWER=view
 export EDITOR=vim

@@ -48,6 +48,12 @@ scaler = $SCALER
 
 [dosbox]
 machine = svga_s3
+memsize = 32
+
+[dos]
+xms=true
+ems=true
+umb=true
 
 [mixer]
 rate=44100

@@ -1,0 +1,10 @@
+action_1 1 KP_1
+action_2 2 KP_2
+action_3 parenleft KP_3
+action_4 dollar KP_4
+action_5 braceleft KP_5
+action_6 equal KP_6
+action_7 braceright KP_7
+action_8 slash KP_8
+action_9 parenright KP_9
+action_0 0 KP_0

@@ -10,8 +10,6 @@ vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.colorcolumn = "+1"
 
-vim.opt.termguicolors = true
-
 vim.api.nvim_set_keymap("i", "hh", "<Esc>", { noremap = true })
 vim.api.nvim_set_keymap("i", "uu", "<Esc>:w<CR>", { noremap = true })
 vim.api.nvim_set_keymap("i", "ii", "<Esc>:wall<CR>", { noremap = true })

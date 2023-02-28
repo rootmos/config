@@ -11,3 +11,7 @@ XPT spec_ hint=Create\ a\ spec\ function
 spec_`fun^ :: SpecWith ()
 spec_`fun^ = describe "`fun^" $ do
   `cursor^
+
+XPT data hint=Create\ a\ data\ definition
+data `name^ = `cursor^
+  deriving ( Show, Eq, Ord )
