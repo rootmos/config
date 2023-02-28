@@ -4,7 +4,7 @@ set -o nounset -o errexit
 
 APP=mpv
 GIT_URL=https://github.com/mpv-player/mpv
-GIT_BRANCH=master
+GIT_REF=349e437466163cb52f7d0aa227d4606edd9db501
 DEPS=("ffnvcodec-headers" "vulkan-headers" "lua51")
 
 SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
