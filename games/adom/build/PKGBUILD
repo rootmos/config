@@ -1,0 +1,57 @@
+pkgname=adom
+pkgver=3.3.4.1.42660
+pkgrel=1
+arch=(x86_64)
+
+ncurses_ver=6.3
+gog_installer='adom_ancient_domains_of_mystery_english_3_3_4_1_42660.sh'
+
+source=("$gog_installer" "runner.sh" "https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$ncurses_ver.tar.gz")
+noextract=("$gog_installer" "runner.sh")
+sha256sums=('903e2a25a1e269246354605a9e9e2309e0a107de4b97cfe931b730de7b6cb457' 'SKIP' '97fc51ac2b085d4cde31ef4d2c3122c21abc217e9090a43a30fc5ec21684e059')
+
+depends=(sdl2_image sdl2_mixer sdl2_net luajit)
+
+prepare() {
+    bsdtar -xf "$gog_installer"
+}
+
+build() {
+    cd "ncurses-$ncurses_ver"
+    ./configure \
+        --with-shared \
+        --without-debug \
+        --without-ada \
+        --disable-pc-files \
+        --with-versioned-syms \
+        --with-abi-version=5
+    make
+}
+
+package() {
+    game="data/noarch/game"
+
+    target="$pkgdir/usr/share/adom"
+    mkdir -p "$target"
+    for f in common docs games gfx sound; do
+        cp -rv "$game/$f" "$target"
+    done
+
+    exe="$target/adom"
+    cp "$game/adom64" "$exe"
+    chmod +x "$exe"
+
+    libs="$target/lib64"
+    mkdir "$libs"
+    for f in libnoteye.so; do
+        cp -rv "$game/lib64/$f" "$libs"
+    done
+
+    for f in libncurses.so.5; do
+        cp -v "ncurses-$ncurses_ver/lib/$f" "$libs"
+    done
+    ln -s "$libs/libncurses.so.5" "$libs/libtinfo.so.5"
+
+    mkdir -p "$pkgdir/usr/bin"
+    cp "runner.sh" "$pkgdir/usr/bin/adom"
+}

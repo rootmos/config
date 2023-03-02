@@ -1,0 +1,5 @@
+adom_*.sh
+*pkg.tar.zst
+pkg
+*.tar.gz
+src
