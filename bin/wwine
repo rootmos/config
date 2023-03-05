@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+set -o xtrace
+
+WINE_BASE=${WINE_BASE-$HOME/stash/wine}
+if [ -n "${WWINE_APP-}" ]; then
+    export WINEPREFIX=$WINE_BASE/$WWINE_APP
+else
+    export WINEPREFIX=${WINEPREFIX-$WINE_BASE/default}
+fi
+
+if [ -n "${WWINE_ARCH-}" ]; then
+    export WINEARCH=win$WWINE_ARCH
+fi
+
+WINETRICKS=()
+CHDIR=
+STEAM_APP=
+while getopts "cp:A:t:s:-" OPT; do
+    case $OPT in
+        c) CHDIR=1 ;;
+        s) STEAM_APP=$OPTARG ;;
+        p) export WINEPREFIX=$WINE_BASE/$OPTARG ;;
+        A) export WINEARCH=win$OPTARG ;;
+        t) WINETRICKS+=("$OPTARG") ;;
+        -) break ;;
+        ?) exit 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [ ! -d "$WINEPREFIX" ]; then
+    echo 1>&2 "wineboot:ing in $WINEPREFIX"
+    mkdir -p "$WINEPREFIX"
+    wineboot -u
+fi
+
+for t in "${WINETRICKS[@]}"; do
+    WINETRICKS_OPTS=()
+    if [ "$t" = "steam" ]; then
+        WINETRICKS_OPTS+=("--no-isolate")
+    fi
+    echo 1>&2 "winetricks in $WINEPREFIX: $t"
+    winetricks "${WINETRICKS_OPTS[@]}" "$t"
+done
+
+resolve() {
+    sed 's,^[cC]:,'"$WINEPREFIX"'/drive_c,'
+}
+
+if [ -n "$CHDIR" ]; then
+    EXE=$(resolve <<< "$1")
+    shift
+    DIR=$(dirname "$EXE")
+    TARGET=$(basename "$EXE")
+    cd "$DIR"
+    echo 1>&2 "running $TARGET in $(readlink -f "$DIR")"
+    #taskset -c 0 wine "$TARGET" "$@"
+    wine "$TARGET" "$@"
+elif [ -n "$STEAM_APP" ]; then
+    cd "$WINEPREFIX/drive_c/Program Files (x86)/Steam/"
+    wine steam.exe "steam://run/$STEAM_APP" "$@"
+else
+    wine "$@"
+fi
