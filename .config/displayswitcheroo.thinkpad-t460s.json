@@ -1,0 +1,9 @@
+{
+    "setups" : [
+        { "outputs": ["HDMI-2"] },
+        { "outputs": ["eDP-1"] }
+    ],
+    "logging": { "stderr": "debug", "syslog": "info" },
+    "preSwitchHooks": [ "pkill dzen2" ],
+    "postSwitchHooks": [ "/home/gustav/bin/xmonad --restart", "/home/gustav/bin/dv" ]
+}
