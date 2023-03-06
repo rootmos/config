@@ -24,7 +24,7 @@ EOF
 }
 
 ACTION=play
-OPTS=("--cursor-autohide=1000" "--no-audio-display")
+OPTS=("--cursor-autohide=1000" "--no-audio-display" "--sub-visibility=no")
 PREFIX=
 REQUIRE_TARGETS=1
 while getopts "ztmcLf:D:s:e:l:S:Y:hV:a-" OPT; do
