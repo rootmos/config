@@ -19,3 +19,7 @@ fi
 
 NPM_PACKAGES="$HOME/.npm-packages"
 PATH="$NPM_PACKAGES/bin:$PATH"
+
+function vim() {
+    echo 1>&2 "use e!"
+}

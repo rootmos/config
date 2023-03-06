@@ -12,7 +12,14 @@ return require('packer').startup(function()
     use 'rootmos/tabs-vs-spaces'
 
     --use 'https://git.sr.ht/~rootmos/tads.nvim'
-    use '~/git/tads.nvim'
+    --use '~/git/tads.nvim'
 
     use 'neovimhaskell/haskell-vim'
+
+    use 'https://github.com/hrsh7th/nvim-cmp'
+    use 'https://github.com/hrsh7th/cmp-buffer'
+    use 'https://github.com/hrsh7th/cmp-path'
+
+    use 'https://github.com/scrooloose/nerdcommenter'
+    use 'https://github.com/junegunn/fzf.vim'
 end)

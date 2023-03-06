@@ -33,7 +33,7 @@ PATH=$HOME/.luarocks/bin:$PATH
 
 export PLAYER=play
 export VIEWER=view
-export EDITOR=vim
+export EDITOR=edit
 
 export VOD_DIR=/stash/Vods
 

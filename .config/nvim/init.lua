@@ -16,6 +16,9 @@ vim.api.nvim_set_keymap("i", "ii", "<Esc>:wall<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "q", "<NOP>", { noremap = true })
 vim.api.nvim_set_keymap("n", "Q", "<NOP>", { noremap = true })
 
+vim.g.mapleader = ","
+vim.g.maplocalleader = '-'
+
 require('plugins')
 
 vim.colorscheme = "solarized"
@@ -29,5 +32,8 @@ require('nvim-treesitter.configs').setup {
     },
     indent = {
         enable = true,
+    },
+    ensure_installed = {
+       'c', 'lua', 'bash'
     },
 }
