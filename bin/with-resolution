@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+MODE=$1
+shift 1
+
+if ! grep -cq "x" <<< "$MODE"; then
+    MODE=$((MODE*16/9))x$MODE
+fi
+
+echo 1>&2 "running: $@"
+echo 1>&2 "with resolution: $MODE"
+
+systemctl --user stop displayswitcheroo
+xrandr --output "$(displayswitcheroo info | jq -r .[].name)" --mode "$MODE"
+
+trap cleanup EXIT
+cleanup() {
+     systemctl --user start displayswitcheroo
+}
+
+"$@"
