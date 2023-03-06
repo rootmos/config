@@ -4,7 +4,7 @@ set -o nounset -o errexit
 
 APP=feh
 GIT_URL=https://github.com/derf/feh
-GIT_REV=3.6.3
+GIT_REV=3.9.1
 
 SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
 . "$SCRIPT_DIR/common.sh"
@@ -12,5 +12,5 @@ SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
 cd "$SRC"
 
 m clean
-m PREFIX="$ROOT" curl=0 xinerama=0 inotify=1
+m PREFIX="$ROOT" curl=0 xinerama=0 inotify=1 magic=1
 m PREFIX="$ROOT" install
