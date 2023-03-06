@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+ip -j link | jq -r '.[].ifname|select(startswith("wl"))'
