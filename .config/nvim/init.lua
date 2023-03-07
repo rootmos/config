@@ -24,7 +24,8 @@ vim.g.maplocalleader = '-'
 
 require('plugins')
 
-vim.colorscheme = "solarized"
+vim.api.nvim_command("colorscheme solarized")
+
 vim.api.nvim_set_var("airline_solarized_bg", "dark")
 vim.api.nvim_set_var("airline_theme", "solarized")
 
