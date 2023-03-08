@@ -22,10 +22,10 @@ vim.api.nvim_set_keymap("n", "Q", "<NOP>", { noremap = true })
 vim.g.mapleader = ","
 vim.g.maplocalleader = '-'
 
-require('plugins')
+require("plugins")
+require("fzf")
 
 vim.api.nvim_command("colorscheme solarized")
-
 vim.api.nvim_set_var("airline_solarized_bg", "dark")
 vim.api.nvim_set_var("airline_theme", "solarized")
 
@@ -45,7 +45,11 @@ require('nvim-treesitter.configs').setup {
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
-require('tabs-vs-spaces.config').default = 4
+require('tabs-vs-spaces.config'){
+    default = 4,
+    make = -1,
+    yaml = 2,
+}
 
 vim.g.do_filetype_lua = 1
 vim.filetype.add {

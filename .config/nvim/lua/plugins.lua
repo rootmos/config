@@ -2,6 +2,7 @@ return require('packer').startup(function()
     use 'wbthomason/packer.nvim'
 
     use 'altercation/vim-colors-solarized'
+    use 'overcache/NeoSolarized'
 
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-treesitter/playground'
@@ -22,5 +23,7 @@ return require('packer').startup(function()
     use 'https://github.com/hrsh7th/cmp-path'
 
     use 'https://github.com/scrooloose/nerdcommenter'
+
+    use 'https://github.com/junegunn/fzf'
     use 'https://github.com/junegunn/fzf.vim'
 end)
