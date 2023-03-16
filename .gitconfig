@@ -11,7 +11,7 @@
     excludesfile = ~/.gitignore_global
     hooksPath = ~/git/config/git-hooks
 [merge]
-    tool = vimdiff
+    tool = nvimdiff
 [push]
     default = simple
 [alias]

@@ -19,6 +19,9 @@ vim.api.nvim_set_keymap("i", "ii", "<Esc>:wall<CR>", { noremap = true })
 vim.api.nvim_set_keymap("n", "q", "<NOP>", { noremap = true })
 vim.api.nvim_set_keymap("n", "Q", "<NOP>", { noremap = true })
 
+vim.api.nvim_set_keymap("n", "<F8>", ":wall<CR>", { noremap = true })
+vim.api.nvim_set_keymap("i", "<F8>", "<Esc>:wall<CR>", { noremap = true })
+
 vim.g.mapleader = ","
 vim.g.maplocalleader = '-'
 

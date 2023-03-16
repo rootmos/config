@@ -5,5 +5,5 @@
     ],
     "logging": { "stderr": "debug", "syslog": "info" },
     "preSwitchHooks": [ "pkill dzen2" ],
-    "postSwitchHooks": [ "/home/gustav/bin/xmonad --restart", "/home/gustav/bin/dv" ]
+    "postSwitchHooks": [ "/home/gustav/.local/bin/xmonad --restart", "/home/gustav/bin/dv" ]
 }

@@ -2,7 +2,6 @@ return require('packer').startup(function()
     use 'wbthomason/packer.nvim'
 
     use 'altercation/vim-colors-solarized'
-    use 'overcache/NeoSolarized'
 
     use 'nvim-treesitter/nvim-treesitter'
     use 'nvim-treesitter/playground'

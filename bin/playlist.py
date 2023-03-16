@@ -35,7 +35,7 @@ class List:
         if os.path.exists(root_marker):
             with open(root_marker, "r") as f:
                 root = f.readlines()[0].rstrip("\n")
-                prefix = os.path.join(os.path.dirname(root_marker), root)
+                prefix = os.path.realpath(os.path.join(os.path.dirname(root_marker), root))
 
         logger.info(f"loading list: fn={fn} offset={offset} shuffle={shuffle} prefix={prefix}")
 

@@ -49,6 +49,13 @@ clean() {
     fi
 }
 
+rmi() {
+    if [ -f "$IMAGE" ]; then
+        _d rmi -f "$(cat "$IMAGE")"
+        rm -f "$IMAGE"
+    fi
+}
+
 run() {
     trap 'clean' EXIT
     _d run --cidfile="$CONTAINER" "${RUN_ARGS[@]}" "$(cat "$IMAGE")"
@@ -82,6 +89,8 @@ elif [ "$ACTION" = "run" ]; then
     run
 elif [ "$ACTION" = "clean" ]; then
     clean
+elif [ "$ACTION" = "rmi" ]; then
+    rmi
 elif [ "$ACTION" = "deepclean" ]; then
     deepclean
 fi
