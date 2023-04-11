@@ -3,7 +3,7 @@
 set -o nounset -o pipefail -o errexit
 
 RUST=
-HASKELL=
+HASKELL=1
 OCAML=
 while getopts "rRhHoO-" OPT; do
     case $OPT in

@@ -31,6 +31,7 @@ class Entry:
 class List:
     def __init__(self, fn, offset=None, shuffle=None, roll=None):
         prefix = None
+        fn = os.path.realpath(fn)
         root_marker = os.path.join(os.path.dirname(fn), ".root")
         if os.path.exists(root_marker):
             with open(root_marker, "r") as f:

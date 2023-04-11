@@ -52,6 +52,7 @@ require('tabs-vs-spaces.config'){
     default = 4,
     make = -1,
     yaml = 2,
+    haskell = 2,
 }
 
 vim.g.do_filetype_lua = 1
