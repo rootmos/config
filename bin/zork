@@ -3,7 +3,7 @@
 set -o nounset -o pipefail -o errexit
 
 GARGOYLE_ROOT=$(readlink -f "$(which gargoyle | xargs dirname)/..")
-INTERPRETERS=$GARGOYLE_ROOT/lib
+INTERPRETERS=$GARGOYLE_ROOT/libexec/gargoyle
 
 GAME=$(readlink -f "$1")
 GAMEID=$(sha256sum "$GAME" | cut -d' ' -f1)
