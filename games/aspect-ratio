@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -o nounset -o pipefail -o errexit
+
+CLASS=${1-Chowdren}
+
+while true; do
+    WINDOW=$(xdotool search --class "$CLASS" || true)
+    if [ -z "$WINDOW" ]; then
+        echo 1>&2 "waiting for window with class: $CLASS..."
+        sleep 1
+        continue
+    fi
+
+    . <(xdotool getwindowgeometry --shell "$WINDOW")
+    
+    W=$((HEIGHT*4/3))
+    if [ "$WIDTH" -ne "$W" ]; then
+        echo 1>&2 "resizing: ${WIDTH}x$HEIGHT -> ${W}x$HEIGHT"
+        xdotool windowsize --sync "$WINDOW" "$W" "$HEIGHT"
+    fi
+
+    sleep 1
+done
