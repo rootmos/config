@@ -126,7 +126,10 @@ main = do
     def { terminal = "st"
         , workspaces = fst <$> myWorkspaces
         , layoutHook = avoidStruts $ smartBorders (Tall 1 (2/100) (1/2)) ||| noBorders Full ||| simpleFloat
-        , startupHook = composeAll [ setWMName "LG3D" ] <+> startupHook def
+        , startupHook = composeAll [ setWMName "LG3D"
+                                   ] <+> startupHook def
+        , manageHook = composeAll [ className =? "scidDialog" --> doFloat
+                                  ] <+> manageHook def
         , keys = myKeys home bin localBin
         , focusFollowsMouse = False
         , focusedBorderColor = "red"
