@@ -5,18 +5,33 @@ set -o nounset -o pipefail -o errexit
 GARGOYLE_ROOT=$(readlink -f "$(which gargoyle | xargs dirname)/..")
 INTERPRETERS=$GARGOYLE_ROOT/libexec/gargoyle
 
+PLAYTHROUGH_ROOT=${PLAYTHROUGH_ROOT-$HOME/games/if/.playthrough}
+PLAYTHROUGH=${PLAYTHROUGH-}
+while getopts "p:R:-" OPT; do
+    case $OPT in
+        p) PLAYTHROUGH=$OPTARG ;;
+        R) PLAYTHROUGH_ROOT=$OPTARG ;;
+        -) break ;;
+        ?) usage 2 ;;
+    esac
+done
+shift $((OPTIND-1))
+
 GAME=$(readlink -f "$1")
 GAMEID=$(sha256sum "$GAME" | cut -d' ' -f1)
+if [ -z "$PLAYTHROUGH" ]; then
+    PLAYTHROUGH=$PLAYTHROUGH_ROOT/$GAMEID
+fi
 
-PLAYTHROUGH_ROOT=${PLAYTHROUGH_ROOT-$HOME/games/if/.playthrough}
-PLAYTHROUGH=${PLAYTHROUGH-$PLAYTHROUGH_ROOT/$GAMEID}
 mkdir -p "$PLAYTHROUGH"
 
 NOW=$(date -Is)
 CMDS=$PLAYTHROUGH/$NOW.cmds.txt
 TRANSCRIPT=$PLAYTHROUGH/$NOW.transcript.txt
 
-ln -fs "$GAME" "$PLAYTHROUGH/$(basename "$GAME")"
+if [ ! -e "$PLAYTHROUGH/$(basename "$GAME")" ]; then
+    ln -fs "$GAME" "$PLAYTHROUGH/$(basename "$GAME")"
+fi
 
 TYPE=$(file --brief --mime-type "$GAME")
 SUFFIX=$(sed 's/.*\.\([a-zA-Z0-9\$]\+\)$/\1/' <<< "$GAME")
