@@ -11,13 +11,13 @@ Options:
     -m            mute
     -a            audio only
     -c            play current clipboard selection
-    -L            loop playlist
     -f PLAYLIST   play PLAYLIST (may be used multiple times)
     -z            shuffle playlist
     -D SECONDS    display images for the given amount of SECONDS
     -s START      start playback at START
     -e END        end playback at END
-    -l START-END  loop from START to END
+    -l            loop file
+    -L            loop playlist
     -S SUB        read subtites from SUB
 EOF
     exit "${1-0}"
@@ -27,22 +27,19 @@ ACTION=play
 OPTS=("--cursor-autohide=1000" "--no-audio-display" "--sub-visibility=no")
 PREFIX=
 REQUIRE_TARGETS=1
-while getopts "ztmcLf:D:s:e:l:S:Y:hV:a-" OPT; do
+while getopts "ztmcLf:D:s:e:lS:Y:hV:a-" OPT; do
     case $OPT in
         t) PREFIX=https://twitch.tv/ ;;
         m) OPTS+=("--mute") ;;
         a) OPTS+=("--vo=null") ;;
         c) CLIPBOARD=1 ;;
-        L) OPTS+=("--loop-playlist=inf") ;;
         f) OPTS+=("--playlist=$OPTARG"); REQUIRE_TARGETS= ;;
         z) OPTS+=("--shuffle") ;;
         D) OPTS+=("--image-display-duration=$OPTARG") ;;
         s) OPTS+=("--start=$OPTARG") ;;
         e) OPTS+=("--end=$OPTARG") ;;
-        l) OPTS+=("--start=$(sed 's/\([^-]*\)-\([^-]*\)/\1/' <<< "$OPTARG")")
-           OPTS+=("--ab-loop-a=$(sed 's/\([^-]*\)-\([^-]*\)/\1/' <<< "$OPTARG")")
-           OPTS+=("--ab-loop-b=$(sed 's/\([^-]*\)-\([^-]*\)/\2/' <<< "$OPTARG")")
-           ;;
+        l) OPTS+=("--loop-file=inf") ;;
+        L) OPTS+=("--loop-playlist=inf") ;;
         S) OPTS+=("--sub-file=$OPTARG") ;;
         V) VO=$OPTARG ;;
         h) usage ;;
@@ -74,8 +71,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [ "${#TARGETS[@]}" -eq 0 ] && [ -n "$REQUIRE_TARGETS" ]; then
-    echo "no targets specified" 1>&2
-    exit 2
+    OPTS+=("--playlist=-")
 fi
 
 if [ "$ACTION" = "play" ]; then
