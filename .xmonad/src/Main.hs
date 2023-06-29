@@ -4,6 +4,7 @@ module Main where
 
 import Control.Monad ( (<=<) )
 import Data.Functor ( (<&>) )
+import Data.Maybe ( fromJust )
 import Graphics.X11.ExtraTypes.XF86
 import Network.HostName ( getHostName )
 import System.Directory ( getAppUserDataDirectory, doesFileExist, getHomeDirectory )
@@ -85,9 +86,8 @@ currentWidth = do
   (root, res) <- currentDefaultDisplay
   setup <- fetchSetup root res
   case filter isOutputEnabled . M.elems $ setupOutputs setup of
-    Output { outputMonitor = Just mid } : _ -> do
-      let Just monitor = lookupMonitor mid setup
-      return $ monitorWidth monitor
+    Output { outputMonitor = Just mid } : _ -> return $
+      monitorWidth . fromJust $ lookupMonitor mid setup
     _ -> return 1910
 
 bars :: XConfig l -> IO (XConfig l)

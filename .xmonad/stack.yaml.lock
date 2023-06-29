@@ -3,24 +3,10 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages:
-- completed:
-    hackage: X11-xft-0.3.1@sha256:3fc08ff4c419405f33905b160a1d405c60be801d3d1ace745ee5b7ca38531363,654
-    pantry-tree:
-      size: 325
-      sha256: 107995822ae4183e9d9ef04b65d32b672b4a8f40e6f898d4094e4e2d5b564d85
-  original:
-    hackage: X11-xft-0.3.1
-- completed:
-    hackage: xmonad-contrib-0.16@sha256:a47da91613dc8e04c040424ab605acb2e8693bcf76e397f924b39af89b954da1,15927
-    pantry-tree:
-      size: 19578
-      sha256: 934bc533bb08aebb72e51cb0fa5aab9e27e5c6c25a0a1edaa2c76058f8771167
-  original:
-    hackage: xmonad-contrib-0.16
+packages: []
 snapshots:
 - completed:
-    size: 524154
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/20.yaml
-    sha256: 2f5099f69ddb6abfe64400fe1e6a604e8e628f55e6837211cd70a81eb0a8fa4d
-  original: lts-14.20
+    sha256: 1867d84255dff8c87373f5dd03e5a5cb1c10a99587e26c8793e750c54e83ffdc
+    size: 639139
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/21/0.yaml
+  original: lts-21.0
