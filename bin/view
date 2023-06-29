@@ -27,6 +27,13 @@ fi
 
 export DURATION LIST_ACTIONS
 
+for i in "$@"; do
+   if [ -d "$i" ]; then
+      ARGS+=("--recursive")
+      break
+   fi
+done
+
 if [ -z "$LIST_ACTIONS" ]; then
     exec feh --scale-down --image-bg=black --auto-zoom \
         --action=';echo "$(dirname "%f")"' \
