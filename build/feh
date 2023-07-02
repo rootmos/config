@@ -3,8 +3,8 @@
 set -o nounset -o errexit
 
 APP=feh
-GIT_URL=https://github.com/derf/feh
-GIT_REV=3.9.1
+GIT_URL=git@git.sr.ht:~rootmos/feh
+GIT_BRANCH=master
 
 SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
 . "$SCRIPT_DIR/common.sh"

@@ -8,3 +8,6 @@ action_7 braceright KP_7
 action_8 slash KP_8
 action_9 parenright KP_9
 action_0 0 KP_0
+
+quit q
+alt_quit Escape Q
