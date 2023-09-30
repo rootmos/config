@@ -25,6 +25,7 @@ EOF
 
 ACTION=play
 OPTS=("--cursor-autohide=1000" "--no-audio-display" "--sub-visibility=no")
+OPTS+=("--profile=big-cache")
 PREFIX=
 REQUIRE_TARGETS=1
 while getopts "ztmcLf:D:s:e:lS:Y:hV:a-" OPT; do
@@ -60,6 +61,8 @@ if [ -n "${VO-}" ]; then
     OPTS+=("--vo=$VO")
 fi
 
+ARGS=()
+
 TARGETS=()
 if [ -n "${CLIPBOARD-}" ]; then
     TARGETS+=("$PREFIX$(xclip -o | tr '\n' '\0')")
@@ -70,12 +73,22 @@ while [ "$#" -gt 0 ]; do
     shift
 done
 
+for t in "${TARGETS[@]}"; do
+    MIME_TYPE=$(file --brief --mime-type "$t" 2>/dev/null)
+    if [ "$MIME_TYPE" = "text/plain" ]; then
+        ARGS+=("--playlist=$t")
+    else
+        ARGS+=("$t")
+    fi
+done
+
+
 if [ "${#TARGETS[@]}" -eq 0 ] && [ -n "$REQUIRE_TARGETS" ]; then
-    OPTS+=("--playlist=-")
+    ARGS+=("--playlist=-")
 fi
 
 if [ "$ACTION" = "play" ]; then
-    exec mpv "${OPTS[@]}" "${TARGETS[@]}"
+    exec mpv "${OPTS[@]}" "${ARGS[@]}"
 elif [ "$ACTION" = "formats" ]; then
     exec youtube-dl --list-formats "${TARGETS[@]}"
 fi
