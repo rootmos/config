@@ -6,10 +6,8 @@ import Control.Monad ( (<=<) )
 import Data.Functor ( (<&>) )
 import Data.Maybe ( fromJust )
 import Graphics.X11.ExtraTypes.XF86
-import Network.HostName ( getHostName )
 import System.Directory ( getAppUserDataDirectory, doesFileExist, getHomeDirectory )
 import System.FilePath.Posix ( (</>) )
-import Text.Printf ( printf )
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks ( avoidStruts, docks, ToggleStruts(..) )
@@ -93,18 +91,9 @@ currentWidth = do
 
 bars :: XConfig l -> IO (XConfig l)
 bars conf = do
-  width <- currentWidth
-  h <- spawnPipe $ myXmonadBar width
-  _ <- getHostName >>= spawnPipe . myStatusBar width
+  h <- spawnPipe "statusbar run -f"
   return $ docks $ conf { logHook = logHook conf >> dynamicLogWithPP pp { ppOutput = hPutStrLn h } }
-    where right = 900
-          left width = width - right
-          height = 16 :: Int
-          font = printf "-*-*-*-*-*-*-%d-*-*-*-*-*-*-*" (height - 4) :: String
-          dzenCmd = printf "dzen2 -e 'onstart=lower' -dock -fg '#FFFFFF' -bg '#1B1D1E' -fn '%s' -h '%d'" font height :: String
-          myXmonadBar width = printf "%s -x '0' -y '0' -w '%d' -ta 'l'" dzenCmd (left width)
-          myStatusBar width h = printf "conky -c ~/.xmonad/conky.%s.config 2>/dev/null 0>/dev/null | %s -x '%d' -y '0' -w '%d' -ta 'r'" h dzenCmd (left width) right
-          pp = def { ppCurrent         = dzenColor "#ebac54" "#1B1D1E"
+    where pp = def { ppCurrent         = dzenColor "#ebac54" "#1B1D1E"
                    , ppVisible         = dzenColor "white" "#1B1D1E"
                    , ppHidden          = dzenColor "white" "#1B1D1E"
                    , ppHiddenNoWindows = dzenColor "#7b7b7b" "#1B1D1E"

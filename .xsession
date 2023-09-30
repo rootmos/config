@@ -10,7 +10,5 @@ autocutsel -selection PRIMARY -fork &
 
 (sleep 3 && chromium) &
 unclutter &
-redshift &
-(sleep 3 && xcompmgr) &
 
 exec "$HOME/.local/bin/xmonad"
