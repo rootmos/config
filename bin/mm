@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRIVATE=
+PRIVATE=1
 WORK=
 SESSION=mail
 while getopts "pws:T" OPT; do
@@ -22,12 +22,12 @@ if [ -n "$TMUX" ]; then
             || tmux new-window -n private-mail $MUTT -F ~/.mutt/rootmos.io.rc
     elif [ -n "$WORK" ]; then
         tmux select-window -t work-mail 2>/dev/null \
-            || tmux new-window -n work-mail $MUTT -F ~/.mutt/arweave.org.rc
+            || tmux new-window -n work-mail $MUTT -F ~/.mutt/work.rc
     fi
 elif [ -n "$PRIVATE" ]; then
     $MUTT -F ~/.mutt/rootmos.io.rc
 elif [ -n "$WORK" ]; then
-    $MUTT -F ~/.mutt/arweave.org.rc
+    $MUTT -F ~/.mutt/work.rc
 else
     exec tmux new-session -t "$SESSION"
 fi
