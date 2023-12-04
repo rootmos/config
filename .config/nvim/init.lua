@@ -53,9 +53,13 @@ require('tabs-vs-spaces.config'){
     make = -1,
     yaml = 2,
     haskell = 2,
+    terraform = 2,
+    go = -1,
 }
 
 vim.g.do_filetype_lua = 1
 vim.filetype.add {
     filename = { [".k"] = "sh" },
 }
+
+vim.g.slime_target = "tmux"

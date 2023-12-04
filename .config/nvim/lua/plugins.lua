@@ -9,6 +9,8 @@ return require('packer').startup(function()
     use 'vim-airline/vim-airline'
     use 'vim-airline/vim-airline-themes'
 
+    use 'jpalardy/vim-slime'
+
     --use '~/git/tabs-vs-spaces'
     use 'rootmos/tabs-vs-spaces'
 
