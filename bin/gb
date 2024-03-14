@@ -10,10 +10,20 @@ USER_BASE_DIR="$HOME/.mednafen"
 SAVESTATES="$USER_BASE_DIR/mcs"
 MEMORYCARDS="$USER_BASE_DIR/sav"
 FIRMWARES="$USER_BASE_DIR/firmware"
+MEMCARD_SUFFIX=
+KEYMAP=wasd
+PRINT_CONFIG=
+SCALE=4
 
 OPTS=()
-while getopts "-" OPT; do
+while getopts "s:M:m:k:K:C-" OPT; do
     case $OPT in
+        s) SAVESTATES=$OPTARG ;;
+        M) MEMORYCARDS=$OPTARG ;;
+        m) MEMCARD_SUFFIX="-$OPTARG" ;;
+        K) KEYMAP=$OPTARG ;;
+        k) SCALE=$OPTARG ;;
+        C) PRINT_CONFIG=1 ;;
         -) break ;;
         ?) exit 2 ;;
     esac
@@ -26,40 +36,49 @@ OPTS+=("-sound.rate" "192000")
 OPTS+=("-filesys.state_comp_level" "9")
 OPTS+=("-filesys.path_state" "$SAVESTATES")
 OPTS+=("-filesys.path_sav" "$MEMORYCARDS")
+OPTS+=("-filesys.fname_sav" "%s%p$MEMCARD_SUFFIX.%X")
 
 OPTS+=("-video.fs" "0")
 OPTS+=("-command.toggle_fs" "keyboard 0x0 28")
 OPTS+=("-command.pause" "keyboard 0x0 44")
 OPTS+=("-command.fast_forward" "keyboard 0x0 40")
 
-OPTS+=("-gb.xscale" "4")
-OPTS+=("-gb.yscale" "4")
+OPTS+=("-gb.xscale" "$SCALE")
+OPTS+=("-gb.yscale" "$SCALE")
 
-map_ds3_gamepad() {
-    OPTS+=("-gb.input.builtin.gamepad.up" "joystick $1 button_12")
-    OPTS+=("-gb.input.builtin.gamepad.left" "joystick $1 button_15")
-    OPTS+=("-gb.input.builtin.gamepad.right" "joystick $1 button_13")
-    OPTS+=("-gb.input.builtin.gamepad.down" "joystick $1 button_14")
-    OPTS+=("-gb.input.builtin.gamepad.select" "joystick $1 button_8")
-    OPTS+=("-gb.input.builtin.gamepad.start" "joystick $1 button_9")
-    OPTS+=("-gb.input.builtin.gamepad.a" "joystick $1 button_1")
-    OPTS+=("-gb.input.builtin.gamepad.b" "joystick $1 button_2")
+OPTS+=("-gb.system_type" "cgb")
+
+DS3=0x00031d79030101100007001000000000
+SN30=0x0003057e200981110006000e00000000
+
+map_ds3() {
+    OPTS+=("-gb.input.builtin.gamepad.up" "joystick $DS3 button_12")
+    OPTS+=("-gb.input.builtin.gamepad.left" "joystick $DS3 button_15")
+    OPTS+=("-gb.input.builtin.gamepad.right" "joystick $DS3 button_13")
+    OPTS+=("-gb.input.builtin.gamepad.down" "joystick $DS3 button_14")
+    OPTS+=("-gb.input.builtin.gamepad.select" "joystick $DS3 button_8")
+    OPTS+=("-gb.input.builtin.gamepad.start" "joystick $DS3 button_9")
+    OPTS+=("-gb.input.builtin.gamepad.a" "joystick $DS3 button_1")
+    OPTS+=("-gb.input.builtin.gamepad.b" "joystick $DS3 button_2")
 }
 
-map_SN30_gamepad() {
-    OPTS+=("-gb.input.builtin.gamepad.up" "joystick $1 abs_7-")
-    OPTS+=("-gb.input.builtin.gamepad.left" "joystick $1 abs_6-")
-    OPTS+=("-gb.input.builtin.gamepad.right" "joystick $1 abs_6+")
-    OPTS+=("-gb.input.builtin.gamepad.down" "joystick $1 abs_7+")
-    OPTS+=("-gb.input.builtin.gamepad.select" "joystick $1 button_6")
-    OPTS+=("-gb.input.builtin.gamepad.start" "joystick $1 button_7")
-    OPTS+=("-gb.input.builtin.gamepad.a" "joystick $1 button_1")
-    OPTS+=("-gb.input.builtin.gamepad.rapid_a" "joystick $1 button_3")
-    OPTS+=("-gb.input.builtin.gamepad.b" "joystick $1 button_0")
-    OPTS+=("-gb.input.builtin.gamepad.rapid_b" "joystick $1 button_2")
+map_sn30() {
+    OPTS+=("-gb.input.builtin.gamepad.up" "joystick $SN30 abs_5-")
+    OPTS+=("-gb.input.builtin.gamepad.left" "joystick $SN30 abs_4-")
+    OPTS+=("-gb.input.builtin.gamepad.right" "joystick $SN30 abs_4+")
+    OPTS+=("-gb.input.builtin.gamepad.down" "joystick $SN30 abs_5+")
+    OPTS+=("-gb.input.builtin.gamepad.select" "joystick $SN30 button_9")
+    OPTS+=("-gb.input.builtin.gamepad.start" "joystick $SN30 button_10")
+    OPTS+=("-gb.input.builtin.gamepad.a" "joystick $SN30 button_1")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_a" "joystick $SN30 button_2")
+    OPTS+=("-gb.input.builtin.gamepad.b" "joystick $SN30 button_0")
+    OPTS+=("-gb.input.builtin.gamepad.rapid_b" "joystick $SN30 button_3")
+
+    OPTS+=("-command.fast_forward" "joystick $SN30 button_8")
+    OPTS+=("-command.pause" "joystick $SN30 button_7")
 }
 
-map_keyboard() {
+map_arrows() {
     OPTS+=("-gb.input.builtin.gamepad.up" "keyboard 0x0 82")
     OPTS+=("-gb.input.builtin.gamepad.left" "keyboard 0x0 80")
     OPTS+=("-gb.input.builtin.gamepad.right" "keyboard 0x0 79")
@@ -72,7 +91,7 @@ map_keyboard() {
     OPTS+=("-gb.input.builtin.gamepad.rapid_b" "keyboard 0x0 4")
 }
 
-map_keyboard_wasd() {
+map_wasd() {
     OPTS+=("-gb.input.builtin.gamepad.up" "keyboard 0x0 26")
     OPTS+=("-gb.input.builtin.gamepad.left" "keyboard 0x0 4")
     OPTS+=("-gb.input.builtin.gamepad.right" "keyboard 0x0 7")
@@ -85,10 +104,10 @@ map_keyboard_wasd() {
     OPTS+=("-gb.input.builtin.gamepad.rapid_b" "keyboard 0x0 12")
 }
 
-#map_ds3_gamepad 0x00031d79030101100007001000000000
-#map_SN30_gamepad 0x0003045e028e01140008000b00000000
-map_keyboard_wasd
+map_$KEYMAP
 
 mednafen "${OPTS[@]}" "$@"
 
-#cat "$MEDNAFEN_HOME/mednafen.cfg"
+if [ -n "$PRINT_CONFIG" ]; then
+    cat "$MEDNAFEN_HOME/mednafen.cfg"
+fi
