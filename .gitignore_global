@@ -4,7 +4,11 @@
 \#*#
 .#*
 .k
+.env
 tmp
+_tmp
 
 .*.image
 .*.container
+
+trace*

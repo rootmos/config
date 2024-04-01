@@ -4,7 +4,6 @@ module Main where
 
 import Control.Monad ( (<=<) )
 import Data.Functor ( (<&>) )
-import Data.Maybe ( fromJust )
 import Graphics.X11.ExtraTypes.XF86
 import System.Directory ( getAppUserDataDirectory, doesFileExist, getHomeDirectory )
 import System.FilePath.Posix ( (</>) )
@@ -17,8 +16,6 @@ import XMonad.Layout.SimpleFloat ( simpleFloat )
 import XMonad.Util.Run ( spawnPipe, hPutStrLn )
 import qualified Data.Map as M
 import qualified XMonad.StackSet as W
-
-import Utils
 
 myWorkspaces :: [(String, KeySym)]
 myWorkspaces = [ ("1", xK_1)
@@ -79,15 +76,6 @@ myKeys _ bin localBin XConfig { terminal = t } = M.fromList $ makeWorkspaceKeys 
   , ((0, xK_F11), spawn $ localBin </> "action trigger f11")
   , ((0, xF86XK_WLAN), spawn $ bin </> "wifi-fix")
   ]
-
-currentWidth :: IO Int
-currentWidth = do
-  (root, res) <- currentDefaultDisplay
-  setup <- fetchSetup root res
-  case filter isOutputEnabled . M.elems $ setupOutputs setup of
-    Output { outputMonitor = Just mid } : _ -> return $
-      monitorWidth . fromJust $ lookupMonitor mid setup
-    _ -> return 1910
 
 bars :: XConfig l -> IO (XConfig l)
 bars conf = do

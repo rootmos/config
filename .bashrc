@@ -1,5 +1,6 @@
 . ~/.profile
 . ~/.bash_aliases
+. <(dircolors ~/.dircolors)
 
 PS1='\w '
 export MANWIDTH=79

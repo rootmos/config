@@ -18,6 +18,7 @@
     f = fetch
     a = add --interactive
     ap = add --patch
+    rp = restore --staged --patch
     c = commit --verbose
     ca = commit --verbose --amend
     ba = branch --sort=committerdate --all -vv
@@ -38,3 +39,5 @@
     ff = only
 [init]
 	defaultBranch = master
+[safe]
+	directory = /home/gustav/mnt/keys/password-store

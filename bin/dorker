@@ -28,15 +28,25 @@ _d() {
     $SUDO $DOCKER "$@"
 }
 
+daemon_is_running() {
+    _d ps >/dev/null 2>&1
+}
+
+if ! daemon_is_running; then
+    $SUDO systemctl start docker.service
+fi
+
 build() {
     MARKER=/tmp/build-$(uuidgen)
     make -sf- <<EOF
+.PHONY: build
+build: $IMAGE
 $IMAGE: $DOCKERFILE
 	touch "$MARKER"
 EOF
     if [ -f "$MARKER" ]; then
         rm "$MARKER"
-        _d build --iidfile="$IMAGE" --file="$DOCKERFILE" "$CONTEXT"
+        _d build --progress=plain --iidfile="$IMAGE" --file="$DOCKERFILE" "$CONTEXT"
     else
         echo 1>&2 "image already built: $IMAGE"
     fi
@@ -93,4 +103,7 @@ elif [ "$ACTION" = "rmi" ]; then
     rmi
 elif [ "$ACTION" = "deepclean" ]; then
     deepclean
+elif [ "$ACTION" = "prune" ]; then
+    # https://docs.docker.com/config/pruning/#prune-everything
+    _d system prune --all
 fi

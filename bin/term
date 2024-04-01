@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -t 1 ]; then
+    exec "$@"
+else
+    TITLE=${TITLE-$(basename "${1-term}")}
+    exec st -t "$TITLE" "$@"
+fi

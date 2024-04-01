@@ -2,5 +2,8 @@
 
 set -o nounset -o pipefail -o errexit
 
-cat > "$HOME/.xmonad/border-width" <<< "$1"
+STATE="$HOME/.local/state/xmonad"
+mkdir -p "$STATE"
+
+cat > "$STATE/border-width" <<< "$1"
 xmonad --restart

@@ -3,6 +3,7 @@
 PRIVATE=1
 WORK=
 SESSION=mail
+TITLE=mail
 while getopts "pws:T" OPT; do
     case $OPT in
         p) PRIVATE=1; WORK= ;;
@@ -24,10 +25,14 @@ if [ -n "$TMUX" ]; then
         tmux select-window -t work-mail 2>/dev/null \
             || tmux new-window -n work-mail $MUTT -F ~/.mutt/work.rc
     fi
-elif [ -n "$PRIVATE" ]; then
-    $MUTT -F ~/.mutt/rootmos.io.rc
+    exit 0
+fi
+
+export TITLE
+if [ -n "$PRIVATE" ]; then
+    exec term $MUTT -F ~/.mutt/rootmos.io.rc
 elif [ -n "$WORK" ]; then
-    $MUTT -F ~/.mutt/work.rc
+    exec term $MUTT -F ~/.mutt/work.rc
 else
-    exec tmux new-session -t "$SESSION"
+    exec term tmux new-session -t "$SESSION"
 fi

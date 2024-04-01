@@ -17,6 +17,6 @@ elif [ "$1" = "enable" ]; then
 elif [ "$1" = "rule" ]; then
     echo "$RULE" | cut -d' ' -f2
 else
-    mpv av://v4l2:/dev/video0 --profile=low-latency --untimed --vf=hflip
+    mpv av://v4l2:/dev/video${1-0} --profile=low-latency --untimed --vf=hflip
 fi
 

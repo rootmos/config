@@ -38,17 +38,17 @@ SUFFIX=$(sed 's/.*\.\([a-zA-Z0-9\$]\+\)$/\1/' <<< "$GAME")
 
 export GAMES=$PLAYTHROUGH
 if [ "$TYPE" = "application/x-zmachine" ] || [ "$SUFFIX" = "zblorb" ]; then
-    "$INTERPRETERS/bocfel" \
+    exec "$INTERPRETERS/bocfel" \
         -s -S "$CMDS" -t -T "$TRANSCRIPT" \
         "$GAME"
 elif [ "$TYPE" = "application/x-tads" ] || [ "$SUFFIX" = "t3" ]; then
-    "$INTERPRETERS/tadsr" \
+    exec "$INTERPRETERS/tadsr" \
         -o "$CMDS" -l "$TRANSCRIPT" \
         "$GAME"
 elif [ "$SUFFIX" = "gblorb" ]; then
-    "$INTERPRETERS/git" "$GAME"
+    exec "$INTERPRETERS/git" "$GAME"
 elif [ "$SUFFIX" = "taf" ]; then
-    "$INTERPRETERS/scare" "$GAME"
+    exec "$INTERPRETERS/scare" "$GAME"
 elif [ "$SUFFIX" = "d\$\$" ] || [ "$SUFFIX" = "D\$\$" ]; then
-    "$INTERPRETERS/agility" "$GAME"
+    exec "$INTERPRETERS/agility" "$GAME"
 fi

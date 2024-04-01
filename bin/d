@@ -4,26 +4,34 @@ set -o nounset -o pipefail -o errexit
 
 PRECISION=date
 TZ=local
+DRY_RUN=
 
-while getopts "dsz-" OPT; do
+while getopts "dszn-" OPT; do
     case $OPT in
         d) PRECISION=date ;;
         s) PRECISION=seconds ;;
         z) TZ=utc ;;
+        n) DRY_RUN=1 ;;
         -) break ;;
         ?) exit 2 ;;
     esac
 done
 shift $((OPTIND-1))
 
-ARGS=()
+ARGS=(date)
 
 if [ "$PRECISION" = "date" ]; then
-    date +%F
+    ARGS+=(+%F)
 else [ "$PRECISION" = "seconds" ];
     if [ "$TZ" = "local" ]; then
-        date +%FT%H%M%S%z
+        ARGS+=(+%FT%H%M%S%z)
     elif [ "$TZ" = "utc" ]; then
-        date --utc +%FT%H%M%SZ
+        ARGS+=(--utc +%FT%H%M%SZ)
     fi
+fi
+
+if [ -z "$DRY_RUN" ]; then
+    "${ARGS[@]}"
+else
+    echo "${ARGS[@]}"
 fi

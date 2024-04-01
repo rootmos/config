@@ -3,7 +3,7 @@
 set -o nounset -o pipefail -o errexit
 
 RUST=
-HASKELL=1
+HASKELL=
 OCAML=
 while getopts "rRhHoO-" OPT; do
     case $OPT in
@@ -19,7 +19,10 @@ while getopts "rRhHoO-" OPT; do
 done
 shift $((OPTIND-1))
 
-echo "updating pacman and aur packages" >&2
+echo "updating packages" >&2
+sudo -A pacman -Suy
+
+echo "updating aur" >&2
 yay --sudoflags -A -Suy
 
 if [ -n "$RUST" ] && command -v rustup >/dev/null; then

@@ -4,16 +4,18 @@ set -o nounset -o pipefail -o errexit
 
 APP=gargoyle
 GIT_URL=https://github.com/garglk/garglk
-GIT_REV=2023.1
+GIT_REV=bbc1f7616d7b8b590aa014ce2bfc774215393eb0
 
 DEPS=("cmake" "gtk2" "sdl" "sdl_mixer" "sdl_sound")
 
 SCRIPT_DIR=$(readlink -f "$0" | xargs dirname)
 . "$SCRIPT_DIR/common.sh"
 
+#rm -rf "$BUILD"
 mkdir -p "$BUILD"
 cd "$BUILD"
 cmake "$SRC" \
+    -DCMAKE_BUILD_TYPE=Debug \
     -DCMAKE_INSTALL_RPATH="$ROOT/lib" \
     -DCMAKE_INSTALL_PREFIX="$ROOT" \
     -DWITH_TTS=OFF \

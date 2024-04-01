@@ -8,6 +8,7 @@ set move = no
 
 set mail_check_stats = yes
 set sidebar_format = "%B%* %N"
+set sidebar_visible = no
 
 set timeout = 5
 set mail_check = 5

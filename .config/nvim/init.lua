@@ -41,7 +41,7 @@ require('nvim-treesitter.configs').setup {
         --enable = true,
     --},
     ensure_installed = {
-       'c', 'lua', 'bash'
+       'c', 'lua', 'bash', 'terraform'
     },
 }
 
@@ -55,11 +55,17 @@ require('tabs-vs-spaces.config'){
     haskell = 2,
     terraform = 2,
     go = -1,
+    python = false,
 }
 
 vim.g.do_filetype_lua = 1
 vim.filetype.add {
-    filename = { [".k"] = "sh" },
+    filename = {
+        [".k"] = "sh",
+    },
+    pattern = {
+        [".*%.celx"] = "lua",
+    },
 }
 
 vim.g.slime_target = "tmux"

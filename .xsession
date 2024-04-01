@@ -11,4 +11,4 @@ autocutsel -selection PRIMARY -fork &
 (sleep 3 && chromium) &
 unclutter &
 
-exec "$HOME/.local/bin/xmonad"
+exec "$HOME/.local/bin/xmonad-x86_64-linux"

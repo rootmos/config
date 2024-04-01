@@ -3,7 +3,7 @@
 set -o nounset -o pipefail -o errexit
 
 echo "removing orphaned packages (pacman -D --asexplicit <package...>)" >&2
-pacman -Qtdq | sudo pacman -Rns - || echo "no orphaned packages found" >&2
+pacman -Qtdq | sudo -A pacman -Rns - || echo "no orphaned packages found" >&2
 
 echo "cleaning pacman cache" >&2
 sudo -A paccache -rk1
