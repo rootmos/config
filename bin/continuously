@@ -234,6 +234,9 @@ void trigger_action(const char* type) {
             argv[i] = state.action_argv[i];
         }
 
+        r = setenv("CONTINUOUSLY", "1", 1);
+        CHECK(r == 0, "setenv(\"CONTINUOUSLY\", \"1\", 1)");
+
         r = execvp(argv[0], argv);
         CHECK(r != -1, "execv");
     }
@@ -245,7 +248,7 @@ void trigger_action(const char* type) {
     }
 }
 
-void setup_term(int in, int out) {
+static void setup_term(int in, int out) {
     int r = tcgetattr(in, &state.ttyprev);
     if(r == -1 && errno == ENOTTY) {
         state.input_fd = -1;
@@ -273,14 +276,14 @@ void setup_term(int in, int out) {
     }
 }
 
-void restore_term(void) {
+static void restore_term(void) {
     if(state.input_fd < 0) return;
 
     int r = tcsetattr(state.input_fd, TCSANOW, &state.ttyprev);
     CHECK(r == 0, "tcsetattr");
 }
 
-void quit(const char* reason, int ec, int child_sig) {
+static void quit(const char* reason, int ec, int child_sig) {
     if(!state.quiet && state.output_fd >= 0) {
         dprintf(state.output_fd, "[quit]\n");
     }
@@ -303,7 +306,7 @@ void quit(const char* reason, int ec, int child_sig) {
     exit(ec);
 }
 
-void handle_inotify(int fd) {
+static void handle_inotify(int fd) {
     struct inotify_event e;
 
     ssize_t s = read(fd, &e, sizeof(e));
@@ -324,7 +327,7 @@ void handle_inotify(int fd) {
     failwith("unexpected watch descriptor");
 }
 
-void handle_signalfd(int fd) {
+static void handle_signalfd(int fd) {
     struct signalfd_siginfo si;
     ssize_t s = read(fd, &si, sizeof(si));
     CHECK(s >= 0, "read");
@@ -372,7 +375,7 @@ void handle_signalfd(int fd) {
     }
 }
 
-void handle_stdin(int fd) {
+static void handle_stdin(int fd) {
     char buf[128];
     ssize_t r = read(fd, buf, sizeof(buf));
     if(r == -1 && (errno == EAGAIN || errno == EWOULDBLOCK)) {
@@ -393,7 +396,7 @@ void handle_stdin(int fd) {
     handle_stdin(fd);
 }
 
-void set_non_blocking(int fd) {
+static void set_non_blocking(int fd) {
     int fs = fcntl(fd, F_GETFL, 0);
     int r = fcntl(fd, F_SETFL, fs | O_NONBLOCK);
     CHECK(r != -1, "fcntl");
