@@ -35,7 +35,7 @@ export PLAYER=play
 export VIEWER=view
 export EDITOR=edit
 
-export VOD_DIR=/stash/Vods
+complete -A file view
 
 if [ -e "/usr/local/bin/sudo-pass.askpass" ]; then
     export SUDO_ASKPASS=/usr/local/bin/sudo-pass.askpass
