@@ -25,6 +25,8 @@ vim.api.nvim_set_keymap("i", "<F8>", "<Esc>:wall<CR>", { noremap = true })
 vim.g.mapleader = ","
 vim.g.maplocalleader = '-'
 
+vim.keymap.set("n", "<leader>z", function() vim.api.nvim_command(':%s/\\s\\+$//c') end)
+
 require("plugins")
 require("fzf")
 
