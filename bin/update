@@ -2,28 +2,41 @@
 
 set -o nounset -o pipefail -o errexit
 
+PACMAN=1
+AUR=1
 RUST=
 HASKELL=
 OCAML=
-while getopts "rRhHoO-" OPT; do
+NVIM=1
+while getopts "pPaArRhHoOvV-" OPT; do
     case $OPT in
+        p) PACMAN=1 ;;
+        P) PACMAN= ;;
+        a) AUR=1 ;;
+        A) AUR= ;;
         r) RUST=1 ;;
         R) RUST= ;;
         h) HASKELL=1 ;;
         H) HASKELL= ;;
         o) OCAML=1 ;;
         O) OCAML= ;;
+        v) NVIM=1 ;;
+        V) NVIM= ;;
         -) break ;;
         ?) exit 2 ;;
     esac
 done
 shift $((OPTIND-1))
 
-echo "updating packages" >&2
-sudo -A pacman -Suy
+if [ -n "$PACMAN" ]; then
+    echo "updating packages" >&2
+    sudo -A pacman -Suy
+fi
 
-echo "updating aur" >&2
-yay --sudoflags -A -Suy
+if [ -n "$AUR" ]; then
+    echo "updating aur" >&2
+    yay --sudoflags -A -Suy
+fi
 
 if [ -n "$RUST" ] && command -v rustup >/dev/null; then
     echo "updating rust" >&2
@@ -38,4 +51,15 @@ fi
 if [ -n "$OCAML" ] && command -v opam >/dev/null; then
     echo "updating ocaml" >&2
     opam update
+fi
+
+if [ -n "$NVIM" ]; then
+    NVIM=$(command -v nvim || true)
+    if [ -n "$NVIM" ]; then
+        UPDATER=$(dirname "$(readlink -f "$NVIM")")/update
+        if [ -x "$UPDATER" ]; then
+            echo "updating nvim packages" >&2
+            $UPDATER
+        fi
+    fi
 fi
