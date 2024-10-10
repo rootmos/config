@@ -55,7 +55,7 @@ struct {
     int log_warn;
 
     int action_argc;
-    const char** action_argv;
+    char** action_argv;
 } state;
 
 #define WARN(fmt, ...) do { \
@@ -82,7 +82,7 @@ int watch(int fd, const char* path) {
     int r = inotify_add_watch(fd, path, IN_MODIFY);
     if(r < 0 && errno == ENOENT) {
         WARN("ignoring missing file: %s", path);
-        return;
+        return 0;
     }
     CHECK(r >= 0, "inotify_add_watch(%s)", path);
     return r;
@@ -228,7 +228,7 @@ void trigger_action(const char* type) {
         int r = sigprocmask(SIG_UNBLOCK, &state.sm, NULL);
         CHECK(r == 0, "sigprocmask");
 
-        const char** argv = calloc(1 + state.action_argc, sizeof(const char*));
+        char** argv = calloc(1 + state.action_argc, sizeof(char*));
         CHECK_MALLOC(argv);
         for(size_t i = 0; i < state.action_argc; i++) {
             argv[i] = state.action_argv[i];
@@ -402,7 +402,7 @@ static void set_non_blocking(int fd) {
     CHECK(r != -1, "fcntl");
 }
 
-int main(int argc, const char* argv[])
+int main(int argc, char* argv[])
 {
     state.child = 0;
 
