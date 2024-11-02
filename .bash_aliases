@@ -1,6 +1,6 @@
 alias ls='ls --color=auto'
 alias u="ls"
-alias c="continuously"
+alias c="continuously --"
 alias e="edit"
 
 alias g="git"
