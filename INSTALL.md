@@ -53,6 +53,7 @@ sudo dd bs=4M if=archlinux-$VERSION-x86_64.iso of=/dev/null status=progress ofla
 * `vim /etc/mkinitcpio.conf`
   - `FILES=(/keyfile)`
   - `HOOKS=(base udev ... block encrypt lvm2 filesystems)`
+  - `MODULES_DECOMPRESS="yes"` (TODO: is this necessary with an updated GRUB installation+configuration?)
 * `mkinitcpio -P`
 * `vim /etc/default/grub`
   - `GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet cryptdevice=/dev/nvme0n1p2:g0 cryptkey=rootfs:/keyfile"`
