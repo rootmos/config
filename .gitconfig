@@ -4,6 +4,7 @@
     signingkey = 413B70A6B053F80C
 [commit]
     gpgsign = true
+    verbose = true
 [core]
     editor = edit
     excludesfile = ~/.gitignore_global
@@ -18,8 +19,8 @@
     a = add --interactive
     ap = add --patch
     rp = restore --staged --patch
-    c = commit --verbose
-    ca = commit --verbose --amend
+    c = commit
+    ca = commit --amend
     ba = branch --sort=committerdate --all -vv
     ls = ls-files
     co = !sh -c 'git checkout -B $1 ${2-origin}/$1' -
