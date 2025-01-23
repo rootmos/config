@@ -2,8 +2,6 @@
     email = me@rootmos.io
     name = Gustav Behm
     signingkey = 413B70A6B053F80C
-[includeIf "gitdir:~/iota/"]
-    path = ~/iota/.gitconfig
 [commit]
     gpgsign = true
 [core]
@@ -16,6 +14,7 @@
     default = simple
 [alias]
     f = fetch
+    s = status
     a = add --interactive
     ap = add --patch
     rp = restore --staged --patch
@@ -33,11 +32,13 @@
     sourcehut = !sh -c 'git clone git@git.sr.ht:~$1' -
     head = !sh -c 'git rev-parse HEAD | tee >(tr -dc [:alnum:] | xclip)'
     p = push
+    pp = push --force
+    pb = !sh -c 'git push --set-upstream ${1-origin} $(git rev-parse --abbrev-ref HEAD)'
 [color]
     ui = auto
 [pull]
     ff = only
 [init]
-	defaultBranch = master
+    defaultBranch = master
 [safe]
-	directory = /home/gustav/mnt/keys/password-store
+    directory = /home/gustav/mnt/keys/password-store
