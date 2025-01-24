@@ -16,6 +16,7 @@
 [alias]
     f = fetch
     s = status
+    ss = status .
     a = add --interactive
     ap = add --patch
     rp = restore --staged --patch
@@ -26,7 +27,9 @@
     co = !sh -c 'git checkout -B $1 ${2-origin}/$1' -
     m = !sh -c 'git checkout -B $1 origin/$1 && git merge --no-ff $2' -
     b = checkout -B
-    d = checkout --detach
+    d = diff
+    dd = diff .
+    detach = checkout --detach
     r = rebase -i
     fb = filter-branch --prune-empty --subdirectory-filter
     github = !sh -c 'git clone git@github.com:$1.git' -
