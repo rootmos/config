@@ -24,3 +24,7 @@ PATH="$NPM_PACKAGES/bin:$PATH"
 function vim() {
     echo 1>&2 "use e!"
 }
+
+p() {
+    cd "$HOME/git/$1" && tmux rename-window "$1"
+}
