@@ -8,6 +8,8 @@ export GPG_TTY=$(tty)
 
 export TELEPRESENCE_BINARY=/home/gustav/root/telepresence/bin/telepresence
 
+export TEXHELP_REPOSITORY="https://mirror.accum.se/mirror/CTAN/systems/texlive/tlnet/"
+
 . /home/gustav/.opam/opam-init/init.sh &> /dev/null || true
 
 if command -v k > /dev/null; then
@@ -25,6 +27,7 @@ function vim() {
     echo 1>&2 "use e!"
 }
 
-p() {
-    cd "$HOME/git/$1" && tmux rename-window "$1"
-}
+export HOME_GIT_DIR=$HOME/git
+if [ -f "$HOME_GIT_DIR/scripts/p.sh" ]; then
+    . "$HOME_GIT_DIR/scripts/p.sh"
+fi

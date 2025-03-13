@@ -35,3 +35,5 @@ alias gpp="g pp"
 alias gr="g r"
 alias gs="g s"
 alias gss="g ss"
+
+alias activate="eval \$(poetry env activate)"

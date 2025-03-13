@@ -8,7 +8,9 @@ hsetroot -solid black
 autocutsel -fork &
 autocutsel -selection PRIMARY -fork &
 
-(sleep 3 && chromium) &
 unclutter &
 
-exec "$HOME/.local/bin/xmonad-x86_64-linux"
+while true; do
+    "$HOME/.local/bin/xmonad-x86_64-linux"
+    sleep 5
+done

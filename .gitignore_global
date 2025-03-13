@@ -7,8 +7,10 @@
 .env
 tmp
 _tmp
+*.old
 
 .*.image
 .*.container
 
 trace*
+.trace*
