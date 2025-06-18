@@ -6,8 +6,6 @@ PS1='\w '
 export MANWIDTH=79
 export GPG_TTY=$(tty)
 
-export TELEPRESENCE_BINARY=/home/gustav/root/telepresence/bin/telepresence
-
 export TEXHELP_REPOSITORY="https://mirror.accum.se/mirror/CTAN/systems/texlive/tlnet/"
 
 . /home/gustav/.opam/opam-init/init.sh &> /dev/null || true
@@ -20,6 +18,10 @@ if command -v zones > /dev/null; then
     . <(zones completion-script)
 fi
 
+if command -v transfer-file > /dev/null; then
+    . <(transfer-file --completion-script)
+fi
+
 NPM_PACKAGES="$HOME/.npm-packages"
 PATH="$NPM_PACKAGES/bin:$PATH"
 
@@ -28,6 +30,10 @@ function vim() {
 }
 
 export HOME_GIT_DIR=$HOME/git
-if [ -f "$HOME_GIT_DIR/scripts/p.sh" ]; then
+if [ -d "$HOME_GIT_DIR/scripts" ]; then
     . "$HOME_GIT_DIR/scripts/p.sh"
+    . "$HOME_GIT_DIR/scripts/h.sh"
+    . "$HOME_GIT_DIR/scripts/game.sh"
+    . "$HOME_GIT_DIR/scripts/render_duration.sh"
+    . "$HOME_GIT_DIR/scripts/K.sh"
 fi
