@@ -36,4 +36,7 @@ if [ -d "$HOME_GIT_DIR/scripts" ]; then
     . "$HOME_GIT_DIR/scripts/game.sh"
     . "$HOME_GIT_DIR/scripts/render_duration.sh"
     . "$HOME_GIT_DIR/scripts/K.sh"
+
+    . "$HOME_GIT_DIR/scripts/shlvl.sh"
+    PS1="$(shlvl_prefix)$PS1"
 fi
