@@ -1,6 +1,6 @@
 . ~/.profile
 . ~/.bash_aliases
-. <(dircolors ~/.dircolors)
+export LS_COLORS="$(vivid generate ayu)"
 
 PS1='\w '
 export MANWIDTH=79
