@@ -8,7 +8,7 @@ if [ -n "${TMUX-}" ]; then
 fi
 
 CONFIG_BASE=${TMX_CONFIG_BASE-$HOME/.tmux.d}
-SESSION=$1
+SESSION=${1-hck}
 
 session_exists() {
     tmux list-sessions -F '#S' | grep -cqx "$1"
