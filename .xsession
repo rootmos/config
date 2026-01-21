@@ -1,6 +1,6 @@
 #!/bin/sh
 
-dv
+keymap code
 xset m 0 0
 xset s off -dpms
 hsetroot -solid black
