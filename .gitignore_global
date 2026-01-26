@@ -8,6 +8,7 @@
 tmp
 _tmp
 *.old
+workdir
 
 .*.image
 .*.container

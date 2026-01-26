@@ -37,3 +37,13 @@ alias gs="g s"
 alias gss="g ss"
 
 alias activate="eval \$(poetry env activate)"
+alias a=activate
+
+alias dv='keymap code'
+alias se='keymap se'
+alias sv='keymap se'
+alias us='keymap us'
+
+alias pkg='pkg-add'
+
+alias pgrep='/usr/bin/pgrep -a'

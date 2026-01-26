@@ -18,9 +18,11 @@ if command -v zones > /dev/null; then
     . <(zones completion-script)
 fi
 
-if command -v transfer-file > /dev/null; then
-    . <(transfer-file --completion-script)
-fi
+for cmd in transfer-file vpn twitch; do
+    if command -v "$cmd" > /dev/null; then
+        . <("$cmd" --completion-script)
+    fi
+done
 
 NPM_PACKAGES="$HOME/.npm-packages"
 PATH="$NPM_PACKAGES/bin:$PATH"
