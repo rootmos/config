@@ -22,6 +22,8 @@
     rp = restore --staged --patch
     c = commit
     ca = commit --amend
+    cp = commit --patch
+    cpp = !git commit --patch && git push
     ba = branch --sort=committerdate --all -vv
     ls = ls-files
     co = !sh -c 'git checkout -B $1 ${2-origin}/$1' -

@@ -1,3 +1,7 @@
 set font "CascadiaCode normal 11"
 set adjust-open width
 set database sqlite
+
+#include zathura-solarized-dark
+#include zathura-solarized-light
+set recolor false

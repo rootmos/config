@@ -6,7 +6,8 @@ PS1='\w '
 export MANWIDTH=79
 export GPG_TTY=$(tty)
 
-export TEXHELP_REPOSITORY="https://mirror.accum.se/mirror/CTAN/systems/texlive/tlnet/"
+#export TEXHELP_MIRROR=https://mirror.accum.se/mirror/CTAN
+export TEXHELP_MIRROR=https://mirror.math.princeton.edu/pub/CTAN
 
 . /home/gustav/.opam/opam-init/init.sh &> /dev/null || true
 
@@ -33,11 +34,15 @@ function vim() {
 
 export HOME_GIT_DIR=$HOME/git
 if [ -d "$HOME_GIT_DIR/scripts" ]; then
+    . "$HOME_GIT_DIR/scripts/render_duration.sh"
+    . "$HOME_GIT_DIR/scripts/tmp.sh"
+    . "$HOME_GIT_DIR/scripts/changed.sh"
+
     . "$HOME_GIT_DIR/scripts/p.sh"
     . "$HOME_GIT_DIR/scripts/h.sh"
     . "$HOME_GIT_DIR/scripts/game.sh"
-    . "$HOME_GIT_DIR/scripts/render_duration.sh"
     . "$HOME_GIT_DIR/scripts/K.sh"
+    . "$HOME_GIT_DIR/scripts/za.sh"
 
     . "$HOME_GIT_DIR/scripts/shlvl.sh"
     PS1="$(shlvl_prefix)$PS1"
