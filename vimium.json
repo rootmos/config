@@ -1,0 +1,11 @@
+{
+  "exclusionRules": [
+    {},
+    {}
+  ],
+  "grabBackFocus": true,
+  "keyMappings": "unmapAll\n\nmap t scrollDown\nmap n scrollUp\nmap h scrollLeft\nmap s scrollRight\nmap H goBack\nmap S goForward\nmap N nextTab\nmap T previousTab\n\nmap gg scrollToTop\nmap G scrollToBottom\n\n\n\n# map i enterInsertMode\n# map gf toggleViewSource\n# map zi zoomIn\n# map zo zoomOut\n\nmap u LinkHints.activateMode\nmap U LinkHints.activateModeToOpenInNewTab\nmap Y LinkHints.activateModeToCopyLinkUrl\nmap y copyCurrentUrl\n\n# map o Vomnibar.activate\n\nmap / enterFindMode\nmap * findSelected\nmap j performFind\nmap k performBackwardsFind",
+  "linkHintCharacters": "aoeuhtns",
+  "openVomnibarOnNewTabPage": false,
+  "settingsVersion": "2.4.0"
+}
