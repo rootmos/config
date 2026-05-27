@@ -1,6 +1,5 @@
 tmux move-window -t 0
+tmux setenv TMP /tmp
 
-export TMP=/tmp/$(d)
-mkdir -p "$TMP"
-
-tmux new-window -c "$TMP"
+tmux new-window
+tmux send-keys "C-l" "tmp -n" Enter
