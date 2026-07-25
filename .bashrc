@@ -19,7 +19,7 @@ if command -v zones > /dev/null; then
     . <(zones completion-script)
 fi
 
-for cmd in transfer-file vpn twitch; do
+for cmd in transfer-file vpn twitch progress capture-window record-window screenshot; do
     if command -v "$cmd" > /dev/null; then
         . <("$cmd" --completion-script)
     fi

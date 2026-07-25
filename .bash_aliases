@@ -16,6 +16,8 @@ alias su="systemctl --user"
 alias j="journalctl"
 alias ju="journalctl --user"
 
+alias suspend="sudo systemctl suspend"
+
 # missepllings
 alias ga="g a"
 alias gap="g ap"
@@ -43,3 +45,5 @@ alias us='keymap us'
 alias pkg='pkg-add'
 
 alias pgrep='/usr/bin/pgrep -a'
+
+alias fetch="fetch walk --"
