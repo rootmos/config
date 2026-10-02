@@ -2,6 +2,8 @@ export L="$HOME/L"
 
 tmux move-window -t 0
 tmux new-window -d -n "lit" -c "$L/lit"
+tmux split-window -v -c "$L/private/lit"
+
 tmux new-window -d -n "man" -c "$L/man"
 
 project() {
@@ -11,6 +13,6 @@ project() {
     tmux send-keys -t 2 "C-l" "h" Enter
 }
 
-project oau278
+project oau254
+project oau257
 project anteckningar
-project oau376

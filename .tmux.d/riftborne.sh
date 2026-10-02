@@ -1,0 +1,1 @@
+/home/gustav/games/riftborne/riftborne.sh

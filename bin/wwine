@@ -1,9 +1,8 @@
 #!/bin/bash
 
 set -o nounset -o pipefail -o errexit
-set -o xtrace
 
-WINE_BASE=${WINE_BASE-$HOME/stash/wine}
+WINE_BASE=${WINE_BASE-$HOME/.local/share/wwine}
 if [ -n "${WWINE_APP-}" ]; then
     export WINEPREFIX=$WINE_BASE/$WWINE_APP
 else

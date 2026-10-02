@@ -8,7 +8,7 @@
 [core]
     editor = edit
     excludesfile = ~/.gitignore_global
-    hooksPath = ~/git/config/git-hooks
+    ;hooksPath = ~/git/config/git-hooks
 [merge]
     tool = nvimdiff
 [push]
