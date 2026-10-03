@@ -1,22 +1,24 @@
-alias ls='ls --color=auto'
+# shorthand(s)
 alias u="ls"
-alias c="continuously --"
 alias e="edit"
-
 alias g="git"
 
+alias c="continuously --"
+alias ckgo="c k go"
+
+alias dv='keymap code'
+alias se='keymap se'
+alias sv='keymap se'
+alias us='keymap us'
+
+alias pkg='pkg-add'
+alias fetch="fetch walk --"
+
+# preferences
 alias cal="/usr/bin/cal -m"
-
-alias pl="playlist"
-
+alias ls='ls --color=auto'
 alias yay="/usr/bin/yay --sudoflags=-A"
-
-alias s="systemctl"
-alias su="systemctl --user"
-alias j="journalctl"
-alias ju="journalctl --user"
-
-alias suspend="sudo systemctl suspend"
+alias pgrep='/usr/bin/pgrep -a'
 
 # missepllings
 alias ga="g a"
@@ -37,13 +39,11 @@ alias gss="g ss"
 alias activate="eval \$(poetry env activate)"
 alias a=activate
 
-alias dv='keymap code'
-alias se='keymap se'
-alias sv='keymap se'
-alias us='keymap us'
+# TODO
+#alias s="systemctl"
+#alias su="systemctl --user"
+#alias j="journalctl"
+#alias ju="journalctl --user"
 
-alias pkg='pkg-add'
-
-alias pgrep='/usr/bin/pgrep -a'
-
-alias fetch="fetch walk --"
+# TODO
+alias suspend="sudo systemctl suspend"
